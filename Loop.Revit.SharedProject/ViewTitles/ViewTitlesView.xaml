@@ -118,7 +118,7 @@
                       MaxHeight="400"
                       Margin="10"
                       DockPanel.Dock="Bottom"
-                      materialDesign:DataGridAssist.ApplyMaterialDesignColumnStyles="True">
+                      >
 
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn MinWidth="50"
