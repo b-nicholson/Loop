@@ -1,0 +1,42 @@
+﻿<Page
+    x:Class="Loop.Revit.FavouriteViews.DockablePanelPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    Background="White">
+
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label 
+            Padding="0"
+            Margin="10,0,0,0"
+            VerticalAlignment="Center"
+            Content="Things"/>
+        <Button Grid.Row="0" Width="75" Height="20" HorizontalAlignment="Right" Content="Load" Command="{Binding LoadViews}"/>
+
+        <ListView Grid.Row="1">
+            <ListView.Resources>
+                <Style TargetType="GridViewColumnHeader">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <!--<Setter Property="Visibility" Value="{x:Null}"/>-->
+                </Style>
+            </ListView.Resources>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Type" Width="50" DisplayMemberBinding="{Binding ViewType}"/>
+                    <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding ViewName}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+
+    </Grid>
+</Page>

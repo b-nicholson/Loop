@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Loop.Revit.SharedProject", "Loop.Revit.SharedProject\Loop.Revit.SharedProject.shproj", "{9CE24522-FF3C-4138-BAFE-CFE1D4E5B86C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loop.Revit.2022", "Loop.Revit.2022\Loop.Revit.2022.csproj", "{F3A0CC6F-1DF9-48E1-8CDE-8E656B6EB080}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loop.Revit.2023", "Loop.Revit.2023\Loop.Revit.2023.csproj", "{1B0AD122-9E2C-41D5-8D9D-979284C5AFAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loop.Revit.2024", "Loop.Revit.2024\Loop.Revit.2024.csproj", "{2C04B340-B114-4338-8CFE-3EA9B4CFBA7F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F3A0CC6F-1DF9-48E1-8CDE-8E656B6EB080}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3A0CC6F-1DF9-48E1-8CDE-8E656B6EB080}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3A0CC6F-1DF9-48E1-8CDE-8E656B6EB080}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3A0CC6F-1DF9-48E1-8CDE-8E656B6EB080}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B0AD122-9E2C-41D5-8D9D-979284C5AFAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B0AD122-9E2C-41D5-8D9D-979284C5AFAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B0AD122-9E2C-41D5-8D9D-979284C5AFAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B0AD122-9E2C-41D5-8D9D-979284C5AFAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C04B340-B114-4338-8CFE-3EA9B4CFBA7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C04B340-B114-4338-8CFE-3EA9B4CFBA7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C04B340-B114-4338-8CFE-3EA9B4CFBA7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C04B340-B114-4338-8CFE-3EA9B4CFBA7F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B128D93A-FB66-4AC0-AC1E-78E15E6DDCCD}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Loop.Revit.SharedProject\Loop.Revit.SharedProject.projitems*{1b0ad122-9e2c-41d5-8d9d-979284c5afaa}*SharedItemsImports = 4
+		Loop.Revit.SharedProject\Loop.Revit.SharedProject.projitems*{2c04b340-b114-4338-8cfe-3ea9b4cfba7f}*SharedItemsImports = 4
+		Loop.Revit.SharedProject\Loop.Revit.SharedProject.projitems*{9ce24522-ff3c-4138-bafe-cfe1d4e5b86c}*SharedItemsImports = 13
+		Loop.Revit.SharedProject\Loop.Revit.SharedProject.projitems*{f3a0cc6f-1df9-48e1-8cde-8e656b6eb080}*SharedItemsImports = 4
+	EndGlobalSection
+EndGlobal

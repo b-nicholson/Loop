@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+	<AddIn Type = "Application">
+		<Name>Loop</Name>
+		<Assembly>Loop\Loop.Revit.2024.dll</Assembly>
+		<AddInId>0094440F-8846-4035-8DBA-C02463300E8E</AddInId>
+		<FullClassName>Loop.Revit.AppCommand</FullClassName>
+		<VendorId>Blake Nicholson</VendorId>
+		<VendorDescription>I make things</VendorDescription>
+	</AddIn>
+</RevitAddIns>

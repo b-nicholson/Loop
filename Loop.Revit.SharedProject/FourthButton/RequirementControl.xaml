@@ -1,0 +1,25 @@
+﻿<UserControl
+    x:Class="Loop.Revit.FourthButton.RequirementControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="50"
+    d:DesignWidth="400"
+    Background="White">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="50"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="{Binding FamilyNameAndType, FallbackValue='Some Name'}" VerticalAlignment="Center" Padding="0"/>
+        <Label Content="{Binding RequiredCount, Mode=OneWay, FallbackValue='3'}" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0"/>
+        <Border Grid.Column="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{Binding PlacedColor}"/>
+        <Label Grid.Column="2" Content="{Binding PlacedCount, FallbackValue=3}" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="0"/>
+
+
+    </Grid>
+</UserControl>

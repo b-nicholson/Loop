@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>9ce24522-ff3c-4138-bafe-cfe1d4e5b86c</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Loop.Revit</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)AppCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelPage.xaml.cs">
+      <DependentUpon>DockablePanelPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelUtilsFv.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\FavouriteViewsCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\ViewWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FirstButton\FirstButtonCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SecondButton\SecondButtonCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SecondButton\SecondButtonModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SecondButton\SecondButtonView.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SecondButton\SecondButtonViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SecondButton\SpatialObjectWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\SpatialObjectDeletedMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\SpatialObjectWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonRequestHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonView.xaml.cs">
+      <DependentUpon>ThirdButtonView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\DialogUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ImageUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\SheetWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesView.xaml.cs">
+      <DependentUpon>ViewTitlesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\32x32\firstButton.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Resources\Styles\ElementStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)SecondButton\SecondButtonView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="$(MSBuildThisFileDirectory)Resources\viewTitles\example.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="$(MSBuildThisFileDirectory)ViewTitles\example.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\32x32\viewTitles.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="$(MSBuildThisFileDirectory)Resources\Styles\Font\Inter-Black.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="$(MSBuildThisFileDirectory)Resources\Styles\Font\Inter-Bold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="$(MSBuildThisFileDirectory)Resources\Styles\Font\Inter-ExtraBold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="$(MSBuildThisFileDirectory)Resources\Styles\Font\Inter-ExtraLight.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="$(MSBuildThisFileDirectory)Resources\Styles\Font\Inter-Light.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="$(MSBuildThisFileDirectory)Resources\Styles\Font\Inter-Medium.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="$(MSBuildThisFileDirectory)Resources\Styles\Font\Inter-Regular.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="$(MSBuildThisFileDirectory)Resources\Styles\Font\Inter-SemiBold.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="$(MSBuildThisFileDirectory)Resources\Styles\Font\Inter-Thin.ttf">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="$(MSBuildThisFileDirectory)Resources.resw" />
+  </ItemGroup>
+</Project>
