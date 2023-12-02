@@ -18,7 +18,14 @@ namespace Loop.Revit.ViewTitles
         public bool IsSelected
         {
             get { return _isSelected; }
-            set { _isSelected = value; RaisePropertyChanged(nameof(IsSelected)); }
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    RaisePropertyChanged(nameof(IsSelected));
+                }
+            }
         }
 
         public SheetWrapper(ViewSheet sheet)

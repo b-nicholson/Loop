@@ -26,31 +26,30 @@ namespace Loop.Revit.ViewTitles
             set { _sheets = value; RaisePropertyChanged(() => Sheets); }
         }
 
-        public bool? IsAllSheetsSelected
+        private bool _isAllSheetsSelected;
+        public bool IsAllSheetsSelected
         {
-            get
-            {
-                var selected = Sheets.Select(item => item.IsSelected).Distinct().ToList();
-                return selected.Count == 1 ? selected.Single() : (bool?)null;
-            }
+            get { return _isAllSheetsSelected; }
             set
             {
-                if (value.HasValue)
+                if (_isAllSheetsSelected != value)
                 {
-                    SelectAll(value.Value, Sheets);
-                    RaisePropertyChanged(() => Sheets);
+                    _isAllSheetsSelected = value;
+                    RaisePropertyChanged(nameof(IsAllSheetsSelected));
+                    SelectAllSheets(value);
 
 
                 }
             }
         }
 
-        private static void SelectAll(bool select, ObservableCollection<SheetWrapper> sheets)
+        private void SelectAllSheets(bool select)
         {
-            foreach (var sheet in sheets )
+            foreach (var sheet in Sheets )
             {
                 sheet.IsSelected = select;
             }
+            RaisePropertyChanged(nameof(IsAllSheetsSelected));
         }
 
         public ViewTitlesViewModel(ViewTitlesModel model)
@@ -63,8 +62,8 @@ namespace Loop.Revit.ViewTitles
                 sheet.PropertyChanged += (sender, args) =>
                 {
                     if (args.PropertyName == nameof(SheetWrapper.IsSelected))
-                        ;
-                    // OnPropertyChanged(nameof(IsAllSheetsSelected));
+
+                        RaisePropertyChanged(nameof(IsAllSheetsSelected));
                 };
             }
 

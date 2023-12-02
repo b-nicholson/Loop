@@ -114,7 +114,6 @@
                       CanUserSortColumns="True"
                       IsReadOnly="False"
                       SelectionMode="Extended"
-                      SelectionUnit="FullRow"
                       MaxHeight="400"
                       Margin="10"
                       DockPanel.Dock="Bottom"
@@ -122,15 +121,11 @@
 
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn MinWidth="50"
-                                            Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}">
+                                            Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                         <DataGridCheckBoxColumn.Header>
-                            <Border Background="Transparent">
-                                <CheckBox  IsChecked="{Binding Path=DataContext.IsAllSheetsSelected,
-                       UpdateSourceTrigger=PropertyChanged,
-                       RelativeSource={RelativeSource FindAncestor,
-                           AncestorType={x:Type Window}}}" />
-                                
-                            </Border>
+                            <CheckBox IsChecked="{Binding Path=DataContext.IsAllSheetsSelected, Mode=TwoWay,
+                   UpdateSourceTrigger=PropertyChanged,
+                   RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" />
                         </DataGridCheckBoxColumn.Header>
 
                         <DataGridCheckBoxColumn.HeaderStyle>
