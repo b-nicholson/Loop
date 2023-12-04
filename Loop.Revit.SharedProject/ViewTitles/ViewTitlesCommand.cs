@@ -34,7 +34,7 @@ namespace Loop.Revit.ViewTitles
 
                 v.Show();
 
-                m.ChangeTitleLength();
+                //m.ChangeTitleLength();
                 return Result.Succeeded;
 
             }

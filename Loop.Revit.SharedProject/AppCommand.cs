@@ -16,6 +16,10 @@ namespace Loop.Revit
     {
         public static ThirdButtonRequestHandler ThirdButtonHandler { get; set; }
         public static ExternalEvent ThirdButtonEvent { get; set; }
+
+        public static ViewTitlesRequestHandler ViewTitlesHandler { get; set; }
+        public static ExternalEvent ViewTitlesEvent { get; set; }
+
         public Result OnStartup(UIControlledApplication app)
         {
             string tabName = "Loop";
@@ -50,6 +54,9 @@ namespace Loop.Revit
 
             ThirdButtonHandler =new ThirdButtonRequestHandler();
             ThirdButtonEvent = ExternalEvent.Create(ThirdButtonHandler);
+
+            ViewTitlesHandler = new ViewTitlesRequestHandler();
+            ViewTitlesEvent = ExternalEvent.Create(ViewTitlesHandler);
 
             return Result.Succeeded;
         }

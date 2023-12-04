@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Remoting;
 using System.Text;
@@ -15,8 +17,7 @@ namespace Loop.Revit.ViewTitles
     {
         public ViewTitlesModel Model { get; set; }
 
-        public RelayCommand<Window> Close { get; set; }
-        public RelayCommand<Window> Delete { get; set; }
+        public RelayCommand<Window> Run { get; set; }
 
         private ObservableCollection<SheetWrapper> _sheets;
 
@@ -27,6 +28,8 @@ namespace Loop.Revit.ViewTitles
         }
 
         private bool _isAllSheetsSelected;
+
+
         public bool IsAllSheetsSelected
         {
             get { return _isAllSheetsSelected; }
@@ -37,11 +40,11 @@ namespace Loop.Revit.ViewTitles
                     _isAllSheetsSelected = value;
                     RaisePropertyChanged(nameof(IsAllSheetsSelected));
                     SelectAllSheets(value);
-
-
                 }
             }
         }
+
+
 
         private void SelectAllSheets(bool select)
         {
@@ -67,19 +70,23 @@ namespace Loop.Revit.ViewTitles
                 };
             }
 
-
-            // Close = new RelayCommand<Window>(OnClose);
-            // Delete = new RelayCommand<Window>(OnDelete);
-
-            //  Messenger.Default.Register<SpatialObjectDeletedMessage>(this, OnSpatialElementDeletedMessage);
+            Run = new RelayCommand<Window>(OnRun);
         }
 
-        // private ObservableCollection<SpatialObjectWrapper> _spatialObjects;
 
-        // public ObservableCollection<SpatialObjectWrapper> SpatialObjects
-        //  {
-        //     get { return _spatialObjects; }
-        //    set { _spatialObjects = value; RaisePropertyChanged(() => SpatialObjects); }
-        //  }
+        private void OnRun(Window win)
+        {
+            var selected = Sheets.Where(x => x.IsSelected).ToList();
+            if (selected.Count == 0)
+            {
+                return;
+            }
+            Model.ChangeTitleLength(selected);
+
+
+        }
+
+     
+
     }
 }
