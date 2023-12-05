@@ -36,7 +36,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\DialogUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ImageUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\SheetWrapper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\UnitsWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\UnitsWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesRequestHandler.cs" />

@@ -7,9 +7,11 @@ using System.Linq;
 using System.Runtime.Remoting;
 using System.Text;
 using System.Windows;
+using Autodesk.Revit.DB;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
+using Utilities;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -23,24 +25,27 @@ namespace Loop.Revit.ViewTitles
 
         public ObservableCollection<SheetWrapper> Sheets
         {
-            get { return _sheets; }
+            get => _sheets;
             set { _sheets = value; RaisePropertyChanged(() => Sheets); }
         }
 
         private bool _isAllSheetsSelected;
 
+        public ObservableCollection<RevitUnit> ComboBoxUnits => new ObservableCollection<RevitUnit>(RevitUnitTypes.GetUnitsByType(SpecTypeId.Length));
+
+        public ForgeTypeId DefaultUnits;
+
+
 
         public bool IsAllSheetsSelected
         {
-            get { return _isAllSheetsSelected; }
+            get => _isAllSheetsSelected;
             set
             {
-                if (_isAllSheetsSelected != value)
-                {
-                    _isAllSheetsSelected = value;
-                    RaisePropertyChanged(nameof(IsAllSheetsSelected));
-                    SelectAllSheets(value);
-                }
+                if (_isAllSheetsSelected == value) return;
+                _isAllSheetsSelected = value;
+                RaisePropertyChanged(nameof(IsAllSheetsSelected));
+                SelectAllSheets(value);
             }
         }
 
@@ -59,6 +64,8 @@ namespace Loop.Revit.ViewTitles
         {
             Model = model;
             Sheets = Model.CollectSheets();
+            DefaultUnits = Model.CollectUnits();
+            
 
             foreach (var sheet in Sheets)
             {

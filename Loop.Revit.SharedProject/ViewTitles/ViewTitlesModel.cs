@@ -24,6 +24,12 @@ namespace Loop.Revit.ViewTitles
             return new ObservableCollection<SheetWrapper>(sheets);
         }
 
+        public ForgeTypeId CollectUnits()
+        {
+            var units = Doc.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
+            return units;
+        }
+
         public void ChangeTitleLength(List<SheetWrapper> selected)
         {
             AppCommand.ViewTitlesHandler.Arg1 = selected;

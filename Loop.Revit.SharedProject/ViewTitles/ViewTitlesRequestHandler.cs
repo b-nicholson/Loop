@@ -63,6 +63,8 @@ namespace Loop.Revit.ViewTitles
             // start of garbage for testing purposes
 
 
+
+
             //var units = UnitUtils.GetValidUnits(SpecTypeId.Length);
             //var names = new List<string>();
             //var textInfo = new CultureInfo("en-US", false).TextInfo;
