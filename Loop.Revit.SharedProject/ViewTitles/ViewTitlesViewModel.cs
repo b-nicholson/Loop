@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Remoting;
 using System.Text;
+using System.Web.UI.WebControls;
 using System.Windows;
 using Autodesk.Revit.DB;
 using GalaSoft.MvvmLight;
@@ -34,6 +35,16 @@ namespace Loop.Revit.ViewTitles
         public ObservableCollection<RevitUnit> ComboBoxUnits => new ObservableCollection<RevitUnit>(RevitUnitTypes.GetUnitsByType(SpecTypeId.Length));
 
         public ForgeTypeId DefaultUnits;
+
+        private RevitUnit _selectedUnit;
+        public RevitUnit SelectedUnit
+        {
+            get { return _selectedUnit; }
+            set
+            {
+                _selectedUnit = value;
+            }
+        }
 
 
 
@@ -65,7 +76,8 @@ namespace Loop.Revit.ViewTitles
             Model = model;
             Sheets = Model.CollectSheets();
             DefaultUnits = Model.CollectUnits();
-            
+            SelectedUnit = ComboBoxUnits.FirstOrDefault(u => u.UnitTypeId == DefaultUnits);
+
 
             foreach (var sheet in Sheets)
             {

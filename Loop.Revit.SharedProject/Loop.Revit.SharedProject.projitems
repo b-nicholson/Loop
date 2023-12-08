@@ -72,7 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="$(MSBuildThisFileDirectory)Resources\viewTitles\example.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Content Include="$(MSBuildThisFileDirectory)ViewTitles\example.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

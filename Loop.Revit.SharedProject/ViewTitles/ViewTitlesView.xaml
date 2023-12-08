@@ -44,6 +44,14 @@
                            Height="100"
                            RenderOptions.BitmapScalingMode="HighQuality"
                            Source="../Resources/viewTitles/example.png" />
+                    <Image x:Name="example33"
+                           Height="100"
+                           RenderOptions.BitmapScalingMode="HighQuality"
+                           Source="pack://application:,,,/Loop;component/Resources/example.png" />
+                    <Image x:Name="example3"
+                           Height="100"
+                           RenderOptions.BitmapScalingMode="HighQuality"
+                           Source="/Loop;component/Resources/example.png" />
 
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom">
@@ -51,8 +59,9 @@
                                Height="30">
                         <ComboBox x:Name="export_units_cb"
                                   ItemsSource="{Binding ComboBoxUnits}"
-                                  SelectedItem="{Binding DefaultUnits, Mode=TwoWay}"
                                   DisplayMemberPath="Name"
+                                  SelectedItem="{Binding SelectedUnit}"
+
                                   DockPanel.Dock="Right"
                                   VerticalContentAlignment="Center"
                                   Padding="10,0,0,0"
