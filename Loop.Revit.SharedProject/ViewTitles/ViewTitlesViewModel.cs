@@ -8,6 +8,7 @@ using System.Runtime.Remoting;
 using System.Text;
 using System.Web.UI.WebControls;
 using System.Windows;
+using System.Windows.Data;
 using Autodesk.Revit.DB;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -30,23 +31,14 @@ namespace Loop.Revit.ViewTitles
             set { _sheets = value; RaisePropertyChanged(() => Sheets); }
         }
 
-        private bool _isAllSheetsSelected;
+        
 
         public ObservableCollection<RevitUnit> ComboBoxUnits => new ObservableCollection<RevitUnit>(RevitUnitTypes.GetUnitsByType(SpecTypeId.Length));
 
-        public ForgeTypeId DefaultUnits;
 
-        private RevitUnit _selectedUnit;
-        public RevitUnit SelectedUnit
-        {
-            get { return _selectedUnit; }
-            set
-            {
-                _selectedUnit = value;
-            }
-        }
+        public RevitUnit SelectedUnit { get; set; }
 
-
+        private bool _isAllSheetsSelected;
         public bool IsAllSheetsSelected
         {
             get => _isAllSheetsSelected;
@@ -59,8 +51,6 @@ namespace Loop.Revit.ViewTitles
             }
         }
 
-
-
         private void SelectAllSheets(bool select)
         {
             foreach (var sheet in Sheets )
@@ -70,23 +60,38 @@ namespace Loop.Revit.ViewTitles
             RaisePropertyChanged(nameof(IsAllSheetsSelected));
         }
 
+        private string _textToFilter;
+
+        public string TextToFilter
+        {
+            get { return _textToFilter; }
+            set
+            {
+                _textToFilter = value;
+                RaisePropertyChanged(nameof(TextToFilter));
+            }
+        }
+
+
+
         public ViewTitlesViewModel(ViewTitlesModel model)
         {
             Model = model;
             Sheets = Model.CollectSheets();
-            DefaultUnits = Model.CollectUnits();
-            SelectedUnit = ComboBoxUnits.FirstOrDefault(u => u.UnitTypeId == DefaultUnits);
+            var sheet2 = CollectionViewSource.GetDefaultView(Sheets);
+            SelectedUnit = ComboBoxUnits.FirstOrDefault(u => u.UnitTypeId == Model.CollectUnits());
+            //Sheets.Filter = 
 
 
-            foreach (var sheet in Sheets)
-            {
-                sheet.PropertyChanged += (sender, args) =>
-                {
-                    if (args.PropertyName == nameof(SheetWrapper.IsSelected))
+            //foreach (var sheet in Sheets)
+            //{
+            //    sheet.PropertyChanged += (sender, args) =>
+            //    {
+            //        if (args.PropertyName == nameof(SheetWrapper.IsSelected))
 
-                        RaisePropertyChanged(nameof(IsAllSheetsSelected));
-                };
-            }
+            //            RaisePropertyChanged(nameof(IsAllSheetsSelected));
+            //    };
+            //}
 
             Run = new RelayCommand<Window>(OnRun);
         }
