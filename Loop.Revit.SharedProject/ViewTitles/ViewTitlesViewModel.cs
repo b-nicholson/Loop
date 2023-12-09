@@ -47,7 +47,6 @@ namespace Loop.Revit.ViewTitles
         }
 
 
-
         public bool IsAllSheetsSelected
         {
             get => _isAllSheetsSelected;

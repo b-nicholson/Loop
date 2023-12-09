@@ -56,29 +56,7 @@ namespace Loop.Revit.ViewTitles
 
             var Doc = app.ActiveUIDocument.Document;
             var viewports = new FilteredElementCollector(Doc, ids).OfCategory(BuiltInCategory.OST_Viewports).Cast<Viewport>();
-
-
-
-
-            // start of garbage for testing purposes
-
-
-
-
-            //var units = UnitUtils.GetValidUnits(SpecTypeId.Length);
-            //var names = new List<string>();
-            //var textInfo = new CultureInfo("en-US", false).TextInfo;
-            //foreach (var unit in units)
-            //{
-            //    var rawTypeId = unit.TypeId;
-            //    var edited = rawTypeId.Split(new char[] {':', '-'})[1];
-            //    var splitWords = Regex.Replace(edited, "([A-Z])", " $1").Trim();
-            //    var titleCase = textInfo.ToTitleCase(splitWords);
-            //    names.Add(titleCase);
-            //}
-
-
-
+            
             var t = new Transaction(Doc, "Change Viewport Label Line Length");
             t.Start();
 

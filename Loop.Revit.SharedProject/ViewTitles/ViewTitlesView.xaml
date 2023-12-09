@@ -61,11 +61,11 @@
                                   ItemsSource="{Binding ComboBoxUnits}"
                                   DisplayMemberPath="Name"
                                   SelectedItem="{Binding SelectedUnit}"
-
                                   DockPanel.Dock="Right"
                                   VerticalContentAlignment="Center"
                                   Padding="10,0,0,0"
-                                  Width="60" />
+                                  Width="Auto"
+                                  />
                         <Button x:Name="save_button"
                                 Margin="0,0,10,0"
                                 Content="Save Settings" />
@@ -139,7 +139,8 @@
                         <DataGridCheckBoxColumn.Header>
                             <CheckBox IsChecked="{Binding Path=DataContext.IsAllSheetsSelected, Mode=TwoWay,
                    UpdateSourceTrigger=PropertyChanged,
-                   RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" />
+                   RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" 
+                                      />
                         </DataGridCheckBoxColumn.Header>
 
                         <DataGridCheckBoxColumn.HeaderStyle>
