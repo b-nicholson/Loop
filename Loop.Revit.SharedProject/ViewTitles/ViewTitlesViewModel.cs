@@ -95,9 +95,20 @@ namespace Loop.Revit.ViewTitles
 
         //var stuff3 = typeof(SheetWrapper).GetProperties().Where(prop => prop.PropertyType == typeof(string)).ToList();
 
-        public BitmapImage ExampleImage =
-            ImageUtils.LoadImage(Assembly.GetExecutingAssembly(), "viewTitles.example.png");
+        //public BitmapImage ExampleImage =
+        //    ImageUtils.LoadImage(Assembly.GetExecutingAssembly(), "viewTitles.example.png");
 
+        private BitmapImage _imageExample;
+
+        public BitmapImage ImageExample
+        {
+            get { return _imageExample; }
+            set
+            {
+                _imageExample = value;
+                RaisePropertyChanged(nameof(ImageExample));
+            }
+        }
 
 
 
@@ -120,6 +131,9 @@ namespace Loop.Revit.ViewTitles
 
             var imtg = ImageUtils.LoadImage(Assembly.GetExecutingAssembly(), "viewTitles.example.png");
 
+
+            ImageExample = imtg;
+
             var a = Assembly.GetExecutingAssembly();
 
             var img = new BitmapImage();
@@ -127,6 +141,11 @@ namespace Loop.Revit.ViewTitles
             var resourceName = a.GetManifestResourceNames().FirstOrDefault(x => x.Contains("viewTitles.example.png"));
             var sttt = a.GetManifestResourceNames();
             var stream = a.GetManifestResourceStream(resourceName);
+
+            var t = a.GetName().ToString();
+            var e = a.Location;
+
+
 
             img.BeginInit();
             img.StreamSource = stream;
