@@ -9,8 +9,7 @@
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
-        FontFamily="{materialDesign:MaterialDesignFont}"
-        >
+        FontFamily="{materialDesign:MaterialDesignFont}">
 
 
 
@@ -26,6 +25,10 @@
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
 
+                <ResourceDictionary>
+                    <BitmapImage x:Key="ExampleImageFallback"
+                                 UriSource="/Resources/example.png" />
+                </ResourceDictionary>
 
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -33,6 +36,8 @@
         <!--<Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
             <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
         </Style>-->
+
+
     </Window.Resources>
     <Border>
 
@@ -40,28 +45,11 @@
             <DockPanel HorizontalAlignment="Stretch"
                        DockPanel.Dock="Top">
                 <StackPanel DockPanel.Dock="Top">
-                    <!--<Image x:Name="example" Height ="100" RenderOptions.BitmapScalingMode ="HighQuality" Source="/Resources/example.png"/>-->
-                    <!--<Image x:Name="example333"
-                           Height="100"
+                    <Image Height="100"
                            RenderOptions.BitmapScalingMode="HighQuality"
-                           Source="../Resources/viewTitles/example.png" />
-                    <Image x:Name="example33"
-                           Height="100"
-                           RenderOptions.BitmapScalingMode="HighQuality"
-                           Source="pack://application:,,,/Loop;component/Resources/example.png" />
-                    <Image x:Name="example3"
-                           Height="100"
-                           RenderOptions.BitmapScalingMode="HighQuality"
-                           Source="/Loop;component/Resources/example.png" />-->
-                    <Image x:Name="example2"
-                           Height="100"
-                           RenderOptions.BitmapScalingMode="HighQuality"
-                           Source="{Binding ImageExample}" />
-                    <Image x:Name="example11"
-                           Height="100"
-                           RenderOptions.BitmapScalingMode="HighQuality"
-                           Source="{Binding ExampleImage.Source}" />
-     
+                           Source="{Binding ImageExample, FallbackValue={StaticResource ExampleImageFallback}}" />
+
+
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom">
                     <DockPanel Margin="0,10,0,5"
@@ -86,7 +74,7 @@
                             Command="{Binding Run, Mode=OneWay}"
                             CommandParameter="{Binding ElementName=Win}" />
                 </StackPanel>
-               
+
                 <GroupBox  DockPanel.Dock="Bottom"
                            Header="View Title Parameters"
                            Margin="0,10,0,0">
@@ -129,15 +117,13 @@
                 </StackPanel>
 
             </materialDesign:ColorZone>
-            <ComboBox 
-                x:Name="things"
-                DockPanel.Dock="Top"
+            <ComboBox x:Name="things"
+                      DockPanel.Dock="Top"
                       DataContext="{Binding SheetParams}"
-                DisplayMemberPath="Name" />
+                      DisplayMemberPath="Name" />
 
-            <Label 
-                DockPanel.Dock="Top"
-                Content="{Binding ElementName=things, Path=ItemsSource}"/>
+            <Label DockPanel.Dock="Top"
+                   Content="{Binding ElementName=things, Path=ItemsSource}" />
 
             <DataGrid ItemsSource="{Binding SheetView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       AutoGenerateColumns="False"
@@ -156,8 +142,7 @@
                     <DataGridCheckBoxColumn MinWidth="50"
                                             Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                         <DataGridCheckBoxColumn.Header>
-                            <CheckBox
-                                IsChecked="{Binding Path=DataContext.IsAllSheetsSelected, Mode=TwoWay,
+                            <CheckBox IsChecked="{Binding Path=DataContext.IsAllSheetsSelected, Mode=TwoWay,
                    UpdateSourceTrigger=PropertyChanged,
                    RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" />
                         </DataGridCheckBoxColumn.Header>
@@ -174,8 +159,7 @@
                                         Binding="{Binding SheetNumber, Mode=OneWay}"
                                         Width="100"
                                         IsReadOnly="True"
-                                        MinWidth="80"
-                                        >
+                                        MinWidth="80">
                         <DataGridTextColumn.HeaderTemplate>
                             <DataTemplate>
                                 <TextBlock TextWrapping="Wrap"

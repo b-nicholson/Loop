@@ -66,7 +66,7 @@ namespace Loop.Revit.ViewTitles
         private string _textToFilter;
         public string TextToFilter
         {
-            get { return _textToFilter; }
+            get => _textToFilter;
             set
             {
                 _textToFilter = value;
@@ -95,20 +95,21 @@ namespace Loop.Revit.ViewTitles
 
         //var stuff3 = typeof(SheetWrapper).GetProperties().Where(prop => prop.PropertyType == typeof(string)).ToList();
 
-        //public BitmapImage ExampleImage =
-        //    ImageUtils.LoadImage(Assembly.GetExecutingAssembly(), "viewTitles.example.png");
 
+        #region Example Image stuff
+        //property to control the example image in the xaml window 
         private BitmapImage _imageExample;
-
         public BitmapImage ImageExample
         {
-            get { return _imageExample; }
+            get => _imageExample;
             set
             {
                 _imageExample = value;
                 RaisePropertyChanged(nameof(ImageExample));
             }
         }
+        #endregion
+
 
 
 
@@ -128,29 +129,8 @@ namespace Loop.Revit.ViewTitles
             // Set combobox unit to the unit used in the model
             SelectedUnit = ComboBoxUnits.FirstOrDefault(u => u.UnitTypeId == Model.CollectUnits());
 
-
-            var imtg = ImageUtils.LoadImage(Assembly.GetExecutingAssembly(), "viewTitles.example.png");
-
-
-            ImageExample = imtg;
-
-            var a = Assembly.GetExecutingAssembly();
-
-            var img = new BitmapImage();
-
-            var resourceName = a.GetManifestResourceNames().FirstOrDefault(x => x.Contains("viewTitles.example.png"));
-            var sttt = a.GetManifestResourceNames();
-            var stream = a.GetManifestResourceStream(resourceName);
-
-            var t = a.GetName().ToString();
-            var e = a.Location;
-
-
-
-            img.BeginInit();
-            img.StreamSource = stream;
-            img.EndInit();
-
+            //Set image in window
+            ImageExample = ImageUtils.LoadImage(Assembly.GetExecutingAssembly(), "viewTitles.example.png");
 
 
 
@@ -188,8 +168,6 @@ namespace Loop.Revit.ViewTitles
                 return;
             }
             Model.ChangeTitleLength(selected);
-
-
         }
 
 
