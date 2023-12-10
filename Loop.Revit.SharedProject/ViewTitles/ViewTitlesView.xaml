@@ -56,7 +56,7 @@
                     <Image x:Name="example2"
                            Height="100"
                            RenderOptions.BitmapScalingMode="HighQuality"
-                           Source="{Binding ExampleImage}" />
+                           Source="{Binding ExampleImage, Mode=TwoWay}" />
                     <Image x:Name="example11"
                            Height="100"
                            RenderOptions.BitmapScalingMode="HighQuality"

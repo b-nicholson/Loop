@@ -47,6 +47,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\32x32\firstButton.png" />
+    <Resource Include="$(MSBuildThisFileDirectory)Resources\viewTitles\example2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelPage.xaml">
