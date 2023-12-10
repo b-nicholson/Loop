@@ -118,12 +118,15 @@
 
             </materialDesign:ColorZone>
             <ComboBox x:Name="things"
+                      ItemsSource="{Binding SheetParameters, UpdateSourceTrigger=PropertyChanged}"
+                      DisplayMemberPath="Name"
+                      SelectedItem="{Binding SelectedPropertyWrapper, Mode=TwoWay}"
+                      IsSynchronizedWithCurrentItem="True"
+                      SelectedIndex="0"
                       DockPanel.Dock="Top"
-                      DataContext="{Binding SheetParams}"
-                      DisplayMemberPath="Name" />
-
-            <Label DockPanel.Dock="Top"
-                   Content="{Binding ElementName=things, Path=ItemsSource}" />
+                      VerticalContentAlignment="Center"
+                      Padding="10,0,0,0"
+                      Width="Auto" />
 
             <DataGrid ItemsSource="{Binding SheetView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       AutoGenerateColumns="False"

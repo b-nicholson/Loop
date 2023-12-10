@@ -27,6 +27,7 @@ namespace Loop.Revit.ViewTitles
 
         public RelayCommand<Window> Run { get; set; }
 
+
         #region DataGrid Stuff
         //Data to bind to DataGrid
         private ObservableCollection<SheetWrapper> _sheets;
@@ -95,6 +96,32 @@ namespace Loop.Revit.ViewTitles
 
         //var stuff3 = typeof(SheetWrapper).GetProperties().Where(prop => prop.PropertyType == typeof(string)).ToList();
 
+        private ObservableCollection<PropertyWrapper> _sheetParameters;
+
+        public ObservableCollection<PropertyWrapper> SheetParameters
+        {
+            get => _sheetParameters;
+            set
+            {
+                _sheetParameters = value;
+                RaisePropertyChanged(nameof(SheetParameters));
+            }
+        }
+
+        private PropertyWrapper _selectedPropWrapper;
+
+        public PropertyWrapper SelectedPropertyWrapper
+        {
+            get { return _selectedPropWrapper; }
+            set
+            {
+                _selectedPropWrapper = SelectedPropertyWrapper;
+                RaisePropertyChanged(nameof(SelectedPropertyWrapper));
+            }
+        }
+
+
+
 
         #region Example Image stuff
         //property to control the example image in the xaml window 
@@ -129,13 +156,29 @@ namespace Loop.Revit.ViewTitles
             // Set combobox unit to the unit used in the model
             SelectedUnit = ComboBoxUnits.FirstOrDefault(u => u.UnitTypeId == Model.CollectUnits());
 
+
             //Set image in window
             ImageExample = ImageUtils.LoadImage(Assembly.GetExecutingAssembly(), "viewTitles.example.png");
 
 
 
+            var allSheetProperties = new ObservableCollection<PropertyInfo>(typeof(SheetWrapper).GetProperties()
+                .Where(prop => prop.PropertyType == typeof(string)).ToList());
 
+            var propertyWrappers = new ObservableCollection<PropertyWrapper>();
+            propertyWrappers.Add(new PropertyWrapper("ALL", allSheetProperties));
 
+            foreach (var prop in allSheetProperties)
+            {
+                var oc = new ObservableCollection<PropertyInfo>();
+                oc.Add(prop);
+
+                propertyWrappers.Add(new PropertyWrapper(prop.Name, oc));
+            }
+
+            
+
+            SheetParameters = propertyWrappers;
 
             //foreach (var sheet in Sheets)
             //{
@@ -154,10 +197,34 @@ namespace Loop.Revit.ViewTitles
         {
             if (TextToFilter == null) return true;
             var sheetInfo = (SheetWrapper)obj;
+
+            var para = SheetParameters;
+            var selection = SelectedPropertyWrapper;
+
+
+
+
+
+
+
+            var isFound = false;
+            foreach (var p in para)
+            {
+                var val = p.Value;
+                foreach (var param in val)
+                {
+                    var stuff = sheetInfo.GetType().GetProperty(param.Name).GetValue(sheetInfo, null);
+                }
+
+            }
+
+
             var textContainsCaseInsensitive = sheetInfo.SheetName.IndexOf(TextToFilter, StringComparison.OrdinalIgnoreCase) >= 0;
 
             return sheetInfo != null && textContainsCaseInsensitive;
         }
+
+
 
 
         private void OnRun(Window win)
@@ -169,6 +236,7 @@ namespace Loop.Revit.ViewTitles
             }
             Model.ChangeTitleLength(selected);
         }
+
 
 
 
