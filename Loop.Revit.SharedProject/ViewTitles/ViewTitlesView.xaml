@@ -10,6 +10,7 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="{materialDesign:MaterialDesignFont}">
+ 
 
 
 
@@ -118,7 +119,7 @@
 
             </materialDesign:ColorZone>
             <ComboBox x:Name="things"
-                      ItemsSource="{Binding SheetParameters, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding SheetParameters}"
                       DisplayMemberPath="Name"
                       SelectedItem="{Binding SelectedPropertyWrapper, Mode=TwoWay}"
                       IsSynchronizedWithCurrentItem="True"

@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Loop.Revit.ViewTitles
 {
-    public class PropertyWrapper
+    public class PropertyWrapper : INotifyPropertyChanged
     {
         public string Name { get; set; }
         public ObservableCollection<PropertyInfo> Value { get; set; }
@@ -18,6 +18,14 @@ namespace Loop.Revit.ViewTitles
 
             Value = value;
 
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
     }
