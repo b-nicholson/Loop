@@ -63,6 +63,50 @@ namespace Loop.Revit.ViewTitles
             RaisePropertyChanged(nameof(IsAllSheetsSelected));
         }
 
+
+        // new attempts
+
+        #region new attempts at datagrid checking
+        private bool? _selectAllChecked = false;
+        public bool? SelectAllChecked
+        {
+            get { return _selectAllChecked; }
+            set
+            {
+                if (_selectAllChecked != value)
+                {
+                    _selectAllChecked = value;
+                    RaisePropertyChanged(nameof(SelectAllChecked));
+                    UpdateItemSelections(value);
+                }
+            }
+        }
+
+        private void UpdateItemSelections(bool? selectAll)
+        {
+            if (selectAll == null) return;
+
+            foreach (var item in Sheets)
+            {
+                item.IsSelected = selectAll == true;
+            }
+        }
+
+
+        public void UpdateSelectAllChecked()
+        {
+            if (Sheets.All(item => item.IsSelected))
+                SelectAllChecked = true;
+            else if (Sheets.All(item => !item.IsSelected))
+                SelectAllChecked = false;
+            else
+                SelectAllChecked = null; // Indeterminate state
+        }
+        #endregion
+
+
+
+
         // Search Stuff
         private string _textToFilter;
         public string TextToFilter
@@ -87,9 +131,65 @@ namespace Loop.Revit.ViewTitles
         #endregion
 
 
-
+        #region Units
         public ObservableCollection<RevitUnit> ComboBoxUnits => new ObservableCollection<RevitUnit>(RevitUnitTypes.GetUnitsByType(SpecTypeId.Length));
         public RevitUnit SelectedUnit { get; set; }
+
+
+
+        private WpfUnit _userUnit;
+
+        public WpfUnit UserUnit
+        {
+            get => _userUnit;
+            set
+            {
+                _userUnit = value;
+                RaisePropertyChanged(nameof(UserUnit));
+            }
+        }
+
+        private string _errorMessage;
+
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set
+            {
+                _errorMessage = value;
+            }
+        }
+
+
+
+        private string _inputUnit;
+        public string InputUnit
+        {
+            get => _inputUnit;
+            set
+            {
+                _inputUnit = value;
+                UserUnit = new WpfUnit(value, SelectedUnit);
+
+                //Validate userinput for Units
+
+                var validator = new WpfRevitUnitValidation();
+                var results = validator.Validate(UserUnit);
+
+                var errors = new List<string>();
+
+                if (results.IsValid == false)
+                {
+                    errors.AddRange(results.Errors.Select(failure => $"{failure.PropertyName}: {failure.ErrorMessage}"));
+                }
+
+                ErrorMessage = results.Errors[0].ErrorMessage;
+
+            }
+        }
+
+        #endregion
+
 
         public ObservableCollection<PropertyInfo> SheetParams => new ObservableCollection<PropertyInfo>(
             typeof(SheetWrapper).GetProperties().Where(prop => prop.PropertyType == typeof(string)).ToList());
@@ -159,6 +259,10 @@ namespace Loop.Revit.ViewTitles
 
             //Set image in window
             ImageExample = ImageUtils.LoadImage(Assembly.GetExecutingAssembly(), "viewTitles.example.png");
+
+
+        
+
 
 
 

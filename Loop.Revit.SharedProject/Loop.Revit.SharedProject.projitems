@@ -35,6 +35,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\DialogUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ImageUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\WpfRevitUnitValidation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\WpfUnit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\PropertyWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\SheetWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\UnitsWrapper.cs" />

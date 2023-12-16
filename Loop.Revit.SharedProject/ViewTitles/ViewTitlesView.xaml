@@ -80,16 +80,16 @@
                            Header="View Title Parameters"
                            Margin="0,10,0,0">
                     <StackPanel>
-
                         <DockPanel Margin="0,10,0,0">
                             <TextBlock Text="Extension Distance"
                                        Margin="0,0,10,2"
                                        VerticalAlignment="Center" />
-                            <TextBox x:Name="tailing_distance"
+                            <TextBox
                                      ToolTip="Blue dimension in image above."
-                                     Text="0"
+                                     Text="{Binding InputUnit, FallbackValue= 0.00}"
                                      VerticalContentAlignment="Center" />
                         </DockPanel>
+                        <Label Content="{Binding  ErrorMessage, FallbackValue= NoWorking}"/>
                     </StackPanel>
                 </GroupBox>
 
@@ -146,9 +146,8 @@
                     <DataGridCheckBoxColumn MinWidth="50"
                                             Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                         <DataGridCheckBoxColumn.Header>
-                            <CheckBox IsChecked="{Binding Path=DataContext.IsAllSheetsSelected, Mode=TwoWay,
-                   UpdateSourceTrigger=PropertyChanged,
-                   RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}" />
+                            <CheckBox IsChecked="{Binding Path=DataContext.SelectAllChecked, 
+                RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" IsThreeState="True"/>
                         </DataGridCheckBoxColumn.Header>
 
                         <DataGridCheckBoxColumn.HeaderStyle>
