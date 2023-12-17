@@ -5,9 +5,9 @@ using FluentValidation;
 
 namespace Loop.Revit.Utilities
 {
-    public class WpfRevitUnitValidation: AbstractValidator<WpfUnit>
+    public class WpfRevitUnitValidator: AbstractValidator<WpfUnit>
     {
-        public WpfRevitUnitValidation()
+        public WpfRevitUnitValidator()
         {
             RuleFor(u => u.InputUnits)
                 .Cascade(CascadeMode.Stop)

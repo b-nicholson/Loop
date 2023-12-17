@@ -72,6 +72,7 @@
                             DockPanel.Dock="Bottom"
                             Content="Adjust Title Lines"
                             IsDefault="True"
+                            IsEnabled="{Binding CanRun}"
                             Command="{Binding Run, Mode=OneWay}"
                             CommandParameter="{Binding ElementName=Win}" />
                 </StackPanel>
@@ -86,10 +87,10 @@
                                        VerticalAlignment="Center" />
                             <TextBox
                                      ToolTip="Blue dimension in image above."
-                                     Text="{Binding InputUnit, FallbackValue= 0.00}"
-                                     VerticalContentAlignment="Center" />
+                                     Text="{Binding InputUnit, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"
+                                     VerticalContentAlignment="Center"
+                                     />
                         </DockPanel>
-                        <Label Content="{Binding  ErrorMessage, FallbackValue= NoWorking}"/>
                     </StackPanel>
                 </GroupBox>
 

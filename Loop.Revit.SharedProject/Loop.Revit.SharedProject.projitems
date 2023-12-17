@@ -34,8 +34,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\DialogUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ErrorsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ImageUtils.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\WpfRevitUnitValidation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\WpfRevitUnitValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\WpfUnit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\PropertyWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\SheetWrapper.cs" />
@@ -43,6 +44,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesRequestHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesView.xaml.cs">
       <DependentUpon>ViewTitlesView.xaml</DependentUpon>
     </Compile>

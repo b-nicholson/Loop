@@ -5,25 +5,22 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting;
-using System.Text;
-using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
-using System.Xml.Linq;
 using Autodesk.Revit.DB;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using Loop.Revit.Utilities;
 using Utilities;
 
 namespace Loop.Revit.ViewTitles
 {
-    public class ViewTitlesViewModel : ViewModelBase
+    public class ViewTitlesViewModel : ViewModelBase, INotifyDataErrorInfo
     {
         public ViewTitlesModel Model { get; set; }
+
+        private readonly ErrorsViewModel _errorsViewModel;
 
         public RelayCommand<Window> Run { get; set; }
 
@@ -39,6 +36,21 @@ namespace Loop.Revit.ViewTitles
 
         //ICollectionView so we can search using Filter methods
         public ICollectionView SheetView { get; set; }
+
+        private int _selectedSheetCount;
+
+        public int SelectedSheetCount
+        {
+            get => _selectedSheetCount;
+            set
+            {
+                _selectedSheetCount = value;
+                RaisePropertyChanged(nameof(SelectedSheetCount));
+            }
+        }
+
+
+
 
         //Multi select stuff
         private bool _isAllSheetsSelected;
@@ -138,7 +150,6 @@ namespace Loop.Revit.ViewTitles
 
 
         private WpfUnit _userUnit;
-
         public WpfUnit UserUnit
         {
             get => _userUnit;
@@ -150,7 +161,6 @@ namespace Loop.Revit.ViewTitles
         }
 
         private string _errorMessage;
-
         public string ErrorMessage
         {
             get => _errorMessage;
@@ -160,7 +170,7 @@ namespace Loop.Revit.ViewTitles
             }
         }
 
-
+        private readonly WpfRevitUnitValidator _validator = new WpfRevitUnitValidator();
 
         private string _inputUnit;
         public string InputUnit
@@ -170,23 +180,45 @@ namespace Loop.Revit.ViewTitles
             {
                 _inputUnit = value;
                 UserUnit = new WpfUnit(value, SelectedUnit);
+                ValidateProperty(nameof(InputUnit));
 
-                //Validate userinput for Units
 
-                var validator = new WpfRevitUnitValidation();
-                var results = validator.Validate(UserUnit);
 
-                var errors = new List<string>();
+                ////Validate userinput for Units
 
-                if (results.IsValid == false)
-                {
-                    errors.AddRange(results.Errors.Select(failure => $"{failure.PropertyName}: {failure.ErrorMessage}"));
-                }
+                //var validator = new WpfRevitUnitValidator();
+                //var results = validator.Validate(UserUnit);
 
-                ErrorMessage = results.Errors[0].ErrorMessage;
+                //var errors = new List<string>();
+
+                //if (results.IsValid == false)
+                //{
+                //    errors.AddRange(results.Errors.Select(failure => $"{failure.PropertyName}: {failure.ErrorMessage}"));
+                //}
+
+                
+                
+                ////ErrorMessage = results.Errors[0].ErrorMessage;
+
+
+                ////Inotifypropchanged stuff, replace w fluent
+
+                //_errorsViewModel.ClearErrors(nameof(InputUnit));
+
+                //if (_inputUnit.Length > 3)
+                //{
+                //    _errorsViewModel.AddError(nameof(InputUnit), "Invalid Unit");
+                //}
+
+
+
 
             }
         }
+
+        public bool HasErrors => _errorsViewModel.HasErrors;
+
+        public bool CanRun => !HasErrors;
 
         #endregion
 
@@ -243,6 +275,10 @@ namespace Loop.Revit.ViewTitles
         public ViewTitlesViewModel(ViewTitlesModel model)
         {
             Model = model;
+
+            _errorsViewModel = new ErrorsViewModel();
+            _errorsViewModel.ErrorsChanged += ErrorsViewModel_ErrorsChanged;
+
 
             #region Datagrid stuff
             Sheets = new ObservableCollection<SheetWrapper>(Model.CollectSheets().OrderBy(o => o.SheetNumber).ToList());
@@ -341,7 +377,32 @@ namespace Loop.Revit.ViewTitles
             Model.ChangeTitleLength(selected);
         }
 
+        #region INotifyErrorInfo
+        public IEnumerable GetErrors(string propertyName)
+        {
+            return _errorsViewModel.GetErrors(propertyName);
+        }
 
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        private void ErrorsViewModel_ErrorsChanged(object sender, DataErrorsChangedEventArgs e)
+        {
+            ErrorsChanged?.Invoke(this, e);
+            RaisePropertyChanged(nameof(CanRun));
+        }
+        #endregion
+
+         //fluent validation
+         private void ValidateProperty(string propertyName)
+         {
+             _errorsViewModel.ClearErrors(propertyName);
+            var result = _validator.Validate(UserUnit);
+            if (result.Errors.Any())
+            {
+                string firstErrorMessage = result.Errors.First().ErrorMessage;
+                _errorsViewModel.AddError(propertyName, firstErrorMessage);
+            }
+         }
 
 
     }
