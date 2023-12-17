@@ -13,6 +13,7 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Loop.Revit.Utilities;
 using Utilities;
+using Utilities.Units;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -181,37 +182,6 @@ namespace Loop.Revit.ViewTitles
                 _inputUnit = value;
                 UserUnit = new WpfUnit(value, SelectedUnit);
                 ValidateProperty(nameof(InputUnit));
-
-
-
-                ////Validate userinput for Units
-
-                //var validator = new WpfRevitUnitValidator();
-                //var results = validator.Validate(UserUnit);
-
-                //var errors = new List<string>();
-
-                //if (results.IsValid == false)
-                //{
-                //    errors.AddRange(results.Errors.Select(failure => $"{failure.PropertyName}: {failure.ErrorMessage}"));
-                //}
-
-                
-                
-                ////ErrorMessage = results.Errors[0].ErrorMessage;
-
-
-                ////Inotifypropchanged stuff, replace w fluent
-
-                //_errorsViewModel.ClearErrors(nameof(InputUnit));
-
-                //if (_inputUnit.Length > 3)
-                //{
-                //    _errorsViewModel.AddError(nameof(InputUnit), "Invalid Unit");
-                //}
-
-
-
 
             }
         }
@@ -395,6 +365,9 @@ namespace Loop.Revit.ViewTitles
          //fluent validation
          private void ValidateProperty(string propertyName)
          {
+
+        
+
              _errorsViewModel.ClearErrors(propertyName);
             var result = _validator.Validate(UserUnit);
             if (result.Errors.Any())

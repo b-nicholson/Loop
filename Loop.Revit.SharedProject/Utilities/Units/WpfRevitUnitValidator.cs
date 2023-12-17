@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FluentValidation;
-
-namespace Loop.Revit.Utilities
+﻿namespace Utilities.Units
 {
     public class WpfRevitUnitValidator: AbstractValidator<WpfUnit>
     {

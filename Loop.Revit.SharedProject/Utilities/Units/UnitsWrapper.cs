@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using Autodesk.Revit.DB;
-
-namespace Utilities
+﻿namespace Utilities.Units
 {
     public class RevitUnit
     {

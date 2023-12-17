@@ -36,11 +36,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\DialogUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ErrorsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ImageUtils.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\WpfRevitUnitValidator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\WpfUnit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\UnitCleanup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfRevitUnitValidator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfUnit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\PropertyWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\SheetWrapper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\UnitsWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\UnitsWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesRequestHandler.cs" />

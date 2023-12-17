@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using Utilities;
+﻿using System.ComponentModel;
 
-namespace Loop.Revit.Utilities
+namespace Utilities.Units
 {
     public class WpfUnit: INotifyPropertyChanged
     {
