@@ -17,7 +17,6 @@ namespace Loop.Revit.Utilities.Units
                     value = value.Replace(a, "");
                 }
             }
-
             return value;
         }
         public UnitCleanup(RevitUnit unit, string value)

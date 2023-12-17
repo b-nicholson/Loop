@@ -1,4 +1,7 @@
-﻿namespace Utilities.Units
+﻿using System;
+using FluentValidation;
+
+namespace Utilities.Units
 {
     public class WpfRevitUnitValidator: AbstractValidator<WpfUnit>
     {
