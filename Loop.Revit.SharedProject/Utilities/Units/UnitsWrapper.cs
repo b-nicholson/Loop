@@ -24,7 +24,7 @@ namespace Utilities.Units
     public static class RevitUnitTypes
     {
         public static readonly RevitUnit DecimalFeet = new RevitUnit(UnitTypeId.Feet, SpecTypeId.Length, "Feet", new List<string> { "'", "ft" });
-        public static readonly RevitUnit FractionalFeet = new RevitUnit(UnitTypeId.Feet, SpecTypeId.Length, "Fractional Feet", new List<string> { "' \"", "ft in" });
+        public static readonly RevitUnit FractionalFeet = new RevitUnit(UnitTypeId.Feet, SpecTypeId.Length, "Fractional Feet", new List<string> { "' \"", "ft in", "'", "ft", "\"", "in" });
         public static readonly RevitUnit DecimalInches = new RevitUnit(UnitTypeId.Inches, SpecTypeId.Length, "Inches", new List<string> { "\"", "in" });
         public static readonly RevitUnit FractionalInches = new RevitUnit(UnitTypeId.FractionalInches, SpecTypeId.Length, "Fractional Inches", new List<string> { "\"", "in" });
         public static readonly RevitUnit Meters = new RevitUnit(UnitTypeId.Meters, SpecTypeId.Length, "Meters", new List<string> { "m" });
@@ -47,6 +47,16 @@ namespace Utilities.Units
             }
 
             return unitsByType;
+        }
+
+        public static List<RevitUnit> GetAllUnitTypes()
+        {
+            var unitsList= new List<RevitUnit>();
+            foreach (var field in typeof(RevitUnitTypes).GetFields())
+            {
+                unitsList.Add((RevitUnit)field.GetValue(null));
+            }
+            return unitsList;
         }
 
 
