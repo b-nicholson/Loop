@@ -131,9 +131,14 @@ namespace Loop.Revit.Utilities.Units
                     var var1 = splitFeetInchString[0];
                     var var2 = splitFeetInchString[1];
 
+
                     if (var1.Contains("/"))
                     {
-                        
+                        var idk = ConvertFractionStringToDouble(var1);
+                    }
+                    if (var2.Contains("/"))
+                    {
+                        var idk2 = ConvertFractionStringToDouble(var2);
                     }
 
 
@@ -143,7 +148,7 @@ namespace Loop.Revit.Utilities.Units
 
 
 
-
+            return "hi";
 
         }
 

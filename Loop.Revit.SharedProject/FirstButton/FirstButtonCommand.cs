@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows;
@@ -19,6 +20,40 @@ namespace Loop.Revit.FirstButton
         {
             try
             {
+
+                var uiApp = commandData.Application;
+                var doc = uiApp.ActiveUIDocument.Document;
+
+                var units = doc.GetUnits();
+                var formatoptions = units.GetFormatOptions(SpecTypeId.Length);
+                var newformatoptions = new FormatOptions();
+                newformatoptions.UseDefault = false;
+
+
+                var variable = "-1' 1\"";
+
+                var stuff = new ValueParsingOptions();
+                var stuff2 = stuff.GetFormatOptions();
+                stuff2.UseDefault = false;
+                var stuff3 = stuff2.GetValidSymbols();
+                var stuff4 = stuff3?.Where(x => !x.Empty());
+
+                var listicle = new List<string>();
+                foreach (var symbol in stuff4)
+                {
+                    listicle.Add(LabelUtils.GetLabelForSymbol(symbol));
+                }
+
+
+                var stuff5 = FormatOptions.GetValidSymbols(UnitTypeId.Millimeters);
+                var stuff6 = stuff5.Where(x => !x.Empty());
+
+
+
+
+
+
+
                 MessageBox.Show("Hello World", "Loop", MessageBoxButton.OK);
                 return Result.Succeeded;
             }

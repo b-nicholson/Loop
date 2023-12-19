@@ -36,6 +36,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\DialogUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ErrorsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ImageUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\NewTestUnits.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\UnitCleanup.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfRevitUnitValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfUnit.cs" />
