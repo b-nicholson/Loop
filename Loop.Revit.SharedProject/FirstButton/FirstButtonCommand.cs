@@ -25,36 +25,48 @@ namespace Loop.Revit.FirstButton
                 var doc = uiApp.ActiveUIDocument.Document;
 
                 var units = doc.GetUnits();
-                var formatoptions = units.GetFormatOptions(SpecTypeId.Length);
-                var newformatoptions = new FormatOptions();
-                newformatoptions.UseDefault = false;
+                
 
+                var variable2 = "=1'+3'- 0.125\"";
 
-                var variable = "-1' 1\"";
+                
 
-                var stuff = new ValueParsingOptions();
-                var stuff2 = stuff.GetFormatOptions();
-                stuff2.UseDefault = false;
-                var stuff3 = stuff2.GetValidSymbols();
-                var stuff4 = stuff3?.Where(x => !x.Empty());
+             
+                var formatOptions = new FormatOptions(UnitTypeId.Meters);
+                formatOptions.UseDefault = false;
+                formatOptions.SetUnitTypeId(UnitTypeId.Meters);
+                formatOptions.Accuracy = 0.0625/12;
+         
 
-                var listicle = new List<string>();
-                foreach (var symbol in stuff4)
-                {
-                    listicle.Add(LabelUtils.GetLabelForSymbol(symbol));
-                }
-
-
-                var stuff5 = FormatOptions.GetValidSymbols(UnitTypeId.Millimeters);
-                var stuff6 = stuff5.Where(x => !x.Empty());
+                var valueParsingOpts = new ValueParsingOptions();
+                valueParsingOpts.SetFormatOptions(formatOptions);
 
 
 
+                double outputDouble;
+                string outputMessage = String.Empty;
+
+                //Always Converts to Internal Units, doesn't care what parsing options you give it
+                var newunit = UnitFormatUtils.TryParse(units, SpecTypeId.Length, variable2, valueParsingOpts, out outputDouble, out outputMessage);
+
+
+
+                var outputFormatOptions = new FormatValueOptions();
+                outputFormatOptions.AppendUnitSymbol = true;
+                outputFormatOptions.SetFormatOptions(formatOptions);
+
+
+
+                var outputUnit = UnitFormatUtils.Format(units, SpecTypeId.Length, outputDouble, true, outputFormatOptions);
 
 
 
 
-                MessageBox.Show("Hello World", "Loop", MessageBoxButton.OK);
+
+
+
+
+                //MessageBox.Show("Hello World", "Loop", MessageBoxButton.OK);
                 return Result.Succeeded;
             }
             catch (Exception e)
