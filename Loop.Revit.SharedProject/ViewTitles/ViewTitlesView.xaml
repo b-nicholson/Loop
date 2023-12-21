@@ -90,6 +90,7 @@
                                      Text="{Binding InputUnit, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"
                                      VerticalContentAlignment="Center"
                                      />
+                            <Label Content="{Binding lengthInternalUnits, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>
                         </DockPanel>
                     </StackPanel>
                 </GroupBox>

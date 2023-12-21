@@ -23,6 +23,8 @@ namespace Loop.Revit.ViewTitles
 
         private readonly ErrorsViewModel _errorsViewModel;
 
+        private readonly ViewTitlesModel _model;
+
         public RelayCommand<Window> Run { get; set; }
 
 
@@ -150,26 +152,15 @@ namespace Loop.Revit.ViewTitles
 
 
 
-        private WpfUnit _userUnit;
-        public WpfUnit UserUnit
-        {
-            get => _userUnit;
-            set
-            {
-                _userUnit = value;
-                RaisePropertyChanged(nameof(UserUnit));
-            }
-        }
-
-        private string _errorMessage;
-        public string ErrorMessage
-        {
-            get => _errorMessage;
-            set
-            {
-                _errorMessage = value;
-            }
-        }
+        //private string _errorMessage;
+        //public string ErrorMessage
+        //{
+        //    get => _errorMessage;
+        //    set
+        //    {
+        //        _errorMessage = value;
+        //    }
+        //}
 
         private readonly WpfRevitUnitValidator _validator = new WpfRevitUnitValidator();
 
@@ -180,9 +171,35 @@ namespace Loop.Revit.ViewTitles
             set
             {
                 _inputUnit = value;
-                UserUnit = new WpfUnit(value, SelectedUnit);
-                ValidateProperty(nameof(InputUnit));
+                var validationResults = _model.TryParseTextToInternalUnits(value);
+                var validationNumber = validationResults.Item1;
+                var errorMessages = validationResults.Item2;
 
+                _errorsViewModel.ClearErrors(nameof(InputUnit));
+
+                if (!String.IsNullOrEmpty(errorMessages))
+                {
+                    _errorsViewModel.AddError(nameof(InputUnit), errorMessages);
+                }
+
+                lengthInternalUnits = validationNumber;
+
+
+                // use ValidateProperty if using fluent validation
+                //ValidateProperty(nameof(InputUnit));
+
+            }
+        }
+
+        private double _lengthInternalUnits;
+
+        public double lengthInternalUnits
+        {
+            get => _lengthInternalUnits;
+            set
+            {
+                _lengthInternalUnits = value;
+                RaisePropertyChanged(nameof(lengthInternalUnits));
             }
         }
 
@@ -244,14 +261,14 @@ namespace Loop.Revit.ViewTitles
 
         public ViewTitlesViewModel(ViewTitlesModel model)
         {
-            Model = model;
+            _model = model;
 
             _errorsViewModel = new ErrorsViewModel();
             _errorsViewModel.ErrorsChanged += ErrorsViewModel_ErrorsChanged;
 
 
             #region Datagrid stuff
-            Sheets = new ObservableCollection<SheetWrapper>(Model.CollectSheets().OrderBy(o => o.SheetNumber).ToList());
+            Sheets = new ObservableCollection<SheetWrapper>(_model.CollectSheets().OrderBy(o => o.SheetNumber).ToList());
             //put the obs. coll. into a ICollectionView so we can filter it
             SheetView = CollectionViewSource.GetDefaultView(Sheets);
 
@@ -260,7 +277,7 @@ namespace Loop.Revit.ViewTitles
             #endregion
 
             // Set combobox unit to the unit used in the model
-            SelectedUnit = ComboBoxUnits.FirstOrDefault(u => u.UnitTypeId == Model.CollectUnits());
+            SelectedUnit = ComboBoxUnits.FirstOrDefault(u => u.UnitTypeId == _model.CollectUnitsTypeId());
 
 
             //Set image in window
@@ -344,7 +361,7 @@ namespace Loop.Revit.ViewTitles
             {
                 return;
             }
-            Model.ChangeTitleLength(selected);
+            _model.ChangeTitleLength(selected);
         }
 
         #region INotifyErrorInfo
@@ -365,16 +382,16 @@ namespace Loop.Revit.ViewTitles
          //fluent validation
          private void ValidateProperty(string propertyName)
          {
-
+            // this is commented out becuase i'm not actually using fluent validation for this anymore. saving for future use/reference.
         
 
              _errorsViewModel.ClearErrors(propertyName);
-            var result = _validator.Validate(UserUnit);
-            if (result.Errors.Any())
-            {
-                string firstErrorMessage = result.Errors.First().ErrorMessage;
-                _errorsViewModel.AddError(propertyName, firstErrorMessage);
-            }
+            //var result = _validator.Validate(UserUnit);
+            //if (result.Errors.Any())
+            //{
+            //    string firstErrorMessage = result.Errors.First().ErrorMessage;
+            //    _errorsViewModel.AddError(propertyName, firstErrorMessage);
+            //}
          }
 
 

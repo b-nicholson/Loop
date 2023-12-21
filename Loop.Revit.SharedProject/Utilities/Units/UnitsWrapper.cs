@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web.UI.WebControls;
 using Autodesk.Revit.DB;
 
 namespace Utilities.Units
@@ -13,6 +14,8 @@ namespace Utilities.Units
 
         public List<double> Accuracy { get; set; }
 
+        //public Autodesk.Revit.DB.Units Unit;
+
         public RevitUnit(ForgeTypeId unitTypeId, ForgeTypeId type, string name, List<string> abbreviation, List<double> accuracy)
         {
             Name = name;
@@ -20,6 +23,14 @@ namespace Utilities.Units
             Abbreviation = abbreviation;
             Type = type;
             Accuracy = accuracy;
+
+        //    var baseUnit = new Autodesk.Revit.DB.Units(UnitSystem.Metric);
+        //    //var formatOptions = new FormatOptions();
+        //    //formatOptions.UseDefault = false;
+        //    //formatOptions.SetUnitTypeId(UnitTypeId);
+        //    //baseUnit.SetFormatOptions(UnitTypeId, formatOptions);
+
+        //    Unit = baseUnit;
         }
 
     }

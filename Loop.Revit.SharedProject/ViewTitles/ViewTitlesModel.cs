@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
+using System.Web.UI.WebControls;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -24,11 +25,30 @@ namespace Loop.Revit.ViewTitles
             return new ObservableCollection<SheetWrapper>(sheets);
         }
 
-        public ForgeTypeId CollectUnits()
+        public ForgeTypeId CollectUnitsTypeId()
         {
             var units = Doc.GetUnits().GetFormatOptions(SpecTypeId.Length).GetUnitTypeId();
             return units;
         }
+
+        public Units CollectUnits()
+        {
+            return Doc.GetUnits();
+        }
+
+
+        public (double, string) TryParseTextToInternalUnits(string inputText)
+        {
+            var unit = Doc.GetUnits();
+            double outputDouble;
+            string outputMessage = String.Empty;
+
+            //Always Converts to Internal Units, doesn't care what parsing options you give it
+            var newunit = UnitFormatUtils.TryParse(unit, SpecTypeId.Length, inputText, out outputDouble, out outputMessage);
+
+            return (outputDouble, outputMessage);
+        }
+
 
         public void ChangeTitleLength(List<SheetWrapper> selected)
         {
