@@ -29,9 +29,17 @@ namespace Loop.Revit.FirstButton
 
                 var variable2 = "=1'+3'- 0.125\"";
 
-                
 
-             
+                var baseUnit = new Autodesk.Revit.DB.Units(UnitSystem.Metric);
+                var formatOptions2 = new FormatOptions();
+                formatOptions2.UseDefault = false;
+                formatOptions2.SetUnitTypeId(UnitTypeId.Meters);
+                baseUnit.SetFormatOptions(SpecTypeId.Length, formatOptions2);
+
+
+
+
+
                 var formatOptions = new FormatOptions(UnitTypeId.Meters);
                 formatOptions.UseDefault = false;
                 formatOptions.SetUnitTypeId(UnitTypeId.Meters);

@@ -37,9 +37,8 @@ namespace Loop.Revit.ViewTitles
         }
 
 
-        public (double, string) TryParseTextToInternalUnits(string inputText)
+        public (double, string) TryParseTextToInternalUnits(string inputText, Units unit)
         {
-            var unit = Doc.GetUnits();
             double outputDouble;
             string outputMessage = String.Empty;
 

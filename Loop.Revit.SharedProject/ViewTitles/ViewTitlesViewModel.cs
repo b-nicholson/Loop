@@ -14,6 +14,7 @@ using GalaSoft.MvvmLight.Command;
 using Loop.Revit.Utilities;
 using Utilities;
 using Utilities.Units;
+using static OfficeOpenXml.ExcelErrorValue;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -148,7 +149,27 @@ namespace Loop.Revit.ViewTitles
 
         #region Units
         public ObservableCollection<RevitUnit> ComboBoxUnits => new ObservableCollection<RevitUnit>(RevitUnitTypes.GetUnitsByType(SpecTypeId.Length));
-        public RevitUnit SelectedUnit { get; set; }
+
+        private RevitUnit _selectedUnit;
+
+        public RevitUnit SelectedUnit
+        {
+            get => _selectedUnit;
+            set
+            {
+                _selectedUnit = value;
+
+                //InputUnit = _inputUnit;
+
+                if (value != null)
+                {
+                    ConvertUnitsToInternal();
+                    //RaisePropertyChanged(nameof(InputUnit));
+                }
+                
+
+            }
+        }
 
 
 
@@ -171,18 +192,11 @@ namespace Loop.Revit.ViewTitles
             set
             {
                 _inputUnit = value;
-                var validationResults = _model.TryParseTextToInternalUnits(value);
-                var validationNumber = validationResults.Item1;
-                var errorMessages = validationResults.Item2;
+                ConvertUnitsToInternal();
 
-                _errorsViewModel.ClearErrors(nameof(InputUnit));
 
-                if (!String.IsNullOrEmpty(errorMessages))
-                {
-                    _errorsViewModel.AddError(nameof(InputUnit), errorMessages);
-                }
 
-                lengthInternalUnits = validationNumber;
+                
 
 
                 // use ValidateProperty if using fluent validation
@@ -378,6 +392,25 @@ namespace Loop.Revit.ViewTitles
             RaisePropertyChanged(nameof(CanRun));
         }
         #endregion
+
+        private void ConvertUnitsToInternal()
+        {
+            if (_inputUnit != null)
+            {
+                var validationResults = _model.TryParseTextToInternalUnits(_inputUnit, SelectedUnit.Unit);
+                var validationNumber = validationResults.Item1;
+                var errorMessages = validationResults.Item2;
+
+                _errorsViewModel.ClearErrors(nameof(InputUnit));
+
+                if (!String.IsNullOrEmpty(errorMessages))
+                {
+                    _errorsViewModel.AddError(nameof(InputUnit), errorMessages);
+                }
+
+                lengthInternalUnits = validationNumber;
+            }
+        }
 
          //fluent validation
          private void ValidateProperty(string propertyName)

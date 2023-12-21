@@ -77,6 +77,50 @@
                             CommandParameter="{Binding ElementName=Win}" />
                 </StackPanel>
 
+                <Grid DockPanel.Dock="Bottom">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox
+                        x:Name="inputUnits"
+                        materialDesign:ValidationAssist.Suppress="True"
+                        ToolTip="Blue dimension in image above."
+                        Text="{Binding InputUnit, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"
+                        VerticalContentAlignment="Center"
+                    />
+                    <ComboBox Grid.Column="1"
+                              ItemsSource="{Binding ComboBoxUnits, UpdateSourceTrigger=PropertyChanged}"
+                              DisplayMemberPath="Name"
+                              SelectedItem="{Binding SelectedUnit}"
+                              VerticalContentAlignment="Center"
+                              Padding="10,0,0,0"
+                              Width="Auto" />
+                    <Label Grid.Column="2" Content="Rounding:"/>
+                    <ComboBox Grid.Column="3"
+                              ItemsSource="{Binding SelectedUnit.Accuracy}"
+                              />
+                    <Label
+
+                        Foreground=" #B00020"
+                        Height="40"
+                        
+                        Grid.Row="1" Grid.ColumnSpan="4" >
+                        <Label.Content>
+                            <Binding Path="(Validation.Errors)[0].ErrorContent" Source="{x:Reference inputUnits}"/>
+                        </Label.Content>
+
+                    </Label>
+
+
+                </Grid>
+
                 <GroupBox  DockPanel.Dock="Bottom"
                            Header="View Title Parameters"
                            Margin="0,10,0,0">
@@ -86,6 +130,7 @@
                                        Margin="0,0,10,2"
                                        VerticalAlignment="Center" />
                             <TextBox
+                                materialDesign:ValidationAssist.Suppress="True"
                                      ToolTip="Blue dimension in image above."
                                      Text="{Binding InputUnit, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"
                                      VerticalContentAlignment="Center"
