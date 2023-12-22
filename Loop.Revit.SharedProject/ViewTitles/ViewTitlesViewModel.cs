@@ -14,19 +14,18 @@ using GalaSoft.MvvmLight.Command;
 using Loop.Revit.Utilities;
 using Utilities;
 using Utilities.Units;
-using static OfficeOpenXml.ExcelErrorValue;
+using Visibility = System.Windows.Visibility;
 
 namespace Loop.Revit.ViewTitles
 {
     public class ViewTitlesViewModel : ViewModelBase, INotifyDataErrorInfo
     {
-        public ViewTitlesModel Model { get; set; }
-
         private readonly ErrorsViewModel _errorsViewModel;
 
         private readonly ViewTitlesModel _model;
 
         public RelayCommand<Window> Run { get; set; }
+        public RelayCommand<Window> CopyText { get; set;}
 
 
         #region DataGrid Stuff
@@ -183,7 +182,39 @@ namespace Loop.Revit.ViewTitles
         //    }
         //}
 
-        private readonly WpfRevitUnitValidator _validator = new WpfRevitUnitValidator();
+        //private readonly WpfRevitUnitValidator _validator = new WpfRevitUnitValidator();
+
+
+
+        // for hiding and showing the units calculator
+        private Visibility _inputIsCalculation = Visibility.Collapsed;
+
+        public Visibility InputIsCalculation
+        {
+            get => _inputIsCalculation;
+            set
+            {
+                _inputIsCalculation = value;
+                RaisePropertyChanged(nameof(InputIsCalculation));
+            }
+        }
+
+
+        private string _calculatedUnit;
+
+        public string CalculatedUnit
+        {
+            get => _calculatedUnit;
+            set
+            {
+                if (value != null) { 
+                    _calculatedUnit = value;
+                    RaisePropertyChanged(nameof(CalculatedUnit));
+                }
+            }
+        }
+
+
 
         private string _inputUnit;
         public string InputUnit
@@ -194,10 +225,12 @@ namespace Loop.Revit.ViewTitles
                 _inputUnit = value;
                 ConvertUnitsToInternal();
 
-
-
-                
-
+                if (value.StartsWith("="))
+                {
+                    InputIsCalculation = Visibility.Visible;
+                }
+                else
+                    InputIsCalculation = Visibility.Collapsed;
 
                 // use ValidateProperty if using fluent validation
                 //ValidateProperty(nameof(InputUnit));
@@ -332,6 +365,7 @@ namespace Loop.Revit.ViewTitles
             //}
 
             Run = new RelayCommand<Window>(OnRun);
+            CopyText = new RelayCommand<Window>(OnCopyText);
         }
 
         private bool FilterByName(object obj)
@@ -378,6 +412,12 @@ namespace Loop.Revit.ViewTitles
             _model.ChangeTitleLength(selected);
         }
 
+        private void OnCopyText(Window win)
+        {
+            InputUnit = CalculatedUnit;
+            RaisePropertyChanged(nameof(InputUnit));
+        }
+
         #region INotifyErrorInfo
         public IEnumerable GetErrors(string propertyName)
         {
@@ -409,6 +449,12 @@ namespace Loop.Revit.ViewTitles
                 }
 
                 lengthInternalUnits = validationNumber;
+
+
+                var convertedUnit = _model.FormatUnits(validationNumber, SelectedUnit, 0.1);
+                CalculatedUnit = convertedUnit;
+                
+
             }
         }
 

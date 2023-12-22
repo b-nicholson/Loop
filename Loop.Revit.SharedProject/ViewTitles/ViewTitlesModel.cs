@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
 using System.Web.UI.WebControls;
+using Utilities.Units;
+using System.Windows.Controls;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -34,6 +36,37 @@ namespace Loop.Revit.ViewTitles
         public Units CollectUnits()
         {
             return Doc.GetUnits();
+        }
+
+
+        public double FindClosestUnitAccuracy(List<double> unitList)
+        {
+            var units = Doc.GetUnits();
+            var formatOpts = units.GetFormatOptions(SpecTypeId.Length);
+            var accuracy = formatOpts.Accuracy;
+            var closest = unitList.OrderBy(item => Math.Abs(accuracy - item)).First();
+            return closest;
+        }
+
+        public string FormatUnits(double inputDouble, RevitUnit unit, double accuracy)
+        {
+            var formatOptions = new FormatOptions(UnitTypeId.Meters);
+            formatOptions.UseDefault = false;
+            formatOptions.SetUnitTypeId(unit.UnitTypeId);
+            formatOptions.Accuracy = accuracy;
+
+
+            var valueParsingOpts = new ValueParsingOptions();
+            valueParsingOpts.SetFormatOptions(formatOptions);
+
+            var outputFormatOptions = new FormatValueOptions();
+            outputFormatOptions.AppendUnitSymbol = true;
+            outputFormatOptions.SetFormatOptions(formatOptions);
+
+            var outputUnit = UnitFormatUtils.Format(unit.Unit, SpecTypeId.Length, inputDouble, true, outputFormatOptions);
+
+            return outputUnit;
+
         }
 
 

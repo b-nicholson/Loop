@@ -10,7 +10,7 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="{materialDesign:MaterialDesignFont}">
- 
+
 
 
 
@@ -53,20 +53,6 @@
 
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom">
-                    <DockPanel Margin="0,10,0,5"
-                               Height="30">
-                        <ComboBox x:Name="export_units_cb"
-                                  ItemsSource="{Binding ComboBoxUnits}"
-                                  DisplayMemberPath="Name"
-                                  SelectedItem="{Binding SelectedUnit}"
-                                  DockPanel.Dock="Right"
-                                  VerticalContentAlignment="Center"
-                                  Padding="10,0,0,0"
-                                  Width="Auto" />
-                        <Button x:Name="save_button"
-                                Margin="0,0,10,0"
-                                Content="Save Settings" />
-                    </DockPanel>
                     <Button x:Name="create_b"
                             Margin="0,5,0,0"
                             DockPanel.Dock="Bottom"
@@ -76,71 +62,101 @@
                             Command="{Binding Run, Mode=OneWay}"
                             CommandParameter="{Binding ElementName=Win}" />
                 </StackPanel>
+                <StackPanel DockPanel.Dock="Bottom">
+                    <StackPanel Orientation="Horizontal">
 
-                <Grid DockPanel.Dock="Bottom">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="40"/>
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox
-                        x:Name="inputUnits"
-                        materialDesign:ValidationAssist.Suppress="True"
-                        ToolTip="Blue dimension in image above."
-                        Text="{Binding InputUnit, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"
-                        VerticalContentAlignment="Center"
-                    />
-                    <ComboBox Grid.Column="1"
+
+
+
+                    </StackPanel>
+                    <Grid DockPanel.Dock="Bottom">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0"
+                               Content="Extension Distance:"
+                               VerticalContentAlignment="Center"/>
+                        <DockPanel Grid.Column="1">
+                     
+                            
+                            <Button DockPanel.Dock="Right"
+                                    ToolTip="Copy calculated value to input field. Not required, it can be left as formula if you like."
+                                    Command="{Binding CopyText, Mode=OneWay}"
+                                    Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                    Visibility="{Binding InputIsCalculation, UpdateSourceTrigger=PropertyChanged}">
+                                <materialDesign:PackIcon Kind="ArrowLeftBold"/>
+                            </Button>
+                            <TextBox
+
+                                DockPanel.Dock="Right"
+                                materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                                BorderThickness="0"
+
+
+                                IsEnabled="False"
+                                     IsReadOnly="True"
+                                     VerticalContentAlignment="Center"
+                                     Text="{Binding CalculatedUnit, UpdateSourceTrigger=PropertyChanged}"
+                                Visibility="{Binding InputIsCalculation, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBox DockPanel.Dock="Left"
+                                     x:Name="inputUnits"
+                                     materialDesign:ValidationAssist.Suppress="True"
+                                     ToolTip="Blue dimension in image above."
+                                     Text="{Binding InputUnit, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"
+                                     VerticalContentAlignment="Center"
+                            />
+
+                        </DockPanel>
+                    
+                        <ComboBox Grid.Column="2"
+                                  VerticalAlignment="Center"
+                                  Height="40"
                               ItemsSource="{Binding ComboBoxUnits, UpdateSourceTrigger=PropertyChanged}"
                               DisplayMemberPath="Name"
                               SelectedItem="{Binding SelectedUnit}"
                               VerticalContentAlignment="Center"
-                              Padding="10,0,0,0"
-                              Width="Auto" />
-                    <Label Grid.Column="2" Content="Rounding:"/>
-                    <ComboBox Grid.Column="3"
-                              ItemsSource="{Binding SelectedUnit.Accuracy}"
                               />
+                        <Label Grid.Column="3" Content="Display Unit Rounding:" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                        <ComboBox Grid.Column="4"
+                                  Margin=" 0 0 20 0 "
+
+
+                              ItemsSource="{Binding SelectedUnit.Accuracy, UpdateSourceTrigger=PropertyChanged}" Height="40" 
+                              />
+                        <Button Grid.Column="5"
+                                Style="{StaticResource MaterialDesignFloatingActionMiniButton}">
+
+                            <materialDesign:PackIcon Kind="ContentSave"/>
+                        </Button>
+                        <!--ItemsSource="{Binding SelectedUnit.Accuracy, UpdateSourceTrigger=PropertyChanged}" Height="40"-->
+
+
+</Grid>
                     <Label
 
                         Foreground=" #B00020"
-                        Height="40"
-                        
-                        Grid.Row="1" Grid.ColumnSpan="4" >
+                        >
                         <Label.Content>
+                            <!--TODO: Fix binding errors when no errors present-->
                             <Binding Path="(Validation.Errors)[0].ErrorContent" Source="{x:Reference inputUnits}"/>
                         </Label.Content>
-
                     </Label>
+                    <!--TODO: Delete the label below-->
+                    <Label Content="{Binding lengthInternalUnits, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>
+                </StackPanel>
 
+           
 
-                </Grid>
-
-                <GroupBox  DockPanel.Dock="Bottom"
-                           Header="View Title Parameters"
-                           Margin="0,10,0,0">
-                    <StackPanel>
-                        <DockPanel Margin="0,10,0,0">
-                            <TextBlock Text="Extension Distance"
-                                       Margin="0,0,10,2"
-                                       VerticalAlignment="Center" />
-                            <TextBox
-                                materialDesign:ValidationAssist.Suppress="True"
-                                     ToolTip="Blue dimension in image above."
-                                     Text="{Binding InputUnit, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"
-                                     VerticalContentAlignment="Center"
-                                     />
-                            <Label Content="{Binding lengthInternalUnits, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>
-                        </DockPanel>
-                    </StackPanel>
-                </GroupBox>
-
-                <TextBlock Text="This script will automatically size the viewport title line to match the title's bounding box. You may provide an additional distance to extend the line beyond (blue dimension above)."
+                <TextBlock Text="This tool will automatically size the viewport title line to match the title's bounding box. You may provide an additional distance to extend the line beyond, as demonstrated with the blue dimension above."
                            TextWrapping="Wrap"
                            Margin="0,10,0,0" />
 

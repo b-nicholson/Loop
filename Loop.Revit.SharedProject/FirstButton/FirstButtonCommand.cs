@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows;
+using System.Windows.Documents;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -25,50 +26,14 @@ namespace Loop.Revit.FirstButton
                 var doc = uiApp.ActiveUIDocument.Document;
 
                 var units = doc.GetUnits();
-                
 
-                var variable2 = "=1'+3'- 0.125\"";
+                var formatOpts = units.GetFormatOptions(SpecTypeId.Length);
 
+                var accuracy = formatOpts.Accuracy;
 
-                var baseUnit = new Autodesk.Revit.DB.Units(UnitSystem.Metric);
-                var formatOptions2 = new FormatOptions();
-                formatOptions2.UseDefault = false;
-                formatOptions2.SetUnitTypeId(UnitTypeId.Meters);
-                baseUnit.SetFormatOptions(SpecTypeId.Length, formatOptions2);
+                var stuff2 = new List<double> { 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125, 0.00390625 };
 
-
-
-
-
-                var formatOptions = new FormatOptions(UnitTypeId.Meters);
-                formatOptions.UseDefault = false;
-                formatOptions.SetUnitTypeId(UnitTypeId.Meters);
-                formatOptions.Accuracy = 0.0625/12;
-         
-
-                var valueParsingOpts = new ValueParsingOptions();
-                valueParsingOpts.SetFormatOptions(formatOptions);
-
-
-
-                double outputDouble;
-                string outputMessage = String.Empty;
-
-                //Always Converts to Internal Units, doesn't care what parsing options you give it
-                var newunit = UnitFormatUtils.TryParse(units, SpecTypeId.Length, variable2, valueParsingOpts, out outputDouble, out outputMessage);
-
-
-
-                var outputFormatOptions = new FormatValueOptions();
-                outputFormatOptions.AppendUnitSymbol = true;
-                outputFormatOptions.SetFormatOptions(formatOptions);
-
-
-
-                var outputUnit = UnitFormatUtils.Format(units, SpecTypeId.Length, outputDouble, true, outputFormatOptions);
-
-
-
+                var closest = stuff2.OrderBy(item => Math.Abs(accuracy - item)).First();
 
 
 
