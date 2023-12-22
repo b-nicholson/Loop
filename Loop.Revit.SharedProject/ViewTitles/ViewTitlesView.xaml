@@ -130,15 +130,12 @@
 
 
                 </Grid>
-                <Label
-
-                        Foreground=" #B00020"
-                        >
+                <Label Foreground="#B00020">
                     <Label.Content>
-                        <!--TODO: Fix binding errors when no errors present-->
-                        <Binding Path="(Validation.Errors)[0].ErrorContent" Source="{x:Reference inputUnits}"/>
+                        <Binding Path="(Validation.Errors)/ErrorContent" Source="{x:Reference inputUnits}" TargetNullValue=""/>
                     </Label.Content>
                 </Label>
+
                 <!--TODO: Delete the label below-->
                 <Label DockPanel.Dock="Bottom" Content="{Binding lengthInternalUnits, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>
              
