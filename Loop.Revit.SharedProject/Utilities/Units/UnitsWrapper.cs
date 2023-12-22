@@ -39,7 +39,7 @@ namespace Utilities.Units
     public static class RevitUnitTypes
     {
         public static readonly RevitUnit DecimalFeet = new RevitUnit(UnitTypeId.Feet, SpecTypeId.Length, "Feet", new List<string> { "'", "ft" }, new List<double>{1,0.1,0.001,0.001,0.0001});
-        public static readonly RevitUnit FractionalFeet = new RevitUnit(UnitTypeId.FeetFractionalInches, SpecTypeId.Length, "Feet Fractional Inches", new List<string> { "' \"", "ft in" }, new List<double> { 1.0/12, 0.5/12, 0.25 / 12, 0.125 / 12, 0.0625 / 12, 0.03125 / 12, 0.015625 / 12, 0.0078125 / 12, 0.00390625 / 12 });
+        public static readonly RevitUnit FractionalFeet = new RevitUnit(UnitTypeId.FeetFractionalInches, SpecTypeId.Length, "Feet Fractional Inches", new List<string> { "' \"", "ft in" }, new List<double> { 1.0/12.0, 0.5/ 12.0, 0.25 / 12.0, 0.125 / 12.0, 0.0625 / 12.0, 0.03125 / 12.0, 0.015625 / 12.0, 0.0078125 / 12.0, 0.00390625 / 12.0 });
         public static readonly RevitUnit DecimalInches = new RevitUnit(UnitTypeId.Inches, SpecTypeId.Length, "Inches", new List<string> { "\"", "in" }, new List<double> { 1, 0.1, 0.001, 0.001 });
         public static readonly RevitUnit FractionalInches = new RevitUnit(UnitTypeId.FractionalInches, SpecTypeId.Length, "Fractional Inches", new List<string> { "\"", "in" }, new List<double> { 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125, 0.00390625 });
         public static readonly RevitUnit Meters = new RevitUnit(UnitTypeId.Meters, SpecTypeId.Length, "Meters", new List<string> { "m" }, new List<double> { 1, 0.1, 0.001, 0.001, 0.0001 });

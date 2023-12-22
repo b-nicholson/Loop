@@ -42,7 +42,7 @@
     </Window.Resources>
     <Border>
 
-        <DockPanel  Margin="10">
+        <DockPanel  Margin="15">
             <DockPanel HorizontalAlignment="Stretch"
                        DockPanel.Dock="Top">
                 <StackPanel DockPanel.Dock="Top">
@@ -53,53 +53,41 @@
 
                 </StackPanel>
                 <StackPanel DockPanel.Dock="Bottom">
-                    <Button x:Name="create_b"
-                            Margin="0,5,0,0"
-                            DockPanel.Dock="Bottom"
-                            Content="Adjust Title Lines"
-                            IsDefault="True"
-                            IsEnabled="{Binding CanRun}"
-                            Command="{Binding Run, Mode=OneWay}"
-                            CommandParameter="{Binding ElementName=Win}" />
+                   
                 </StackPanel>
-                <StackPanel DockPanel.Dock="Bottom">
-                    <StackPanel Orientation="Horizontal">
+                <Grid DockPanel.Dock="Top">
 
-
-
-
-                    </StackPanel>
-                    <Grid DockPanel.Dock="Bottom">
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="40"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0"
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0"
                                Content="Extension Distance:"
                                VerticalContentAlignment="Center"/>
-                        <DockPanel Grid.Column="1">
-                     
-                            
-                            <Button DockPanel.Dock="Right"
-                                    ToolTip="Copy calculated value to input field. Not required, it can be left as formula if you like."
+                    <DockPanel Grid.Column="1">
+
+
+                        <Button DockPanel.Dock="Right"
+                                    Margin="0 0 20 0"
+                                    ToolTip="Copy calculated value to input field. Not required, it can be left as formula if you prefer the results to not be rounded."
                                     Command="{Binding CopyText, Mode=OneWay}"
                                     Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                                     Visibility="{Binding InputIsCalculation, UpdateSourceTrigger=PropertyChanged}">
-                                <materialDesign:PackIcon Kind="ArrowLeftBold"/>
-                            </Button>
-                            <TextBox
+                            <materialDesign:PackIcon Kind="ArrowLeftBold"/>
+                        </Button>
+                        <TextBox
 
                                 DockPanel.Dock="Right"
                                 materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                                 BorderThickness="0"
+                                Margin="20,0,20,0"
 
 
                                 IsEnabled="False"
@@ -107,7 +95,7 @@
                                      VerticalContentAlignment="Center"
                                      Text="{Binding CalculatedUnit, UpdateSourceTrigger=PropertyChanged}"
                                 Visibility="{Binding InputIsCalculation, UpdateSourceTrigger=PropertyChanged}"/>
-                            <TextBox DockPanel.Dock="Left"
+                        <TextBox DockPanel.Dock="Left"
                                      x:Name="inputUnits"
                                      materialDesign:ValidationAssist.Suppress="True"
                                      ToolTip="Blue dimension in image above."
@@ -115,9 +103,9 @@
                                      VerticalContentAlignment="Center"
                             />
 
-                        </DockPanel>
-                    
-                        <ComboBox Grid.Column="2"
+                    </DockPanel>
+
+                    <ComboBox Grid.Column="2"
                                   VerticalAlignment="Center"
                                   Height="40"
                               ItemsSource="{Binding ComboBoxUnits, UpdateSourceTrigger=PropertyChanged}"
@@ -125,36 +113,37 @@
                               SelectedItem="{Binding SelectedUnit}"
                               VerticalContentAlignment="Center"
                               />
-                        <Label Grid.Column="3" Content="Display Unit Rounding:" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-                        <ComboBox Grid.Column="4"
+                    <Label Grid.Column="3" Content="Display Unit Rounding:" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                    <ComboBox Grid.Column="4"
                                   Margin=" 0 0 20 0 "
 
 
-                              ItemsSource="{Binding SelectedUnit.Accuracy, UpdateSourceTrigger=PropertyChanged}" Height="40" 
+                              ItemsSource="{Binding AccuracyOptions, UpdateSourceTrigger=PropertyChanged}" Height="40" 
+                                  SelectedItem="{Binding Accuracy}"
                               />
-                        <Button Grid.Column="5"
+                    <Button Grid.Column="5"
                                 Style="{StaticResource MaterialDesignFloatingActionMiniButton}">
 
-                            <materialDesign:PackIcon Kind="ContentSave"/>
-                        </Button>
-                        <!--ItemsSource="{Binding SelectedUnit.Accuracy, UpdateSourceTrigger=PropertyChanged}" Height="40"-->
+                        <materialDesign:PackIcon Kind="ContentSave"/>
+                    </Button>
+                    <!--ItemsSource="{Binding SelectedUnit.Accuracy, UpdateSourceTrigger=PropertyChanged}" Height="40"-->
 
 
-</Grid>
-                    <Label
+                </Grid>
+                <Label
 
                         Foreground=" #B00020"
                         >
-                        <Label.Content>
-                            <!--TODO: Fix binding errors when no errors present-->
-                            <Binding Path="(Validation.Errors)[0].ErrorContent" Source="{x:Reference inputUnits}"/>
-                        </Label.Content>
-                    </Label>
-                    <!--TODO: Delete the label below-->
-                    <Label Content="{Binding lengthInternalUnits, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>
-                </StackPanel>
+                    <Label.Content>
+                        <!--TODO: Fix binding errors when no errors present-->
+                        <Binding Path="(Validation.Errors)[0].ErrorContent" Source="{x:Reference inputUnits}"/>
+                    </Label.Content>
+                </Label>
+                <!--TODO: Delete the label below-->
+                <Label DockPanel.Dock="Bottom" Content="{Binding lengthInternalUnits, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>
+             
 
-           
+
 
                 <TextBlock Text="This tool will automatically size the viewport title line to match the title's bounding box. You may provide an additional distance to extend the line beyond, as demonstrated with the blue dimension above."
                            TextWrapping="Wrap"
@@ -165,11 +154,22 @@
             </DockPanel>
             <materialDesign:ColorZone Margin="16 0 0 0"
                                       Padding="8 4 8 4"
+                                      Width="400"
+                                      HorizontalAlignment="Right"
                                       materialDesign:ElevationAssist.Elevation="Dp2"
                                       CornerRadius="2"
                                       Mode="Standard"
                                       DockPanel.Dock="Top">
                 <StackPanel Orientation="Horizontal">
+                    <ComboBox x:Name="things"
+                              ItemsSource="{Binding SheetParameters}"
+                              DisplayMemberPath="Name"
+                              SelectedItem="{Binding SelectedPropertyWrapper, Mode=TwoWay}"
+                              IsSynchronizedWithCurrentItem="True"
+                              SelectedIndex="0"
+                              VerticalContentAlignment="Center"
+                              Margin="0 0 20 0"
+                              Width="Auto" />
                     <materialDesign:PackIcon Kind="Search"
                                              VerticalAlignment="Center" />
                     <TextBox MinWidth="200"
@@ -181,16 +181,7 @@
                 </StackPanel>
 
             </materialDesign:ColorZone>
-            <ComboBox x:Name="things"
-                      ItemsSource="{Binding SheetParameters}"
-                      DisplayMemberPath="Name"
-                      SelectedItem="{Binding SelectedPropertyWrapper, Mode=TwoWay}"
-                      IsSynchronizedWithCurrentItem="True"
-                      SelectedIndex="0"
-                      DockPanel.Dock="Top"
-                      VerticalContentAlignment="Center"
-                      Padding="10,0,0,0"
-                      Width="Auto" />
+         
 
             <DataGrid ItemsSource="{Binding SheetView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       AutoGenerateColumns="False"
@@ -203,7 +194,7 @@
                       SelectionMode="Extended"
                       MaxHeight="400"
                       Margin="10"
-                      DockPanel.Dock="Bottom">
+                      DockPanel.Dock="Top">
 
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn MinWidth="50"
@@ -244,6 +235,14 @@
 
                 </DataGrid.Columns>
             </DataGrid>
+            <Button 
+                    Margin="0,5,0,0"
+                    DockPanel.Dock="Bottom"
+                    Content="Adjust Title Lines"
+                    IsDefault="True"
+                    IsEnabled="{Binding CanRun}"
+                    Command="{Binding Run, Mode=OneWay}"
+                    CommandParameter="{Binding ElementName=Win}" />
         </DockPanel>
     </Border>
 </Window>

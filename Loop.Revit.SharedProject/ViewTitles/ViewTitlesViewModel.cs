@@ -25,7 +25,7 @@ namespace Loop.Revit.ViewTitles
         private readonly ViewTitlesModel _model;
 
         public RelayCommand<Window> Run { get; set; }
-        public RelayCommand<Window> CopyText { get; set;}
+        public RelayCommand<Window> CopyText { get; set; }
 
 
         #region DataGrid Stuff
@@ -149,6 +149,7 @@ namespace Loop.Revit.ViewTitles
         #region Units
         public ObservableCollection<RevitUnit> ComboBoxUnits => new ObservableCollection<RevitUnit>(RevitUnitTypes.GetUnitsByType(SpecTypeId.Length));
 
+
         private RevitUnit _selectedUnit;
 
         public RevitUnit SelectedUnit
@@ -163,13 +164,46 @@ namespace Loop.Revit.ViewTitles
                 if (value != null)
                 {
                     ConvertUnitsToInternal();
-                    //RaisePropertyChanged(nameof(InputUnit));
+                    AccuracyOptions = new ObservableCollection<double>(value.Accuracy);
+
+
+                    SetAccuracy();
+                    RaisePropertyChanged(nameof(Accuracy));
+
+
                 }
-                
+
 
             }
         }
 
+        private double _accuracy;
+
+        public double Accuracy
+        {
+            get => _accuracy;
+            set
+            {
+                _accuracy = value;
+                RaisePropertyChanged(nameof(Accuracy));
+                ConvertUnit(lengthInternalUnits);
+
+
+            }
+        }
+
+        private ObservableCollection<double> _accuracyOptions;
+
+        public ObservableCollection<double> AccuracyOptions
+        {
+            get => _accuracyOptions;
+            set
+            {
+                _accuracyOptions?.Clear();
+                _accuracyOptions = value;
+                RaisePropertyChanged(nameof(AccuracyOptions));
+            }
+        }
 
 
         //private string _errorMessage;
@@ -207,7 +241,8 @@ namespace Loop.Revit.ViewTitles
             get => _calculatedUnit;
             set
             {
-                if (value != null) { 
+                if (value != null)
+                {
                     _calculatedUnit = value;
                     RaisePropertyChanged(nameof(CalculatedUnit));
                 }
@@ -256,14 +291,13 @@ namespace Loop.Revit.ViewTitles
 
         #endregion
 
-
+        #region Sheet Parameters
         public ObservableCollection<PropertyInfo> SheetParams => new ObservableCollection<PropertyInfo>(
             typeof(SheetWrapper).GetProperties().Where(prop => prop.PropertyType == typeof(string)).ToList());
 
         //var stuff3 = typeof(SheetWrapper).GetProperties().Where(prop => prop.PropertyType == typeof(string)).ToList();
 
         private ObservableCollection<PropertyWrapper> _sheetParameters;
-
         public ObservableCollection<PropertyWrapper> SheetParameters
         {
             get => _sheetParameters;
@@ -275,19 +309,16 @@ namespace Loop.Revit.ViewTitles
         }
 
         private PropertyWrapper _selectedPropWrapper;
-
         public PropertyWrapper SelectedPropertyWrapper
         {
             get { return _selectedPropWrapper; }
             set
             {
-                _selectedPropWrapper = SelectedPropertyWrapper;
+                _selectedPropWrapper = value;
                 RaisePropertyChanged(nameof(SelectedPropertyWrapper));
             }
         }
-
-
-
+        #endregion
 
         #region Example Image stuff
         //property to control the example image in the xaml window 
@@ -316,6 +347,25 @@ namespace Loop.Revit.ViewTitles
 
             #region Datagrid stuff
             Sheets = new ObservableCollection<SheetWrapper>(_model.CollectSheets().OrderBy(o => o.SheetNumber).ToList());
+
+            var activeView = _model.ActiveView;
+            if (activeView.ViewType == ViewType.DrawingSheet)
+            {
+                foreach (var sheet in Sheets)
+                {
+                    var id = sheet.Id;
+                    if (id == activeView.Id)
+                    {
+                        sheet.IsSelected = true;
+                        break;
+                    }
+
+                }
+            }
+      
+
+
+
             //put the obs. coll. into a ICollectionView so we can filter it
             SheetView = CollectionViewSource.GetDefaultView(Sheets);
 
@@ -330,12 +380,12 @@ namespace Loop.Revit.ViewTitles
             //Set image in window
             ImageExample = ImageUtils.LoadImage(Assembly.GetExecutingAssembly(), "viewTitles.example.png");
 
-
-        
-
-
+            //Set Accuracy units
+            SetAccuracy();
 
 
+
+            #region Sheet Properties for Filtering
             var allSheetProperties = new ObservableCollection<PropertyInfo>(typeof(SheetWrapper).GetProperties()
                 .Where(prop => prop.PropertyType == typeof(string)).ToList());
 
@@ -350,9 +400,9 @@ namespace Loop.Revit.ViewTitles
                 propertyWrappers.Add(new PropertyWrapper(prop.Name, oc));
             }
 
-            
-
             SheetParameters = propertyWrappers;
+            SelectedPropertyWrapper = propertyWrappers[0];
+            #endregion
 
             //foreach (var sheet in Sheets)
             //{
@@ -368,40 +418,40 @@ namespace Loop.Revit.ViewTitles
             CopyText = new RelayCommand<Window>(OnCopyText);
         }
 
+        private void SetAccuracy()
+        {
+            try
+            {
+                Accuracy = AccuracyOptions[_model.FindClosestUnitAccuracyIndex(SelectedUnit)];
+            }
+            catch (Exception e)
+            {
+                //do nothing
+            }
+
+        }
+
         private bool FilterByName(object obj)
         {
             if (TextToFilter == null) return true;
             var sheetInfo = (SheetWrapper)obj;
 
-            var para = SheetParameters;
             var selection = SelectedPropertyWrapper;
-
-
-
-
-
-
+            var parametersToTarget = selection.Value;
 
             var isFound = false;
-            foreach (var p in para)
+            foreach (var param in parametersToTarget)
             {
-                var val = p.Value;
-                foreach (var param in val)
+                var paramValue = sheetInfo.GetType().GetProperty(param.Name).GetValue(sheetInfo, null).ToString();
+                if (paramValue.IndexOf(TextToFilter, StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    var stuff = sheetInfo.GetType().GetProperty(param.Name).GetValue(sheetInfo, null);
+                    isFound = true;
+                    break;
                 }
-
             }
-
-
-            var textContainsCaseInsensitive = sheetInfo.SheetName.IndexOf(TextToFilter, StringComparison.OrdinalIgnoreCase) >= 0;
-
-            return sheetInfo != null && textContainsCaseInsensitive;
+            return sheetInfo != null && isFound;
         }
-
-
-
-
+        
         private void OnRun(Window win)
         {
             var selected = Sheets.Where(x => x.IsSelected).ToList();
@@ -451,27 +501,32 @@ namespace Loop.Revit.ViewTitles
                 lengthInternalUnits = validationNumber;
 
 
-                var convertedUnit = _model.FormatUnits(validationNumber, SelectedUnit, 0.1);
-                CalculatedUnit = convertedUnit;
-                
+                ConvertUnit(validationNumber);
+
 
             }
         }
 
-         //fluent validation
-         private void ValidateProperty(string propertyName)
-         {
-            // this is commented out becuase i'm not actually using fluent validation for this anymore. saving for future use/reference.
-        
+        private void ConvertUnit(double numberToConvert)
+        {
+            var convertedUnit = _model.FormatUnits(numberToConvert, SelectedUnit, Accuracy);
+            CalculatedUnit = convertedUnit;
+        }
 
-             _errorsViewModel.ClearErrors(propertyName);
+        //fluent validation
+        private void ValidateProperty(string propertyName)
+        {
+            // this is commented out becuase i'm not actually using fluent validation for this anymore. saving for future use/reference.
+
+
+            _errorsViewModel.ClearErrors(propertyName);
             //var result = _validator.Validate(UserUnit);
             //if (result.Errors.Any())
             //{
             //    string firstErrorMessage = result.Errors.First().ErrorMessage;
             //    _errorsViewModel.AddError(propertyName, firstErrorMessage);
             //}
-         }
+        }
 
 
     }

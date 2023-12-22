@@ -64,7 +64,7 @@ namespace Loop.Revit.ViewTitles
 
             foreach (var vp in viewports)
             {
-                vp.LabelLineLength = 0.01;
+                vp.LabelLineLength = 0.001;
                 var rotation = vp.Rotation;
 
 

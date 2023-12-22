@@ -8,6 +8,7 @@ using Autodesk.Revit.DB;
 using System.Web.UI.WebControls;
 using Utilities.Units;
 using System.Windows.Controls;
+using View = Autodesk.Revit.DB.View;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -15,10 +16,14 @@ namespace Loop.Revit.ViewTitles
     {
         public UIApplication UiApp { get; }
         public Document Doc { get; }
+
+        public View ActiveView { get; }
+
         public ViewTitlesModel(UIApplication uiApp)
         {
             UiApp = uiApp;
             Doc = uiApp.ActiveUIDocument.Document;
+            ActiveView = Doc.ActiveView;
         }
 
         public ObservableCollection<SheetWrapper> CollectSheets()
@@ -38,14 +43,26 @@ namespace Loop.Revit.ViewTitles
             return Doc.GetUnits();
         }
 
-
-        public double FindClosestUnitAccuracy(List<double> unitList)
+        public int FindClosestUnitAccuracyIndex(RevitUnit selectedUnit)
         {
+            var unitList = selectedUnit.Accuracy;
+            var internalUnitsList = new List<double>();
+            foreach (var option in unitList)
+            {
+                internalUnitsList.Add(UnitUtils.ConvertToInternalUnits(option, selectedUnit.UnitTypeId));
+            }
+
+
+
+
             var units = Doc.GetUnits();
             var formatOpts = units.GetFormatOptions(SpecTypeId.Length);
             var accuracy = formatOpts.Accuracy;
-            var closest = unitList.OrderBy(item => Math.Abs(accuracy - item)).First();
-            return closest;
+            var accuracyInternal = UnitUtils.ConvertToInternalUnits(accuracy, formatOpts.GetUnitTypeId());
+            var closest = internalUnitsList.OrderBy(item => Math.Abs(accuracyInternal - item)).First();
+
+            var index = internalUnitsList.IndexOf(closest);
+            return index;
         }
 
         public string FormatUnits(double inputDouble, RevitUnit unit, double accuracy)
@@ -80,7 +97,6 @@ namespace Loop.Revit.ViewTitles
 
             return (outputDouble, outputMessage);
         }
-
 
         public void ChangeTitleLength(List<SheetWrapper> selected)
         {
