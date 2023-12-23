@@ -27,6 +27,8 @@ namespace Loop.Revit.ViewTitles
         public RelayCommand<Window> Run { get; set; }
         public RelayCommand<Window> CopyText { get; set; }
 
+        public RelayCommand<Window> SaveUnits { get; set; }
+
 
         #region DataGrid Stuff
         //Data to bind to DataGrid
@@ -281,6 +283,7 @@ namespace Loop.Revit.ViewTitles
             set
             {
                 _lengthInternalUnits = value;
+                _model.ExtensionDistance = value;
                 RaisePropertyChanged(nameof(lengthInternalUnits));
             }
         }
@@ -316,6 +319,14 @@ namespace Loop.Revit.ViewTitles
             {
                 _selectedPropWrapper = value;
                 RaisePropertyChanged(nameof(SelectedPropertyWrapper));
+                try
+                {
+                    SheetView.Filter = FilterByName;
+                }
+                catch (Exception e)
+                {
+                    // this can throw exceptions for stupid reasons, just ignore
+                }
             }
         }
         #endregion
@@ -416,6 +427,7 @@ namespace Loop.Revit.ViewTitles
 
             Run = new RelayCommand<Window>(OnRun);
             CopyText = new RelayCommand<Window>(OnCopyText);
+            SaveUnits = new RelayCommand<Window>(OnSaveSettings);
         }
 
         private void SetAccuracy()
@@ -466,6 +478,11 @@ namespace Loop.Revit.ViewTitles
         {
             InputUnit = CalculatedUnit;
             RaisePropertyChanged(nameof(InputUnit));
+        }
+
+        private void OnSaveSettings(Window win)
+        {
+            _model.CreateDataStorage(lengthInternalUnits);
         }
 
         #region INotifyErrorInfo

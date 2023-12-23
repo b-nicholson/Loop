@@ -5,15 +5,15 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
-using System.Web.UI.WebControls;
 using Utilities.Units;
-using System.Windows.Controls;
+using Loop.Revit.Utilities.ExtensibleStorage;
 using View = Autodesk.Revit.DB.View;
 
 namespace Loop.Revit.ViewTitles
 {
     public class ViewTitlesModel
     {
+
         public UIApplication UiApp { get; }
         public Document Doc { get; }
 
@@ -25,6 +25,10 @@ namespace Loop.Revit.ViewTitles
             Doc = uiApp.ActiveUIDocument.Document;
             ActiveView = Doc.ActiveView;
         }
+
+        public Guid ExtensibleStorageGuid = new Guid("CA648A85-E51F-4B69-8C25-9CB4A600BE33");
+
+        public double ExtensionDistance { get; set; }
 
         public ObservableCollection<SheetWrapper> CollectSheets()
         {
@@ -96,6 +100,21 @@ namespace Loop.Revit.ViewTitles
             var newunit = UnitFormatUtils.TryParse(unit, SpecTypeId.Length, inputText, out outputDouble, out outputMessage);
 
             return (outputDouble, outputMessage);
+        }
+
+
+        public void CreateDataStorage(double units)
+        {
+            AppCommand.ViewTitlesHandler.Arg1 = units;
+            AppCommand.ViewTitlesHandler.Model = this;
+            AppCommand.ViewTitlesHandler.Request = RequestId.CreateSchema;
+            AppCommand.ViewTitlesEvent.Raise();
+
+        }
+
+        public void LoadDataStorage()
+        {
+
         }
 
         public void ChangeTitleLength(List<SheetWrapper> selected)

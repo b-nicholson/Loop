@@ -7,17 +7,25 @@ using System.Text.RegularExpressions;
 using Autodesk.Revit.DB;
 using System.Windows.Controls;
 using Autodesk.Revit.UI;
+using Loop.Revit.Utilities.ExtensibleStorage;
+using Autodesk.Revit.DB.ExtensibleStorage;
+using System.Reflection;
 
 namespace Loop.Revit.ViewTitles
 {
     public enum RequestId
     {
         None,
-        AdjustViewTitleLengths
+        AdjustViewTitleLengths,
+        CreateSchema,
+        LoadSchema
     }
     public class ViewTitlesRequestHandler : IExternalEventHandler
     {
         public RequestId Request { get; set; }
+
+        public ViewTitlesModel Model { get; set; }
+
         public object Arg1 { get; set; }
 
         public void Execute(UIApplication app)
@@ -31,6 +39,9 @@ namespace Loop.Revit.ViewTitles
                     case RequestId.AdjustViewTitleLengths:
                         AdjustViewTitles(app);
                         break;
+                    case RequestId.CreateSchema:
+                        CreateDataStorage(app);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -39,6 +50,25 @@ namespace Loop.Revit.ViewTitles
             {
                 // ignore
             }
+        }
+
+        public void CreateDataStorage(UIApplication app)
+        {
+            var Doc = app.ActiveUIDocument.Document;
+            var schemaName = "ViewTitleLength";
+            var schemaDescription = "Function for storing the viewport title line extension length";
+            var paramName = "ExtensionDistance";
+            var schemaInfo = new List<(string, Type)> { (paramName, typeof(double)) };
+
+            var t = new Transaction(Doc, "Save Viewport Titles Extension Length");
+            t.Start();
+
+            var schema = ExtensibleStorageHelper.CreateSimpleSchema(Model.ExtensibleStorageGuid, schemaName, schemaDescription, schemaInfo, SpecTypeId.Length);
+            var paramInfo = new List<(string, dynamic)> { (paramName, Model.ExtensionDistance) };
+
+            var datastorage = ExtensibleStorageHelper.CreateDataStorage(Doc, schema, Model.ExtensibleStorageGuid,
+                "Viewport Title Length Extension Distance", paramInfo, UnitTypeId.Feet);
+            t.Commit();
         }
 
         public void AdjustViewTitles(UIApplication app)

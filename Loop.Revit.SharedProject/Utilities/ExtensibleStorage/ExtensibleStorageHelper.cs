@@ -8,10 +8,10 @@ using Autodesk.Revit.DB.ExtensibleStorage;
 
 namespace Loop.Revit.Utilities.ExtensibleStorage
 {
-    public class ExtensibleStorageHelper
+    public static class ExtensibleStorageHelper
     {
 
-        public Schema CreateSimpleSchema(Guid guid, string schemaName, string schemaDescription, List<(string fieldName, Type fieldType)> fieldInfo)
+        public static Schema CreateSimpleSchema(Guid guid, string schemaName, string schemaDescription, List<(string fieldName, Type fieldType)> fieldInfo, ForgeTypeId specTypeId = null)
         {
             //TODO: split the lookup into a different method.
             var schema = Schema.Lookup(guid);
@@ -29,7 +29,8 @@ namespace Loop.Revit.Utilities.ExtensibleStorage
 
             foreach (var field in fieldInfo)
             {
-                schemaBuilder.AddSimpleField(field.fieldName, field.fieldType);
+                var fieldBuilder = schemaBuilder.AddSimpleField(field.fieldName, field.fieldType);
+                if (specTypeId != null) fieldBuilder.SetSpec(specTypeId);
             }
 
             var newSchema = schemaBuilder.Finish();
@@ -37,7 +38,7 @@ namespace Loop.Revit.Utilities.ExtensibleStorage
             return newSchema;
         }
 
-        public DataStorage CreateDataStorage(Document Doc, Schema schema, Guid guid, string storageItemName, List<(string parameterName, dynamic parameterData)> parameters)
+        public static DataStorage CreateDataStorage(Document Doc, Schema schema, Guid guid, string storageItemName, List<(string parameterName, dynamic parameterData)> parameters, ForgeTypeId unitTypeId =null)
         {
             var existingDataStorage = new FilteredElementCollector(Doc).OfClass(typeof(DataStorage)).Cast<DataStorage>();
             DataStorage storageItem = null;
@@ -56,14 +57,15 @@ namespace Loop.Revit.Utilities.ExtensibleStorage
 
             foreach (var param in parameters)
             {
-                entity.Set(param.parameterName, param.parameterData);
+                if (unitTypeId == null) entity.Set(param.parameterName, param.parameterData);
+                else entity.Set(param.parameterName, param.parameterData, unitTypeId);
             }
             storageItem.SetEntity(entity);
 
             return storageItem;
         }
 
-        public DataStorage LoadDataStorage(Document Doc, Guid guid)
+        public static DataStorage LoadDataStorage(Document Doc, Guid guid)
         {
             var existingDataStorage = new FilteredElementCollector(Doc).OfClass(typeof(DataStorage)).Cast<DataStorage>();
             DataStorage storageItem = null;
