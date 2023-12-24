@@ -65,17 +65,41 @@ namespace Loop.Revit.Utilities.ExtensibleStorage
             return storageItem;
         }
 
-        public static DataStorage LoadDataStorage(Document Doc, Guid guid)
+        //playing with overload methods
+        //public static DataStorage CreateDataStorage(Document Doc, Schema schema, Guid guid, List<(string parameterName, dynamic parameterData)> parameters, ForgeTypeId unitTypeId = null)
+        //{
+        //   var tim = CreateDataStorage(Doc, schema, guid, "Jim", parameters);
+        //   return tim;
+        //}
+
+        public static List<double?> LoadDataStorage(Document Doc, Guid guid, List<string> paramNames, ForgeTypeId unitTypeId = null)
         {
             var existingDataStorage = new FilteredElementCollector(Doc).OfClass(typeof(DataStorage)).Cast<DataStorage>();
             DataStorage storageItem = null;
+            Schema schema = null;
             foreach (var element in existingDataStorage)
             {
                 if (element.GetEntitySchemaGuids()[0] != guid) continue;
+                schema = Schema.Lookup(guid);
                 storageItem = element;
                 break;
             }
-            return storageItem;
+
+            var paramValues = new List<double?>();
+            if (schema != null)
+            {
+                var entity = storageItem.GetEntity(schema);
+                foreach (var name in paramNames)
+                {
+                    double? val = null;
+                    if (unitTypeId != null) val = entity.Get<double>(name, unitTypeId);
+                    else val = entity.Get<double>(name);
+                 
+                    paramValues.Add(val);
+                }
+            }
+
+            return paramValues;
         }
 
 

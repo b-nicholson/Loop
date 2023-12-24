@@ -145,6 +145,26 @@ namespace Loop.Revit.ViewTitles
             }
         }
 
+        private bool _showCheckedOnly;
+        public bool ShowCheckedItemsOnly
+        {
+            get => _showCheckedOnly;
+            set
+            {
+                _showCheckedOnly = value;
+                RaisePropertyChanged(nameof(ShowCheckedItemsOnly));
+                try
+                {
+                    SheetView.Filter = FilterByName;
+                }
+                catch (Exception e)
+                {
+                    // this can throw exceptions for stupid reasons, just ignore
+                }
+            }
+
+        }
+
         #endregion
 
 
@@ -380,6 +400,7 @@ namespace Loop.Revit.ViewTitles
             //put the obs. coll. into a ICollectionView so we can filter it
             SheetView = CollectionViewSource.GetDefaultView(Sheets);
 
+
             // create a filter for the DataGrid
             SheetView.Filter = FilterByName;
             #endregion
@@ -394,6 +415,13 @@ namespace Loop.Revit.ViewTitles
             //Set Accuracy units
             SetAccuracy();
 
+            //Load ExtensibleStorage
+            _model.LoadDataStorage();
+            var things = _model.ExtensionDistance;
+            var things2 = SelectedUnit;
+            var things3 = Accuracy;
+            var convertedUnit = _model.FormatUnits(_model.ExtensionDistance, SelectedUnit, Accuracy);
+            InputUnit = convertedUnit;
 
 
             #region Sheet Properties for Filtering
@@ -445,8 +473,16 @@ namespace Loop.Revit.ViewTitles
 
         private bool FilterByName(object obj)
         {
-            if (TextToFilter == null) return true;
             var sheetInfo = (SheetWrapper)obj;
+            if (TextToFilter == null)
+            {
+                if (ShowCheckedItemsOnly) return sheetInfo.IsSelected;
+                else return true;
+            }
+
+
+
+            
 
             var selection = SelectedPropertyWrapper;
             var parametersToTarget = selection.Value;
@@ -461,7 +497,12 @@ namespace Loop.Revit.ViewTitles
                     break;
                 }
             }
-            return sheetInfo != null && isFound;
+
+            if (ShowCheckedItemsOnly)
+            {
+                return sheetInfo != null && isFound && sheetInfo.IsSelected;
+            }
+            else return sheetInfo != null && isFound;
         }
         
         private void OnRun(Window win)

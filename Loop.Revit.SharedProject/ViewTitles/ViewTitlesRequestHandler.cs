@@ -27,6 +27,7 @@ namespace Loop.Revit.ViewTitles
         public ViewTitlesModel Model { get; set; }
 
         public object Arg1 { get; set; }
+        public object Arg2 { get; set; }
 
         public void Execute(UIApplication app)
         {
@@ -66,7 +67,8 @@ namespace Loop.Revit.ViewTitles
             var schema = ExtensibleStorageHelper.CreateSimpleSchema(Model.ExtensibleStorageGuid, schemaName, schemaDescription, schemaInfo, SpecTypeId.Length);
             var paramInfo = new List<(string, dynamic)> { (paramName, Model.ExtensionDistance) };
 
-            var datastorage = ExtensibleStorageHelper.CreateDataStorage(Doc, schema, Model.ExtensibleStorageGuid,
+            // I have no idea why it takes centimeters as the input, it's the only way it stores correctly and seems to ignore everything
+            var dataStorage = ExtensibleStorageHelper.CreateDataStorage(Doc, schema, Model.ExtensibleStorageGuid,
                 "Viewport Title Length Extension Distance", paramInfo, UnitTypeId.Feet);
             t.Commit();
         }
@@ -75,6 +77,11 @@ namespace Loop.Revit.ViewTitles
         {
 
             if (!(Arg1 is List<SheetWrapper> selected))
+            {
+                return;
+            }
+
+            if (!(Arg2 is double extensionDistance))
             {
                 return;
             }
@@ -110,11 +117,8 @@ namespace Loop.Revit.ViewTitles
                 var newPoint = (boxMinPoint + labelOffset).X;
                 var symbolSize = newPoint - outlineMin.X;
 
-                var userValue = 0.0;
-                var userPadding = UnitUtils.ConvertToInternalUnits(userValue, UnitTypeId.Millimeters);
-
-                //Add user padding
-                var length = Math.Max(outlineMax.X - outlineMin.X, outlineMax.Y - outlineMin.Y) - symbolSize + userPadding;
+                
+                var length = Math.Max(outlineMax.X - outlineMin.X, outlineMax.Y - outlineMin.Y) - symbolSize + extensionDistance;
 
                 vp.LabelLineLength = length;
                 if (rotation != ViewportRotation.None)

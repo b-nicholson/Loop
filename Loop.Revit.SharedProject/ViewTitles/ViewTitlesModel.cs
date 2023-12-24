@@ -114,12 +114,20 @@ namespace Loop.Revit.ViewTitles
 
         public void LoadDataStorage()
         {
+            var dataStorageValue = ExtensibleStorageHelper.LoadDataStorage(Doc, ExtensibleStorageGuid, new List<string> { "ExtensionDistance" }, UnitTypeId.Feet);
 
+            if (dataStorageValue.Count != 0)
+            {
+                var elem = (double)dataStorageValue[0];
+                ExtensionDistance = elem;
+
+            }
         }
 
         public void ChangeTitleLength(List<SheetWrapper> selected)
         {
             AppCommand.ViewTitlesHandler.Arg1 = selected;
+            AppCommand.ViewTitlesHandler.Arg2 = ExtensionDistance;
             AppCommand.ViewTitlesHandler.Request = RequestId.AdjustViewTitleLengths;
             AppCommand.ViewTitlesEvent.Raise();
 
