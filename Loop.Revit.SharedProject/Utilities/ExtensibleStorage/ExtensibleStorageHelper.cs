@@ -72,7 +72,7 @@ namespace Loop.Revit.Utilities.ExtensibleStorage
         //   return tim;
         //}
 
-        public static List<double?> LoadDataStorage(Document Doc, Guid guid, List<string> paramNames, ForgeTypeId unitTypeId = null)
+        public static List<dynamic> LoadDataStorage(Document Doc, Guid guid, List<string> paramNames, ForgeTypeId unitTypeId = null)
         {
             var existingDataStorage = new FilteredElementCollector(Doc).OfClass(typeof(DataStorage)).Cast<DataStorage>();
             DataStorage storageItem = null;
@@ -85,7 +85,7 @@ namespace Loop.Revit.Utilities.ExtensibleStorage
                 break;
             }
 
-            var paramValues = new List<double?>();
+            var paramValues = new List<dynamic>();
             if (schema != null)
             {
                 var entity = storageItem.GetEntity(schema);
