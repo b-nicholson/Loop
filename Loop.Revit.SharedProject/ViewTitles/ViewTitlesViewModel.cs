@@ -17,6 +17,7 @@ using Loop.Revit.Utilities.Wpf;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -30,7 +31,16 @@ namespace Loop.Revit.ViewTitles
         public RelayCommand<Window> CopyText { get; set; }
 
         public RelayCommand<Window> SaveUnits { get; set; }
-        
+
+        private int _currentProgress;
+
+        public int CurrentProgress
+        {
+            get => _currentProgress;
+
+            set => SetProperty(ref _currentProgress, value);
+        }
+        public int MaxProgressValue {get; set; }
 
         private bool _isDarkMode;
 
@@ -469,8 +479,16 @@ namespace Loop.Revit.ViewTitles
             CopyText = new RelayCommand<Window>(OnCopyText);
             SaveUnits = new RelayCommand<Window>(OnSaveSettings);
             ToggleThemeCommand = new RelayCommand(() => IsDarkMode = !IsDarkMode);
+
+            WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, ProgressResultsMessage>(this, (r, m) => r.OnProgressUpdate(m));
         }
 
+        private void OnProgressUpdate(ProgressResultsMessage obj)
+        {
+            CurrentProgress = obj.CurrentSheetProgress;
+            MaxProgressValue = obj.TotalSheetCount;
+
+        }
 
         private void SetAccuracy()
         {

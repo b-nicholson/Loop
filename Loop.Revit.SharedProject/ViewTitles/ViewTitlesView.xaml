@@ -12,7 +12,8 @@
         Width="600"
         FontFamily="{materialDesign:MaterialDesignFont}"
         xmlns:local="clr-namespace:Loop.Revit.Utilities.Wpf"
-        local:WpfThemeProperties.ToggleTheme="{Binding IsDarkMode}">
+        local:WpfThemeProperties.ToggleTheme="{Binding IsDarkMode}"
+        >
 
 
 
@@ -22,7 +23,7 @@
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:CustomColorTheme BaseTheme="Dark"
+                <materialDesign:CustomColorTheme x:Name="Oi" BaseTheme="Dark"
                                                  PrimaryColor="#FF25C5C5"
                                                  SecondaryColor="DarkGreen" />
            
@@ -290,20 +291,20 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
         <!--TODO: Delete the label below-->
         <Label Grid.Row="7" 
                        
-                       Content="{Binding lengthInternalUnits, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>
+                       Content="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>
 
         <ToggleButton Grid.Row="8" 
                       IsChecked="{Binding IsDarkMode, Mode=OneWay}" 
                       Command="{Binding ToggleThemeCommand}"
                       Visibility="Collapsed"/>
 
-        <ToggleButton Grid.Row="8" Width="45"
-                      Margin="0 0 20 0"
+        <ToggleButton Grid.Row="0" Width="45"
+                      
          
                       IsChecked="{Binding IsDarkMode, Mode=OneWay}" 
                       Command="{Binding ToggleThemeCommand}"
                       Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                      ToolTip="Show Selected Sheets Only">
+                      ToolTip="Toggle Dark/Light Theme" HorizontalAlignment="Right" VerticalAlignment="Top">
             <materialDesign:PackIcon
                 Kind="WhiteBalanceSunny"
             >

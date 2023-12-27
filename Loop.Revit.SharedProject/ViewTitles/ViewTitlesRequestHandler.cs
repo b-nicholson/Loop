@@ -10,6 +10,7 @@ using Autodesk.Revit.UI;
 using Loop.Revit.Utilities.ExtensibleStorage;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using System.Reflection;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -93,11 +94,13 @@ namespace Loop.Revit.ViewTitles
 
             var Doc = app.ActiveUIDocument.Document;
             var viewports = new FilteredElementCollector(Doc, ids).OfCategory(BuiltInCategory.OST_Viewports).Cast<Viewport>();
+            var viewportCount = viewports.Count();
+            int viewportProcessingProgress = 0;
             
             var t = new Transaction(Doc, "Change Viewport Label Line Length");
             t.Start();
 
-
+            
 
             foreach (var vp in viewports)
             {
@@ -123,6 +126,11 @@ namespace Loop.Revit.ViewTitles
                 vp.LabelLineLength = length;
                 if (rotation != ViewportRotation.None)
                     vp.Rotation = rotation;
+
+                viewportProcessingProgress++;
+
+                WeakReferenceMessenger.Default.Send(new ProgressResultsMessage(viewportProcessingProgress,
+                    viewportCount));
             }
 
 

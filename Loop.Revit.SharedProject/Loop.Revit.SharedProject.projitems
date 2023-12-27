@@ -42,6 +42,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfRevitUnitValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfUnit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\ColorScheme.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ProgressResultsMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\PropertyWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\SheetWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\UnitsWrapper.cs" />

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Media;
-using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 
 namespace Loop.Revit.Utilities.Wpf
@@ -35,26 +31,27 @@ namespace Loop.Revit.Utilities.Wpf
             }
         }
 
-        private static void ToggleTheme(Window window, bool isDarkMode)
+        private static void ToggleTheme(Window window, bool? isDarkMode = null)
         {
 
             var mat = new CustomColorTheme();
             mat.BaseTheme = BaseTheme.Light;
-            if (isDarkMode)
+            if (isDarkMode != null && (bool)isDarkMode)
             {
                 mat.BaseTheme = BaseTheme.Dark;
             }
 
             mat.PrimaryColor = Color.FromRgb(56,66,189);
             mat.SecondaryColor = Color.FromRgb(156, 166, 89);
+           
 
 
-            var dicties = window.Resources.MergedDictionaries;
+            var resourceDictionaries = window.Resources.MergedDictionaries;
 
             List<ResourceDictionary> itemsToRemove = new List<ResourceDictionary>();
 
             // First, find the items to remove
-            foreach (var d in dicties)
+            foreach (var d in resourceDictionaries)
             {
                 if (d is CustomColorTheme customTheme)
                 {
