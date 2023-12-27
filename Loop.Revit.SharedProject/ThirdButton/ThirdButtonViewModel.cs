@@ -5,13 +5,14 @@ using System.Linq;
 using System.Runtime.Remoting;
 using System.Text;
 using System.Windows;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+
 
 namespace Loop.Revit.ThirdButton
 {
-    public class ThirdButtonViewModel : ViewModelBase
+    public class ThirdButtonViewModel : ObservableObject
     {
         public ThirdButtonModel Model { get; set; }
 
@@ -23,7 +24,7 @@ namespace Loop.Revit.ThirdButton
         public ObservableCollection<SpatialObjectWrapper> SpatialObjects
         {
             get { return _spatialObjects; }
-            set { _spatialObjects = value; RaisePropertyChanged(() => SpatialObjects); }
+            set { _spatialObjects = value; OnPropertyChanged(nameof(SpatialObjects)); }
         }
 
         public ThirdButtonViewModel(ThirdButtonModel model)
@@ -32,8 +33,9 @@ namespace Loop.Revit.ThirdButton
             SpatialObjects = Model.CollectSpatialObjects();
             Close = new RelayCommand<Window>(OnClose);
             Delete = new RelayCommand<Window>(OnDelete);
+            
 
-            Messenger.Default.Register<SpatialObjectDeletedMessage>(this, OnSpatialElementDeletedMessage);
+            WeakReferenceMessenger.Default.Register<ThirdButtonViewModel ,SpatialObjectDeletedMessage>(this,  (r, m) => r.OnSpatialElementDeletedMessage(m));
         }
 
         private void OnSpatialElementDeletedMessage(SpatialObjectDeletedMessage obj)

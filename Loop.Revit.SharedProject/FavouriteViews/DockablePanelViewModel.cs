@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
 
 namespace Loop.Revit.FavouriteViews
 {
-    public class DockablePanelViewModel : ViewModelBase
+    public class DockablePanelViewModel : ObservableObject
     {
 
         public DockablePanelModel Model { get; set; }
@@ -17,7 +18,7 @@ namespace Loop.Revit.FavouriteViews
         public ObservableCollection<ViewWrapper> Views
         {
             get { return _views; }
-            set { _views = value; RaisePropertyChanged(() => Views);}
+            set { _views = value; OnPropertyChanged(nameof(Views));}
         }
 
         public DockablePanelViewModel()

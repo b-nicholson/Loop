@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Autodesk.Revit.DB;
-using GalaSoft.MvvmLight.Messaging;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace Loop.Revit.ThirdButton
 {
@@ -53,7 +53,7 @@ namespace Loop.Revit.ThirdButton
                 trans.Commit();
             }
 
-            Messenger.Default.Send(new SpatialObjectDeletedMessage(ids));
+            WeakReferenceMessenger.Default.Send(new SpatialObjectDeletedMessage(ids));
         }
 
         public string GetName()

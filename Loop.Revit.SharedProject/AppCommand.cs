@@ -2,7 +2,6 @@
 using System.Linq;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
-using GalaSoft.MvvmLight.Messaging;
 using Loop.Revit.FavouriteViews;
 using Loop.Revit.FirstButton;
 using Loop.Revit.SecondButton;
