@@ -30,39 +30,22 @@ namespace Loop.Revit.ViewTitles
         public RelayCommand<Window> CopyText { get; set; }
 
         public RelayCommand<Window> SaveUnits { get; set; }
+        
 
-        public RelayCommand<Window> ToggleDarkMode { get; set; }
+        private bool _isDarkMode;
 
-
-        private readonly PaletteHelper _paletteHelper = new PaletteHelper();
-
-        private ColorScheme _activeScheme;
-        public ColorScheme ActiveScheme
+        public bool IsDarkMode
         {
-            get => _activeScheme;
+            get => _isDarkMode;
             set
             {
-                if (_activeScheme != value)
-                {
-                    _activeScheme = value;
-                    OnPropertyChanged(nameof(ActiveScheme));
-                }
-            }
+                SetProperty(ref _isDarkMode, value);
+                OnPropertyChanged(nameof(IsDarkMode));
+            } 
         }
 
+        public RelayCommand ToggleThemeCommand { get; }
 
-        private bool _darkModeEnabled;
-
-        public bool DarkModeEnabled
-        {
-            get => _darkModeEnabled;
-            set
-            {
-                _darkModeEnabled = value;
-
-                OnPropertyChanged(nameof(DarkModeEnabled));
-            }
-        }
 
 
         #region DataGrid Stuff
@@ -480,21 +463,14 @@ namespace Loop.Revit.ViewTitles
             SelectedPropertyWrapper = propertyWrappers[0];
             #endregion
 
-            //foreach (var sheet in Sheets)
-            //{
-            //    sheet.PropertyChanged += (sender, args) =>
-            //    {
-            //        if (args.PropertyName == nameof(SheetWrapper.IsSelected))
-
-            //            OnPropertyChanged(nameof(IsAllSheetsSelected));
-            //    };
-            //}
+ 
 
             Run = new RelayCommand<Window>(OnRun);
             CopyText = new RelayCommand<Window>(OnCopyText);
             SaveUnits = new RelayCommand<Window>(OnSaveSettings);
-            ToggleDarkMode = new RelayCommand<Window>(OnToggleDarkMode);
+            ToggleThemeCommand = new RelayCommand(() => IsDarkMode = !IsDarkMode);
         }
+
 
         private void SetAccuracy()
         {
@@ -564,29 +540,6 @@ namespace Loop.Revit.ViewTitles
             _model.CreateDataStorage(lengthInternalUnits);
         }
 
-        private void OnToggleDarkMode(Window win)
-        {
-            PaletteHelper palette = new PaletteHelper();
-            var res = Application.Current;
-
-            //var theme = palette.GetThemeManager();
-
-            // var res = Application.Current.Resources;
-            //ResourceDictionaryExtensions.SetTheme(res,);
-            //var res2 = res;
-            ITheme theme = palette.GetTheme();
-
-            if (DarkModeEnabled)
-            {
-                theme.SetBaseTheme(Theme.Dark);
-            }
-            else
-            {
-                theme.SetBaseTheme(Theme.Light);
-            }
-            palette.SetTheme(theme);
-
-        }
 
         #region INotifyErrorInfo
         public IEnumerable GetErrors(string propertyName)

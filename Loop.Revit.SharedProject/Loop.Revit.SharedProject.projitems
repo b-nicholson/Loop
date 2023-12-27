@@ -53,6 +53,7 @@
       <DependentUpon>ViewTitlesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WpfThemeProperties.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\32x32\firstButton.png" />

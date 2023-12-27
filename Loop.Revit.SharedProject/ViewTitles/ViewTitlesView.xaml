@@ -10,7 +10,9 @@
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         Width="600"
-        FontFamily="{materialDesign:MaterialDesignFont}">
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        xmlns:local="clr-namespace:Loop.Revit.Utilities.Wpf"
+        local:WpfThemeProperties.ToggleTheme="{Binding IsDarkMode}">
 
 
 
@@ -20,10 +22,10 @@
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <!--<materialDesign:CustomColorTheme BaseTheme="Dark"
+                <materialDesign:CustomColorTheme BaseTheme="Dark"
                                                  PrimaryColor="#FF25C5C5"
-                                                 SecondaryColor="DarkGreen" />-->
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                                                 SecondaryColor="DarkGreen" />
+           
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
 
@@ -289,10 +291,29 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
         <Label Grid.Row="7" 
                        
                        Content="{Binding lengthInternalUnits, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>
-        <ToggleButton Grid.Row="8"
-                      IsChecked="{Binding DarkModeEnabled}"
-                      Command="{Binding ToggleDarkMode}"
-                      />
+
+        <ToggleButton Grid.Row="8" 
+                      IsChecked="{Binding IsDarkMode, Mode=OneWay}" 
+                      Command="{Binding ToggleThemeCommand}"
+                      Visibility="Collapsed"/>
+
+        <ToggleButton Grid.Row="8" Width="45"
+                      Margin="0 0 20 0"
+         
+                      IsChecked="{Binding IsDarkMode, Mode=OneWay}" 
+                      Command="{Binding ToggleThemeCommand}"
+                      Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                      ToolTip="Show Selected Sheets Only">
+            <materialDesign:PackIcon
+                Kind="WhiteBalanceSunny"
+            >
+
+            </materialDesign:PackIcon>
+            <materialDesign:ToggleButtonAssist.OnContent>
+                <materialDesign:PackIcon
+                    Kind="WeatherNight" />
+            </materialDesign:ToggleButtonAssist.OnContent>
+        </ToggleButton>
 
 
         <Viewbox Grid.Row="8" Width="Auto" Stretch="Uniform" Visibility="Collapsed">
