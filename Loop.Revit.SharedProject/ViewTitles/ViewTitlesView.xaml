@@ -6,16 +6,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        Background="{DynamicResource MaterialDesignPaper}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         Width="600"
         FontFamily="{materialDesign:MaterialDesignFont}"
         xmlns:local="clr-namespace:Loop.Revit.Utilities.Wpf"
         local:WpfThemeProperties.ToggleTheme="{Binding IsDarkMode}"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResize"
+
         >
-
-
+<!--Allows resize grips-->
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0"/>
+    </WindowChrome.WindowChrome>
 
 
     <Window.Resources>
@@ -23,7 +29,7 @@
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:CustomColorTheme x:Name="Oi" BaseTheme="Dark"
+                <materialDesign:CustomColorTheme BaseTheme="Light"
                                                  PrimaryColor="#FF25C5C5"
                                                  SecondaryColor="DarkGreen" />
            
@@ -49,8 +55,8 @@
 
 
     </Window.Resources>
-
-    <Grid Margin="20">
+    <Border Background="{DynamicResource MaterialDesignPaper}" CornerRadius="10">
+    <Grid Margin="20" >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -61,19 +67,70 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0"
-                       Margin=" 0 0 0 20"
-                Text="Adjust View Title Line Length"
-                Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+            <materialDesign:ColorZone Grid.Row =" 0"  MouseLeftButtonDown="Window_MouseLeftButtonDown" Cursor="Hand">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Margin=" 0 0 0 20"
+                    Text="Adjust View Title Line Length"
+                    Style="{StaticResource MaterialDesignHeadline5TextBlock}"
                 />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right">
+                    <ToggleButton Width="45" VerticalContentAlignment="Center"
+                                  IsChecked="{Binding IsDarkMode, Mode=OneWay}" 
+                                  Command="{Binding ToggleThemeCommand}"
+                                  Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                  ToolTip="Toggle Dark/Light Theme" HorizontalAlignment="Right" VerticalAlignment="Top">
+                        <materialDesign:PackIcon
+                            Kind="WhiteBalanceSunny"
+                        >
+
+                        </materialDesign:PackIcon>
+                        <materialDesign:ToggleButtonAssist.OnContent>
+                            <materialDesign:PackIcon
+                                Kind="WeatherNight" />
+                        </materialDesign:ToggleButtonAssist.OnContent>
+                    </ToggleButton>
+                        <Button 
+                            Click="MinimizeButton_Click"
+                            VerticalContentAlignment="Center"
+                        Content="{materialDesign:PackIcon WindowMinimize}"
+                        Style="{StaticResource MaterialDesignFlatDarkButton}"/>
+                        <Button 
+                            Click="MaximizeRestoreButton_Click"
+                            VerticalContentAlignment="Center"
+                        Content="{materialDesign:PackIcon WindowMaximize}"
+                        Style="{StaticResource MaterialDesignFlatDarkButton}"/>
+                        <Button 
+                            Click="CloseButton_Click"
+                            VerticalContentAlignment="Center"
+                            Content="{materialDesign:PackIcon WindowClose}"
+                            Style="{StaticResource MaterialDesignFlatDarkButton}"/>
+                </StackPanel>
+               
+
+
+
+
+
+                </Grid>
+           
+            </materialDesign:ColorZone>
+          
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
+
+          
             <TextBlock Grid.Column="0"
                            Margin="0 30 10 0 "
                     Text="This tool automatically sizes the viewport title line on sheets to match each title's bounding box. You may provide an additional distance to extend the line beyond, as demonstrated by the blue dimension."
@@ -298,23 +355,8 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
                       Command="{Binding ToggleThemeCommand}"
                       Visibility="Collapsed"/>
 
-        <ToggleButton Grid.Row="0" Width="45"
-                      
-         
-                      IsChecked="{Binding IsDarkMode, Mode=OneWay}" 
-                      Command="{Binding ToggleThemeCommand}"
-                      Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                      ToolTip="Toggle Dark/Light Theme" HorizontalAlignment="Right" VerticalAlignment="Top">
-            <materialDesign:PackIcon
-                Kind="WhiteBalanceSunny"
-            >
-
-            </materialDesign:PackIcon>
-            <materialDesign:ToggleButtonAssist.OnContent>
-                <materialDesign:PackIcon
-                    Kind="WeatherNight" />
-            </materialDesign:ToggleButtonAssist.OnContent>
-        </ToggleButton>
+       
+        <ProgressBar Grid.Row="9" Maximum="{Binding MaxProgressValue, UpdateSourceTrigger=PropertyChanged}" Value="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged}"/>
 
 
         <Viewbox Grid.Row="8" Width="Auto" Stretch="Uniform" Visibility="Collapsed">
@@ -367,4 +409,5 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
 
 
     </Grid>
+    </Border>
 </Window>

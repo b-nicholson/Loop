@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Threading;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Loop.Revit.Utilities;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -15,26 +18,52 @@ namespace Loop.Revit.ViewTitles
     [Journaling(JournalingMode.NoCommandData)]
     public class ViewTitlesCommand : IExternalCommand
     {
+        private Thread _uiThread;
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             try
             {
                 var uiApp = commandData.Application;
                 var m = new ViewTitlesModel(uiApp);
-                var vm = new ViewTitlesViewModel(m);
-                var v = new ViewTitlesView
+
+                _uiThread = new Thread(() =>
                 {
-                    DataContext = vm
-                };
+                    //Set the sync context
+                    SynchronizationContext.SetSynchronizationContext(
+                        new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
 
-                var unused = new WindowInteropHelper(v)
-                {
-                    Owner = Process.GetCurrentProcess().MainWindowHandle
-                };
 
-                v.Show();
+                    
+                    
+                    var vm = new ViewTitlesViewModel(m);
+                    var v = new ViewTitlesView
+                    {
+                        DataContext = vm
+                    };
 
-                //m.ChangeTitleLength();
+                    var unused = new WindowInteropHelper(v)
+                    {
+                        Owner = Process.GetCurrentProcess().MainWindowHandle
+                    };
+                    v.Closed += (s, e) => Dispatcher.CurrentDispatcher.InvokeShutdown();
+
+                    v.Show();
+                    Dispatcher.Run();
+                    
+
+
+
+
+
+
+                });
+
+                _uiThread.SetApartmentState(ApartmentState.STA);
+                _uiThread.IsBackground = true;
+                _uiThread.Start();
+
+
                 return Result.Succeeded;
 
             }

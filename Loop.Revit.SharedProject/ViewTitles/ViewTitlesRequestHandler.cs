@@ -100,7 +100,9 @@ namespace Loop.Revit.ViewTitles
             var t = new Transaction(Doc, "Change Viewport Label Line Length");
             t.Start();
 
-            
+            WeakReferenceMessenger.Default.Send(new ProgressResultsMessage(viewportProcessingProgress,
+                viewportCount));
+
 
             foreach (var vp in viewports)
             {

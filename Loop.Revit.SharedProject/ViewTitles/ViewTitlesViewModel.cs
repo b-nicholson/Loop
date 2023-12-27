@@ -18,6 +18,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using System.Threading.Tasks;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -27,7 +28,7 @@ namespace Loop.Revit.ViewTitles
 
         private readonly ViewTitlesModel _model;
 
-        public RelayCommand<Window> Run { get; set; }
+        public AsyncRelayCommand<Window> Run { get; set; }
         public RelayCommand<Window> CopyText { get; set; }
 
         public RelayCommand<Window> SaveUnits { get; set; }
@@ -40,7 +41,13 @@ namespace Loop.Revit.ViewTitles
 
             set => SetProperty(ref _currentProgress, value);
         }
-        public int MaxProgressValue {get; set; }
+
+        private int _maxProgressValue;
+        public int MaxProgressValue
+        {
+            get => _maxProgressValue;
+            set => SetProperty(ref _maxProgressValue, value);
+        }
 
         private bool _isDarkMode;
 
@@ -423,7 +430,7 @@ namespace Loop.Revit.ViewTitles
 
                 }
             }
-      
+
 
 
 
@@ -475,7 +482,7 @@ namespace Loop.Revit.ViewTitles
 
  
 
-            Run = new RelayCommand<Window>(OnRun);
+            Run = new AsyncRelayCommand<Window>(OnRun);
             CopyText = new RelayCommand<Window>(OnCopyText);
             SaveUnits = new RelayCommand<Window>(OnSaveSettings);
             ToggleThemeCommand = new RelayCommand(() => IsDarkMode = !IsDarkMode);
@@ -537,14 +544,14 @@ namespace Loop.Revit.ViewTitles
             else return sheetInfo != null && isFound;
         }
         
-        private void OnRun(Window win)
+        private async Task OnRun(Window win)
         {
             var selected = Sheets.Where(x => x.IsSelected).ToList();
             if (selected.Count == 0)
             {
                 return;
             }
-            _model.ChangeTitleLength(selected);
+            await Task.Run(() => _model.ChangeTitleLength(selected));
         }
 
         private void OnCopyText(Window win)
