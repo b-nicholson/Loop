@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -9,21 +8,19 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using Autodesk.Revit.DB;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
 using Loop.Revit.Utilities;
 using MaterialDesignThemes.Wpf;
-using Utilities;
 using Utilities.Units;
 using Visibility = System.Windows.Visibility;
-using System.Windows.Media;
 using Loop.Revit.Utilities.Wpf;
-using MaterialDesignColors;
-using MaterialDesignThemes.Wpf;
+
+using CommunityToolkit.Mvvm.ComponentModel;
+
+using CommunityToolkit.Mvvm.Input;
 
 namespace Loop.Revit.ViewTitles
 {
-    public class ViewTitlesViewModel : ViewModelBase, INotifyDataErrorInfo
+    public class ViewTitlesViewModel : ObservableObject, INotifyDataErrorInfo
     {
         private readonly ErrorsViewModel _errorsViewModel;
 
@@ -48,7 +45,7 @@ namespace Loop.Revit.ViewTitles
                 if (_activeScheme != value)
                 {
                     _activeScheme = value;
-                    RaisePropertyChanged(nameof(ActiveScheme));
+                    OnPropertyChanged(nameof(ActiveScheme));
                 }
             }
         }
@@ -63,7 +60,7 @@ namespace Loop.Revit.ViewTitles
             {
                 _darkModeEnabled = value;
 
-                RaisePropertyChanged(nameof(DarkModeEnabled));
+                OnPropertyChanged(nameof(DarkModeEnabled));
             }
         }
 
@@ -74,7 +71,9 @@ namespace Loop.Revit.ViewTitles
         public ObservableCollection<SheetWrapper> Sheets
         {
             get => _sheets;
-            set { _sheets = value; RaisePropertyChanged(() => Sheets); }
+            set { _sheets = value;
+                OnPropertyChanged(nameof(Sheets));
+            }
         }
 
         //ICollectionView so we can search using Filter methods
@@ -88,7 +87,7 @@ namespace Loop.Revit.ViewTitles
             set
             {
                 _selectedSheetCount = value;
-                RaisePropertyChanged(nameof(SelectedSheetCount));
+                OnPropertyChanged(nameof(SelectedSheetCount));
             }
         }
 
@@ -104,7 +103,7 @@ namespace Loop.Revit.ViewTitles
             {
                 if (_isAllSheetsSelected == value) return;
                 _isAllSheetsSelected = value;
-                RaisePropertyChanged(nameof(IsAllSheetsSelected));
+                OnPropertyChanged(nameof(IsAllSheetsSelected));
                 SelectAllSheets(value);
             }
         }
@@ -115,7 +114,7 @@ namespace Loop.Revit.ViewTitles
             {
                 sheet.IsSelected = select;
             }
-            RaisePropertyChanged(nameof(IsAllSheetsSelected));
+            OnPropertyChanged(nameof(IsAllSheetsSelected));
         }
 
 
@@ -131,7 +130,7 @@ namespace Loop.Revit.ViewTitles
                 if (_selectAllChecked != value)
                 {
                     _selectAllChecked = value;
-                    RaisePropertyChanged(nameof(SelectAllChecked));
+                    OnPropertyChanged(nameof(SelectAllChecked));
                     UpdateItemSelections(value);
                 }
             }
@@ -170,7 +169,7 @@ namespace Loop.Revit.ViewTitles
             set
             {
                 _textToFilter = value;
-                RaisePropertyChanged(nameof(TextToFilter));
+                OnPropertyChanged(nameof(TextToFilter));
                 try
                 {
                     SheetView.Filter = FilterByName;
@@ -190,7 +189,7 @@ namespace Loop.Revit.ViewTitles
             set
             {
                 _showCheckedOnly = value;
-                RaisePropertyChanged(nameof(ShowCheckedItemsOnly));
+                OnPropertyChanged(nameof(ShowCheckedItemsOnly));
                 try
                 {
                     SheetView.Filter = FilterByName;
@@ -228,7 +227,7 @@ namespace Loop.Revit.ViewTitles
 
 
                     SetAccuracy();
-                    RaisePropertyChanged(nameof(Accuracy));
+                    OnPropertyChanged(nameof(Accuracy));
 
 
                 }
@@ -245,7 +244,7 @@ namespace Loop.Revit.ViewTitles
             set
             {
                 _accuracy = value;
-                RaisePropertyChanged(nameof(Accuracy));
+                OnPropertyChanged(nameof(Accuracy));
                 ConvertUnit(lengthInternalUnits);
 
 
@@ -261,7 +260,7 @@ namespace Loop.Revit.ViewTitles
             {
                 _accuracyOptions?.Clear();
                 _accuracyOptions = value;
-                RaisePropertyChanged(nameof(AccuracyOptions));
+                OnPropertyChanged(nameof(AccuracyOptions));
             }
         }
 
@@ -289,7 +288,7 @@ namespace Loop.Revit.ViewTitles
             set
             {
                 _inputIsCalculation = value;
-                RaisePropertyChanged(nameof(InputIsCalculation));
+                OnPropertyChanged(nameof(InputIsCalculation));
             }
         }
 
@@ -304,7 +303,7 @@ namespace Loop.Revit.ViewTitles
                 if (value != null)
                 {
                     _calculatedUnit = value;
-                    RaisePropertyChanged(nameof(CalculatedUnit));
+                    OnPropertyChanged(nameof(CalculatedUnit));
                 }
             }
         }
@@ -342,7 +341,7 @@ namespace Loop.Revit.ViewTitles
             {
                 _lengthInternalUnits = value;
                 _model.ExtensionDistance = value;
-                RaisePropertyChanged(nameof(lengthInternalUnits));
+                OnPropertyChanged(nameof(lengthInternalUnits));
             }
         }
 
@@ -365,7 +364,7 @@ namespace Loop.Revit.ViewTitles
             set
             {
                 _sheetParameters = value;
-                RaisePropertyChanged(nameof(SheetParameters));
+                OnPropertyChanged(nameof(SheetParameters));
             }
         }
 
@@ -376,7 +375,7 @@ namespace Loop.Revit.ViewTitles
             set
             {
                 _selectedPropWrapper = value;
-                RaisePropertyChanged(nameof(SelectedPropertyWrapper));
+                OnPropertyChanged(nameof(SelectedPropertyWrapper));
                 try
                 {
                     SheetView.Filter = FilterByName;
@@ -398,7 +397,7 @@ namespace Loop.Revit.ViewTitles
             set
             {
                 _imageExample = value;
-                RaisePropertyChanged(nameof(ImageExample));
+                OnPropertyChanged(nameof(ImageExample));
             }
         }
         #endregion
@@ -487,7 +486,7 @@ namespace Loop.Revit.ViewTitles
             //    {
             //        if (args.PropertyName == nameof(SheetWrapper.IsSelected))
 
-            //            RaisePropertyChanged(nameof(IsAllSheetsSelected));
+            //            OnPropertyChanged(nameof(IsAllSheetsSelected));
             //    };
             //}
 
@@ -557,7 +556,7 @@ namespace Loop.Revit.ViewTitles
         private void OnCopyText(Window win)
         {
             InputUnit = CalculatedUnit;
-            RaisePropertyChanged(nameof(InputUnit));
+            OnPropertyChanged(nameof(InputUnit));
         }
 
         private void OnSaveSettings(Window win)
@@ -568,12 +567,13 @@ namespace Loop.Revit.ViewTitles
         private void OnToggleDarkMode(Window win)
         {
             PaletteHelper palette = new PaletteHelper();
+            var res = Application.Current;
 
             //var theme = palette.GetThemeManager();
 
-            var res = Application.Current.Resources;
+            // var res = Application.Current.Resources;
             //ResourceDictionaryExtensions.SetTheme(res,);
-            var res2 = res;
+            //var res2 = res;
             ITheme theme = palette.GetTheme();
 
             if (DarkModeEnabled)
@@ -599,7 +599,7 @@ namespace Loop.Revit.ViewTitles
         private void ErrorsViewModel_ErrorsChanged(object sender, DataErrorsChangedEventArgs e)
         {
             ErrorsChanged?.Invoke(this, e);
-            RaisePropertyChanged(nameof(CanRun));
+            OnPropertyChanged(nameof(CanRun));
         }
         #endregion
 

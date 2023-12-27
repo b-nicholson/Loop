@@ -5,12 +5,13 @@ using System.Linq;
 using System.Runtime.Remoting;
 using System.Text;
 using System.Windows;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Command;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+
 
 namespace Loop.Revit.SecondButton
 {
-    public class SecondButtonViewModel : ViewModelBase
+    public class SecondButtonViewModel : ObservableObject
     {
         public SecondButtonModel Model { get; set; }
 
@@ -22,7 +23,7 @@ namespace Loop.Revit.SecondButton
         public ObservableCollection<SpatialObjectWrapper> SpatialObjects
         {
             get { return _spatialObjects;}
-            set { _spatialObjects = value; RaisePropertyChanged(() => SpatialObjects); }
+            set { _spatialObjects = value; OnPropertyChanged(nameof(SpatialObjects)); }
         }
 
         public SecondButtonViewModel(SecondButtonModel model)

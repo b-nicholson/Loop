@@ -1,8 +1,6 @@
 ﻿using Autodesk.Revit.DB;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -25,7 +23,7 @@ namespace Loop.Revit.ViewTitles
                 if (_isSelected != value)
                 {
                     _isSelected = value;
-                    RaisePropertyChanged(nameof(IsSelected));
+                    OnPropertyChanged(nameof(IsSelected));
 
                 }
             }
@@ -43,7 +41,7 @@ namespace Loop.Revit.ViewTitles
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void RaisePropertyChanged(string propertyName)
+        private void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
