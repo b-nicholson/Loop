@@ -20,9 +20,14 @@
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:CustomColorTheme BaseTheme="Dark"
+                <!--<materialDesign:CustomColorTheme BaseTheme="Dark"
                                                  PrimaryColor="#FF25C5C5"
-                                                 SecondaryColor="DarkGreen" />
+                                                 SecondaryColor="DarkGreen" />-->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+
+                    
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
@@ -284,6 +289,10 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
         <Label Grid.Row="7" 
                        
                        Content="{Binding lengthInternalUnits, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>
+        <ToggleButton Grid.Row="8"
+                      IsChecked="{Binding DarkModeEnabled}"
+                      Command="{Binding ToggleDarkMode}"
+                      />
 
 
         <Viewbox Grid.Row="8" Width="Auto" Stretch="Uniform" Visibility="Collapsed">

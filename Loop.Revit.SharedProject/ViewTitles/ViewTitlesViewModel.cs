@@ -12,9 +12,14 @@ using Autodesk.Revit.DB;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Loop.Revit.Utilities;
+using MaterialDesignThemes.Wpf;
 using Utilities;
 using Utilities.Units;
 using Visibility = System.Windows.Visibility;
+using System.Windows.Media;
+using Loop.Revit.Utilities.Wpf;
+using MaterialDesignColors;
+using MaterialDesignThemes.Wpf;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -28,6 +33,39 @@ namespace Loop.Revit.ViewTitles
         public RelayCommand<Window> CopyText { get; set; }
 
         public RelayCommand<Window> SaveUnits { get; set; }
+
+        public RelayCommand<Window> ToggleDarkMode { get; set; }
+
+
+        private readonly PaletteHelper _paletteHelper = new PaletteHelper();
+
+        private ColorScheme _activeScheme;
+        public ColorScheme ActiveScheme
+        {
+            get => _activeScheme;
+            set
+            {
+                if (_activeScheme != value)
+                {
+                    _activeScheme = value;
+                    RaisePropertyChanged(nameof(ActiveScheme));
+                }
+            }
+        }
+
+
+        private bool _darkModeEnabled;
+
+        public bool DarkModeEnabled
+        {
+            get => _darkModeEnabled;
+            set
+            {
+                _darkModeEnabled = value;
+
+                RaisePropertyChanged(nameof(DarkModeEnabled));
+            }
+        }
 
 
         #region DataGrid Stuff
@@ -456,6 +494,7 @@ namespace Loop.Revit.ViewTitles
             Run = new RelayCommand<Window>(OnRun);
             CopyText = new RelayCommand<Window>(OnCopyText);
             SaveUnits = new RelayCommand<Window>(OnSaveSettings);
+            ToggleDarkMode = new RelayCommand<Window>(OnToggleDarkMode);
         }
 
         private void SetAccuracy()
@@ -524,6 +563,29 @@ namespace Loop.Revit.ViewTitles
         private void OnSaveSettings(Window win)
         {
             _model.CreateDataStorage(lengthInternalUnits);
+        }
+
+        private void OnToggleDarkMode(Window win)
+        {
+            PaletteHelper palette = new PaletteHelper();
+
+            //var theme = palette.GetThemeManager();
+
+            var res = Application.Current.Resources;
+            //ResourceDictionaryExtensions.SetTheme(res,);
+            var res2 = res;
+            ITheme theme = palette.GetTheme();
+
+            if (DarkModeEnabled)
+            {
+                theme.SetBaseTheme(Theme.Dark);
+            }
+            else
+            {
+                theme.SetBaseTheme(Theme.Light);
+            }
+            palette.SetTheme(theme);
+
         }
 
         #region INotifyErrorInfo
