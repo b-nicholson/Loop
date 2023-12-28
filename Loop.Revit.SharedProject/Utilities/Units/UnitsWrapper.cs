@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.UI.WebControls;
 using Autodesk.Revit.DB;
+using Loop.Revit.Utilities.Units;
 
 namespace Utilities.Units
 {
@@ -36,8 +37,45 @@ namespace Utilities.Units
     }
 
 
-    public static class RevitUnitTypes
+
+
+public static class RevitUnitTypes
     {
+        private static readonly List<AccuracyWrapper> AccuracyMetric = new List<AccuracyWrapper>
+        {
+            new AccuracyWrapper("1", 1),
+            new AccuracyWrapper("0.1", 0.1),
+            new AccuracyWrapper("0.01", 0.01),
+            new AccuracyWrapper("0.001", 0.001),
+            new AccuracyWrapper("0.0001", 0.0001)
+        };
+        private static readonly List<AccuracyWrapper> AccuracyFeet = new List<AccuracyWrapper>
+        {
+            new AccuracyWrapper("1\"", 1.0/12.0),
+            new AccuracyWrapper("1/2\"", 0.5/ 12.0),
+            new AccuracyWrapper("1/4\"", 0.25 / 12.0),
+            new AccuracyWrapper("1/8\"", 0.125 / 12.0),
+            new AccuracyWrapper("1/16\"", 0.0625 / 12.0),
+            new AccuracyWrapper("1/32\"", 0.03125 / 12.0),
+            new AccuracyWrapper("1/64\"", 0.015625 / 12.0),
+            new AccuracyWrapper("1/128\"", 0.0078125 / 12.0),
+            new AccuracyWrapper("1/256\"", 0.00390625 / 12.0)
+        };
+        private static readonly List<AccuracyWrapper> AccuracyInches = new List<AccuracyWrapper>
+        {
+            new AccuracyWrapper("1\"", 1.0),
+            new AccuracyWrapper("1/2\"", 0.5),
+            new AccuracyWrapper("1/4\"", 0.25),
+            new AccuracyWrapper("1/8\"", 0.125),
+            new AccuracyWrapper("1/16\"", 0.0625),
+            new AccuracyWrapper("1/32\"", 0.03125),
+            new AccuracyWrapper("1/64\"", 0.015625),
+            new AccuracyWrapper("1/128\"", 0.0078125),
+            new AccuracyWrapper("1/256\"", 0.00390625)
+        };
+
+
+
         public static readonly RevitUnit DecimalFeet = new RevitUnit(UnitTypeId.Feet, SpecTypeId.Length, "Feet", new List<string> { "'", "ft" }, new List<double>{1,0.1,0.001,0.001,0.0001});
         public static readonly RevitUnit FractionalFeet = new RevitUnit(UnitTypeId.FeetFractionalInches, SpecTypeId.Length, "Feet Fractional Inches", new List<string> { "' \"", "ft in" }, new List<double> { 1.0/12.0, 0.5/ 12.0, 0.25 / 12.0, 0.125 / 12.0, 0.0625 / 12.0, 0.03125 / 12.0, 0.015625 / 12.0, 0.0078125 / 12.0, 0.00390625 / 12.0 });
         public static readonly RevitUnit DecimalInches = new RevitUnit(UnitTypeId.Inches, SpecTypeId.Length, "Inches", new List<string> { "\"", "in" }, new List<double> { 1, 0.1, 0.001, 0.001 });

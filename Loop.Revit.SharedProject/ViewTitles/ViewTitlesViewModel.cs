@@ -9,10 +9,8 @@ using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using Autodesk.Revit.DB;
 using Loop.Revit.Utilities;
-using MaterialDesignThemes.Wpf;
 using Utilities.Units;
 using Visibility = System.Windows.Visibility;
-using Loop.Revit.Utilities.Wpf;
 
 using CommunityToolkit.Mvvm.ComponentModel;
 
@@ -39,7 +37,11 @@ namespace Loop.Revit.ViewTitles
         {
             get => _currentProgress;
 
-            set => SetProperty(ref _currentProgress, value);
+            set
+            {
+                SetProperty(ref _currentProgress, value);
+               CheckProgressBarVisibility();
+            }
         }
 
         private int _maxProgressValue;
@@ -47,6 +49,14 @@ namespace Loop.Revit.ViewTitles
         {
             get => _maxProgressValue;
             set => SetProperty(ref _maxProgressValue, value);
+        }
+
+        private Visibility _progressVisibility = Visibility.Collapsed;
+
+        public Visibility ProgressVisibility
+        {
+            get => _progressVisibility;
+            set => SetProperty(ref _progressVisibility, value);
         }
 
         private bool _isDarkMode;
@@ -609,6 +619,18 @@ namespace Loop.Revit.ViewTitles
         {
             var convertedUnit = _model.FormatUnits(numberToConvert, SelectedUnit, Accuracy);
             CalculatedUnit = convertedUnit;
+        }
+
+        private void CheckProgressBarVisibility()
+        {
+            if (CurrentProgress < MaxProgressValue)
+            {
+                ProgressVisibility =  Visibility.Visible;
+            }
+            else
+            {
+                ProgressVisibility = Visibility.Collapsed;
+            }
         }
 
         //fluent validation

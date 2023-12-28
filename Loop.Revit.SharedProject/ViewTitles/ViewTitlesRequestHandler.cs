@@ -11,6 +11,7 @@ using Loop.Revit.Utilities.ExtensibleStorage;
 using Autodesk.Revit.DB.ExtensibleStorage;
 using System.Reflection;
 using CommunityToolkit.Mvvm.Messaging;
+using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -106,29 +107,42 @@ namespace Loop.Revit.ViewTitles
 
             foreach (var vp in viewports)
             {
-                vp.LabelLineLength = 0.001;
-                var rotation = vp.Rotation;
+                var viewportTypeId = vp.GetTypeId();
+                var viewportType = Doc.GetElement(viewportTypeId);
+
+          
+                // Access the "Show Title" parameter
+                var showTitleParam = viewportType.get_Parameter(BuiltInParameter.VIEWPORT_ATTR_SHOW_LABEL);
+                var showTitleLineParam = viewportType.get_Parameter(BuiltInParameter.VIEWPORT_ATTR_SHOW_EXTENSION_LINE);
+
+                var showTitle = Convert.ToBoolean(showTitleParam.AsInteger());
+                var showLine = Convert.ToBoolean(showTitleLineParam.AsInteger());
+
+                if (showTitle && showLine)
+                {
+                    vp.LabelLineLength = 0.001;
+                    var rotation = vp.Rotation;
 
 
-                if (rotation != ViewportRotation.None)
-                    vp.Rotation = ViewportRotation.None;
+                    if (rotation != ViewportRotation.None)
+                        vp.Rotation = ViewportRotation.None;
 
-                var outlines = vp.GetLabelOutline();
-                var outlineMax = outlines.MaximumPoint;
-                var outlineMin = outlines.MinimumPoint;
+                    var outlines = vp.GetLabelOutline();
+                    var outlineMax = outlines.MaximumPoint;
+                    var outlineMin = outlines.MinimumPoint;
 
-                var labelOffset = vp.LabelOffset;
-                var boxMinPoint = vp.GetBoxOutline().MinimumPoint;
-                var newPoint = (boxMinPoint + labelOffset).X;
-                var symbolSize = newPoint - outlineMin.X;
+                    var labelOffset = vp.LabelOffset;
+                    var boxMinPoint = vp.GetBoxOutline().MinimumPoint;
+                    var newPoint = (boxMinPoint + labelOffset).X;
+                    var symbolSize = newPoint - outlineMin.X;
 
                 
-                var length = Math.Max(outlineMax.X - outlineMin.X, outlineMax.Y - outlineMin.Y) - symbolSize + extensionDistance;
+                    var length = Math.Max(outlineMax.X - outlineMin.X, outlineMax.Y - outlineMin.Y) - symbolSize + extensionDistance;
 
-                vp.LabelLineLength = length;
-                if (rotation != ViewportRotation.None)
-                    vp.Rotation = rotation;
-
+                    vp.LabelLineLength = length;
+                    if (rotation != ViewportRotation.None)
+                        vp.Rotation = rotation;
+                }
                 viewportProcessingProgress++;
 
                 WeakReferenceMessenger.Default.Send(new ProgressResultsMessage(viewportProcessingProgress,

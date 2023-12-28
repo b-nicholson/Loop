@@ -16,6 +16,7 @@
         AllowsTransparency="True"
         Background="Transparent"
         ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
 
         >
 <!--Allows resize grips-->
@@ -55,8 +56,11 @@
 
 
     </Window.Resources>
-    <Border Background="{DynamicResource MaterialDesignPaper}" CornerRadius="10">
-    <Grid Margin="20" >
+
+
+    <Border Background="{DynamicResource MaterialDesignPaper}" CornerRadius="10" BorderThickness="1" BorderBrush="DimGray">
+     
+        <Grid Margin="20" >
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -350,13 +354,9 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
                        
                        Content="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>
 
-        <ToggleButton Grid.Row="8" 
-                      IsChecked="{Binding IsDarkMode, Mode=OneWay}" 
-                      Command="{Binding ToggleThemeCommand}"
-                      Visibility="Collapsed"/>
 
-       
-        <ProgressBar Grid.Row="9" Maximum="{Binding MaxProgressValue, UpdateSourceTrigger=PropertyChanged}" Value="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <ProgressBar Grid.Row="9" Maximum="{Binding MaxProgressValue, UpdateSourceTrigger=PropertyChanged}" Value="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ProgressVisibility, UpdateSourceTrigger=PropertyChanged}"/>
 
 
         <Viewbox Grid.Row="8" Width="Auto" Stretch="Uniform" Visibility="Collapsed">
