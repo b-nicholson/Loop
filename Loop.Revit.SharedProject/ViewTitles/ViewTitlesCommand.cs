@@ -9,7 +9,6 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Loop.Revit.Utilities;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -34,8 +33,8 @@ namespace Loop.Revit.ViewTitles
                         new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
 
 
-                    
-                    
+
+
                     var vm = new ViewTitlesViewModel(m);
                     var v = new ViewTitlesView
                     {
@@ -50,7 +49,7 @@ namespace Loop.Revit.ViewTitles
 
                     v.Show();
                     Dispatcher.Run();
-                    
+
 
 
 

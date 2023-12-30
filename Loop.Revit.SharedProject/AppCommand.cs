@@ -6,8 +6,8 @@ using Loop.Revit.FavouriteViews;
 using Loop.Revit.FirstButton;
 using Loop.Revit.SecondButton;
 using Loop.Revit.ThirdButton;
-using Loop.Revit.Utilities;
 using Loop.Revit.ViewTitles;
+
 
 namespace Loop.Revit
 {
@@ -44,6 +44,8 @@ namespace Loop.Revit
             ribbonPanel.AddSeparator();
             FavouriteViewsCommand.CreateButton(ribbonPanel);
             ribbonPanel.AddSeparator();
+            
+
             ViewTitlesCommand.CreateButton(ribbonPanel);
 
             DockablePanelUtilsFv.RegisterDockablePanel(app);

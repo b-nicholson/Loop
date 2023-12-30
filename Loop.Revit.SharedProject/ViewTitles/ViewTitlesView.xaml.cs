@@ -1,6 +1,8 @@
 ﻿
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
@@ -13,7 +15,7 @@ namespace Loop.Revit.ViewTitles
         public ViewTitlesView()
         {
             // Useless dummy code to force revit to load the libraries https://stackoverflow.com/questions/55594443/how-to-include-materialdesignxamltoolkit-to-wpf-class-library
-            ColorZoneAssist.SetMode(new GroupBox(), ColorZoneMode.Light);
+            ColorZoneAssist.SetMode(new System.Windows.Controls.GroupBox(), ColorZoneMode.Light);
             Hue hue = new Hue("name", System.Windows.Media.Color.FromArgb(1, 2, 3, 4), System.Windows.Media.Color.FromArgb(1, 5, 6, 7));
             InitializeComponent();
             System.Diagnostics.Debug.WriteLine("Current Directory: " + System.IO.Directory.GetCurrentDirectory());
@@ -32,13 +34,19 @@ namespace Loop.Revit.ViewTitles
 
         private void MaximizeRestoreButton_Click(object sender, RoutedEventArgs e)
         {
-            if (this.WindowState == WindowState.Maximized)
+            switch (WindowState)
             {
-                this.WindowState = WindowState.Normal;
-            }
-            else
-            {
-                this.WindowState = WindowState.Maximized;
+                case WindowState.Normal:
+                    var sizingParams = GetVirtualWindowSize();
+                    WindowState = WindowState.Maximized;
+                    MaxHeight = sizingParams.height;
+                    MaxWidth = sizingParams.width;
+                    break;
+                case WindowState.Maximized:
+                    WindowState = WindowState.Normal;
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -46,5 +54,20 @@ namespace Loop.Revit.ViewTitles
         {
             this.Close();
         }
+
+
+        private (double height, double width) GetVirtualWindowSize()
+        {
+            Window virtualWindow = new Window();
+            virtualWindow.Show();
+            virtualWindow.Opacity = 0;
+            virtualWindow.WindowState = WindowState.Maximized;
+            double returnHeight = virtualWindow.Height;
+            double returnWidth = virtualWindow.Width;
+            virtualWindow.Close();
+            return (returnHeight, returnWidth);
+        }
+
+
     }
 }

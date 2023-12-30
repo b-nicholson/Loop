@@ -53,7 +53,7 @@ namespace Loop.Revit.ViewTitles
             var internalUnitsList = new List<double>();
             foreach (var option in unitList)
             {
-                internalUnitsList.Add(UnitUtils.ConvertToInternalUnits(option, selectedUnit.UnitTypeId));
+                internalUnitsList.Add(UnitUtils.ConvertToInternalUnits(option.Value, selectedUnit.UnitTypeId));
             }
 
 

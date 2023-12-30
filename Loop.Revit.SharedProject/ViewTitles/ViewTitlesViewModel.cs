@@ -17,6 +17,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Threading.Tasks;
+using Loop.Revit.Utilities.Units;
+using Loop.Revit.Utilities.Wpf.SmallDialog;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -233,7 +235,7 @@ namespace Loop.Revit.ViewTitles
                 if (value != null)
                 {
                     ConvertUnitsToInternal();
-                    AccuracyOptions = new ObservableCollection<double>(value.Accuracy);
+                    AccuracyOptions = new ObservableCollection<AccuracyWrapper>(value.Accuracy);
 
 
                     SetAccuracy();
@@ -246,9 +248,9 @@ namespace Loop.Revit.ViewTitles
             }
         }
 
-        private double _accuracy;
+        private AccuracyWrapper _accuracy;
 
-        public double Accuracy
+        public AccuracyWrapper Accuracy
         {
             get => _accuracy;
             set
@@ -261,9 +263,9 @@ namespace Loop.Revit.ViewTitles
             }
         }
 
-        private ObservableCollection<double> _accuracyOptions;
+        private ObservableCollection<AccuracyWrapper> _accuracyOptions;
 
-        public ObservableCollection<double> AccuracyOptions
+        public ObservableCollection<AccuracyWrapper> AccuracyOptions
         {
             get => _accuracyOptions;
             set
@@ -467,7 +469,7 @@ namespace Loop.Revit.ViewTitles
             var things = _model.ExtensionDistance;
             var things2 = SelectedUnit;
             var things3 = Accuracy;
-            var convertedUnit = _model.FormatUnits(_model.ExtensionDistance, SelectedUnit, Accuracy);
+            var convertedUnit = _model.FormatUnits(_model.ExtensionDistance, SelectedUnit, Accuracy.Value);
             InputUnit = convertedUnit;
 
 
@@ -489,8 +491,8 @@ namespace Loop.Revit.ViewTitles
             SheetParameters = propertyWrappers;
             SelectedPropertyWrapper = propertyWrappers[0];
             #endregion
+            
 
- 
 
             Run = new AsyncRelayCommand<Window>(OnRun);
             CopyText = new RelayCommand<Window>(OnCopyText);
@@ -511,6 +513,8 @@ namespace Loop.Revit.ViewTitles
         {
             try
             {
+                var acc = _model.FindClosestUnitAccuracyIndex(SelectedUnit);
+                var acc2 = AccuracyOptions[acc];
                 Accuracy = AccuracyOptions[_model.FindClosestUnitAccuracyIndex(SelectedUnit)];
             }
             catch (Exception e)
@@ -528,10 +532,6 @@ namespace Loop.Revit.ViewTitles
                 if (ShowCheckedItemsOnly) return sheetInfo.IsSelected;
                 else return true;
             }
-
-
-
-            
 
             var selection = SelectedPropertyWrapper;
             var parametersToTarget = selection.Value;
@@ -573,6 +573,15 @@ namespace Loop.Revit.ViewTitles
         private void OnSaveSettings(Window win)
         {
             _model.CreateDataStorage(lengthInternalUnits);
+
+            var smallDialogViewModel = new SmallDialogViewModel(
+                "Success!!!!!!!!",
+                "fgsdgdfg Successfully saved settings to document. Remember to save/sync to keep your changes.",
+                button1Content:"Ok",
+                darkMode: IsDarkMode
+                );
+            var smallDialogView = new SmallDialogView { DataContext = smallDialogViewModel};
+            smallDialogView.ShowDialog();
         }
 
 
@@ -617,7 +626,9 @@ namespace Loop.Revit.ViewTitles
 
         private void ConvertUnit(double numberToConvert)
         {
-            var convertedUnit = _model.FormatUnits(numberToConvert, SelectedUnit, Accuracy);
+            if (Accuracy == null) return;
+            var accuracyValue = Accuracy.Value;
+            var convertedUnit = _model.FormatUnits(numberToConvert, SelectedUnit, accuracyValue);
             CalculatedUnit = convertedUnit;
         }
 
@@ -647,7 +658,6 @@ namespace Loop.Revit.ViewTitles
             //    _errorsViewModel.AddError(propertyName, firstErrorMessage);
             //}
         }
-
 
     }
 }

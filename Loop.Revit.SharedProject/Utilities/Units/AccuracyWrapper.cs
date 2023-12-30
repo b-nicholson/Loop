@@ -1,16 +1,15 @@
 ﻿
 namespace Loop.Revit.Utilities.Units
 {
-    class AccuracyWrapper
+    public class AccuracyWrapper
     {
-        public double Value;
-        public string Name;
+        public double Value { get; set; }
+        public string Name { get; set; }
 
         public AccuracyWrapper(string name, double value)
         {
             Value = value;
             Name = name;
         }
-
     }
 }
