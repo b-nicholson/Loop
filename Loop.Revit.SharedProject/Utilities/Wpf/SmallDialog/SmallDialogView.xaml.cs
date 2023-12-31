@@ -1,5 +1,7 @@
 ﻿
 
+using System.Windows.Input;
+
 namespace Loop.Revit.Utilities.Wpf.SmallDialog
 {
     public sealed partial class SmallDialogView
@@ -7,6 +9,11 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
         public SmallDialogView()
         {
             this.InitializeComponent();
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
         }
     }
 }

@@ -573,15 +573,21 @@ namespace Loop.Revit.ViewTitles
         private void OnSaveSettings(Window win)
         {
             _model.CreateDataStorage(lengthInternalUnits);
-
-            var smallDialogViewModel = new SmallDialogViewModel(
-                "Success!!!!!!!!",
-                "fgsdgdfg Successfully saved settings to document. Remember to save/sync to keep your changes.",
-                button1Content:"Ok",
-                darkMode: IsDarkMode
-                );
-            var smallDialogView = new SmallDialogView { DataContext = smallDialogViewModel};
-            smallDialogView.ShowDialog();
+            var blah2 = SmallDialog.Create("Success!",
+                "Settings have been added inside your active document. Remember to save/sync to keep your changes. This will be accessible by all users.",
+                button1Content: "Ok",
+                darkMode: IsDarkMode,
+                owner: win
+            );
+            //var smallDialogViewModel = new SmallDialogViewModel(
+            //    "Success!",
+            //    "Successfully saved the settings inside your active document. Remember to save/sync to keep your changes.",
+            //    button1Content:"Ok",
+            //    darkMode: IsDarkMode
+            //    );
+            //var smallDialogView = new SmallDialogView { DataContext = smallDialogViewModel};
+            //smallDialogView.ShowDialog();
+            //var blah = smallDialogViewModel.Results;
         }
 
 

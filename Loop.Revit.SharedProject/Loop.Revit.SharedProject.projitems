@@ -43,6 +43,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfRevitUnitValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfUnit.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\ColorScheme.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogView.xaml.cs">

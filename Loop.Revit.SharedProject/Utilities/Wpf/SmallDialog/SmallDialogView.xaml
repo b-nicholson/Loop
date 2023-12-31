@@ -17,7 +17,9 @@
         ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen"
         Width="350"
-        Height="Auto">
+        Height="Auto"
+        SizeToContent="Height"
+        >
 
     <WindowChrome.WindowChrome>
         <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0"/>
@@ -45,13 +47,15 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" 
+            <StackPanel Grid.Row="0" MouseLeftButtonDown="Window_MouseLeftButtonDown" Cursor="Hand" Width="*">
+            <TextBlock 
                        Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                        Text="{Binding Title, FallbackValue=Success!}"
                        HorizontalAlignment="Center"
                        Margin="0 0 0 10 "/>
+            </StackPanel>
             <TextBlock Grid.Row="1" TextWrapping="WrapWithOverflow" Text="{Binding Message, FallbackValue= Successfully saved settings to document. Remember to save/sync to keep your changes.}"/>
-
+           
             <StackPanel Grid.Row="2" Margin="0 20 0 0" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button
                     Width="70"
