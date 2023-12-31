@@ -30,12 +30,15 @@
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:CustomColorTheme BaseTheme="Light"
-                                                 PrimaryColor="#FF25C5C5"
-                                                 SecondaryColor="DarkGreen" />
 
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Loop.Revit;component/Utilities/Wpf/LoopThemeColours.xaml" />
+                <materialDesign:CustomColorTheme BaseTheme="Light"
+                                                 PrimaryColor="{StaticResource LoopPrimary}"
+                                                 SecondaryColor="{StaticResource LoopSecondary}"
+                                                 ColorAdjustment="{materialDesign:ColorAdjustment DesiredContrastRatio=4.5, Colors=All, Contrast=Medium}" />
+
+                <!--<ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />-->
 
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
@@ -247,7 +250,8 @@
 
 
 
-                    <materialDesign:PackIcon Kind="ContentSave"/>
+                    <materialDesign:PackIcon Kind="ContentSave"
+                                             Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"/>
                 </Button>
 
             </Grid>
@@ -293,7 +297,9 @@
                     
                     IsChecked="{Binding ShowCheckedItemsOnly}"
                               Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                              ToolTip="Show Selected Sheets Only">
+                              ToolTip="Show Selected Sheets Only"
+                                  Background="{DynamicResource MaterialDesignPaper}">
+                        
                         <materialDesign:PackIcon
                         Kind="CheckboxMarkedOutline"
                         >

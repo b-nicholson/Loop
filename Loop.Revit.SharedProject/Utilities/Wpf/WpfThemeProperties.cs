@@ -35,6 +35,12 @@ namespace Loop.Revit.Utilities.Wpf
         {
 
             var mat = new CustomColorTheme();
+
+            var colorAdjust = new ColorAdjustment();
+            colorAdjust.DesiredContrastRatio = 4.5f;
+            colorAdjust.Contrast = Contrast.Medium;
+            colorAdjust.Colors = ColorSelection.All;
+
             mat.BaseTheme = BaseTheme.Light;
             if (isDarkMode != null && (bool)isDarkMode)
             {
@@ -43,6 +49,7 @@ namespace Loop.Revit.Utilities.Wpf
 
             mat.PrimaryColor = Color.FromRgb(56,66,189);
             mat.SecondaryColor = Color.FromRgb(156, 166, 89);
+            mat.ColorAdjustment = colorAdjust;
            
 
 
