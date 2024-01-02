@@ -9,12 +9,12 @@ namespace Loop.Revit.Utilities
 {
     public static class DialogUtils
     {
-        public static string SelectSingleFile()
+        public static string SelectSingleFile(string filterText, string fileExtension)
         {
             var dialog = new OpenFileDialog()
             {
-                Filter = "Excel Files|*.xlsx",
-                DefaultExt = "xlsx",
+                Filter = filterText, // Example: "Image files (*.jpg;*.png)|*.jpg;*.png|All files (*.*)|*.*"
+                DefaultExt = fileExtension, // Example: "txt"
                 Multiselect = false
             };
 
@@ -24,6 +24,10 @@ namespace Loop.Revit.Utilities
             return result != DialogResult.OK ? string.Empty : filePath;
 
         }
+
+
+
+
         /*
         public static string SelectMulitipleFiles(string defaultFileExtension)
         {

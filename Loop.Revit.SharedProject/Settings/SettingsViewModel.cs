@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Loop.Revit.Utilities;
 using Loop.Revit.Utilities.UserSettings;
 
 namespace Loop.Revit.Settings
@@ -39,6 +40,14 @@ namespace Loop.Revit.Settings
         }
         #endregion
 
+        #region Import/Export Properties
+        public RelayCommand ImportSettings { get; set; }
+        public RelayCommand ExportSettings { get; set; }
+        public RelayCommand ClearSettings { get; set; }
+
+
+        #endregion
+
         public SettingsViewModel(SettingsModel model)
         {
             Model = model;
@@ -52,6 +61,8 @@ namespace Loop.Revit.Settings
             //loadedSettings.IsSubscribed = true;
             //UserSettingsManager.SaveSettings(loadedSettings);
 
+            //UserSettingsManager.DeleteSettings();
+
 
 
 
@@ -59,6 +70,36 @@ namespace Loop.Revit.Settings
 
             ChangeTheme = new RelayCommand(OnChangeTheme);
             ToggleThemeCommand = new RelayCommand(() => IsDarkMode = !IsDarkMode);
+
+            ImportSettings = new RelayCommand(OnImportSettings);
+            ExportSettings = new RelayCommand(OnExportSettings);
+            ClearSettings = new RelayCommand(OnClearSettings);
+
+
+
+        }
+
+        private void OnImportSettings()
+        {
+            // TODO add success messages and error handling
+            var filePath = DialogUtils.SelectSingleFile("JSON files|*.json", "json");
+
+            var settings = UserSettingsManager.LoadSettings(filePath);
+            if (settings != null)
+            {
+                UserSettingsManager.SaveSettings(settings);
+            }
+
+        }
+
+        private void OnExportSettings()
+        {
+
+        }
+
+        private void OnClearSettings()
+        {
+
         }
 
         private void OnChangeTheme()

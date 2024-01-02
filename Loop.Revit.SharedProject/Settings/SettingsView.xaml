@@ -94,7 +94,8 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
 
@@ -133,7 +134,6 @@
 
             <Expander Grid.Row="1"
                       HorizontalAlignment="Stretch"
-                      IsExpanded="True"
                       Header="Colour Themes">
                 <StackPanel Margin="24,8,24,16"
                             Orientation="Vertical"
@@ -169,7 +169,61 @@
             </Expander>
             <Border Grid.Row="2"
                     Style="{StaticResource HorizontalDividerBorder}" />
-
+            <Expander Grid.Row="3"
+                      HorizontalAlignment="Stretch"
+                      Header="Settings Options">
+                <StackPanel Margin="24,8,24,16"
+                            Orientation="Vertical"
+                            TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
+                    <TextBlock Text="Import Settings" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Import an existing settings file from your local computer"
+                                   Width="Auto"
+                                   Margin="0 0 20 0"
+                                   Style="{StaticResource HorizontalExpanderContentTextBlock}" />
+                        <Button Grid.Column="1"
+                                Content="Import"
+                                Command="{Binding ImportSettings}"
+                                Style="{StaticResource MaterialDesignOutlinedButton}"/>
+                    </Grid>
+                    <TextBlock Text="Export Settings" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Import an existing settings file from your local computer"
+                                   Width="Auto"
+                                   Margin="0 0 20 0"
+                                   Style="{StaticResource HorizontalExpanderContentTextBlock}" />
+                        <Button Grid.Column="1"
+                                Content="Export"
+                                Command="{Binding ExportSettings}"
+                                Style="{StaticResource MaterialDesignOutlinedButton}" />
+                    </Grid>
+                    <TextBlock Text="Clear Settings" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Reset settings back to defaults"
+                                   Width="Auto"
+                                   Margin="0 0 20 0"
+                                   Style="{StaticResource HorizontalExpanderContentTextBlock}" />
+                        <Button Grid.Column="1"
+                                Content="Clear"
+                                Command="{Binding ClearSettings}"
+                                Style="{StaticResource MaterialDesignOutlinedButton}" />
+                    </Grid>
+                </StackPanel>
+            </Expander>
+            <Border Grid.Row="4"
+                    Style="{StaticResource HorizontalDividerBorder}" />
 
 
         </Grid>
