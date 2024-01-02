@@ -31,14 +31,14 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
 
-                <ResourceDictionary Source="pack://application:,,,/Loop.Revit;component/Utilities/Wpf/LoopThemeColours.xaml" />
+                <!--<ResourceDictionary Source="pack://application:,,,/Loop.Revit;component/Utilities/LoopThemeColours.xaml" />
                 <materialDesign:CustomColorTheme BaseTheme="Light"
                                                  PrimaryColor="{StaticResource LoopPrimary}"
                                                  SecondaryColor="{StaticResource LoopSecondary}"
-                                                 ColorAdjustment="{materialDesign:ColorAdjustment DesiredContrastRatio=4.5, Colors=All, Contrast=Medium}" />
+                                                 ColorAdjustment="{materialDesign:ColorAdjustment DesiredContrastRatio=4.5, Colors=All, Contrast=Medium}" />-->
 
-                <!--<ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />-->
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
 
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
@@ -123,13 +123,7 @@
                             Style="{StaticResource MaterialDesignFlatDarkButton}"/>
                     </StackPanel>
 
-
-
-
-
-
                 </Grid>
-
             </materialDesign:ColorZone>
 
             <Grid Grid.Row="1">
