@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Media.Imaging;
 using Autodesk.Revit.DB;
 using Loop.Revit.Utilities;
 using Utilities.Units;
@@ -462,7 +461,6 @@ namespace Loop.Revit.ViewTitles
             );
         }
 
-
         #region INotifyErrorInfo
         public IEnumerable GetErrors(string propertyName)
         {
@@ -521,21 +519,6 @@ namespace Loop.Revit.ViewTitles
                 ProgressVisibility = Visibility.Collapsed;
             }
         }
-
-        //fluent validation
-        //private void ValidateProperty(string propertyName)
-        //{
-        //    // this is commented out becuase i'm not actually using fluent validation for this anymore. saving for future use/reference.
-
-
-        //    _errorsViewModel.ClearErrors(propertyName);
-        //    //var result = _validator.Validate(UserUnit);
-        //    //if (result.Errors.Any())
-        //    //{
-        //    //    string firstErrorMessage = result.Errors.First().ErrorMessage;
-        //    //    _errorsViewModel.AddError(propertyName, firstErrorMessage);
-        //    //}
-        //}
 
     }
 }
