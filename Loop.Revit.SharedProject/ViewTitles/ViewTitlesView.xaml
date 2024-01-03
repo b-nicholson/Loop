@@ -6,15 +6,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
-        Background="{DynamicResource MaterialDesignPaper}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         Width="600"
         FontFamily="{materialDesign:MaterialDesignFont}"
         xmlns:local="clr-namespace:Loop.Revit.Utilities.Wpf"
-        local:WpfThemeProperties.ToggleTheme="{Binding IsDarkMode}">
-
-
+        local:WpfThemeProperties.ToggleTheme="{Binding IsDarkMode}"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        MinWidth="550"
+        MinHeight="585">
+    <!--Allows resize grips-->
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0"/>
+    </WindowChrome.WindowChrome>
 
 
     <Window.Resources>
@@ -22,14 +30,17 @@
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:CustomColorTheme BaseTheme="Dark"
-                                                 PrimaryColor="#FF25C5C5"
-                                                 SecondaryColor="DarkGreen" />
-           
+
+                <!--<ResourceDictionary Source="pack://application:,,,/Loop.Revit;component/Utilities/LoopThemeColours.xaml" />
+                <materialDesign:CustomColorTheme BaseTheme="Light"
+                                                 PrimaryColor="{StaticResource LoopPrimary}"
+                                                 SecondaryColor="{StaticResource LoopSecondary}"
+                                                 ColorAdjustment="{materialDesign:ColorAdjustment DesiredContrastRatio=4.5, Colors=All, Contrast=Medium}" />-->
+
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
 
-                    
+
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
@@ -49,66 +60,147 @@
 
     </Window.Resources>
 
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-        </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0"
-                       Margin=" 0 0 0 20"
-                Text="Adjust View Title Line Length"
-                Style="{StaticResource MaterialDesignHeadline5TextBlock}"
-                />
-        <Grid Grid.Row="1">
+
+    <Border Background="{DynamicResource MaterialDesignPaper}" CornerRadius="10" BorderThickness="1" BorderBrush="DimGray">
+
+        <Grid Margin="20 10 20 20 " >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0"
+            <materialDesign:ColorZone Grid.Row =" 0"  MouseLeftButtonDown="Window_MouseLeftButtonDown" Cursor="Hand">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                    Margin=" 0 0 0 20"
+                    Text="Adjust View Title Line Length"
+                    Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                />
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right">
+                        <ToggleButton Width="45" VerticalContentAlignment="Center"
+                                  IsChecked="{Binding IsDarkMode, Mode=OneWay}" 
+                                  Command="{Binding ToggleThemeCommand}"
+                                  Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                  ToolTip="Toggle Dark/Light Theme" HorizontalAlignment="Right" VerticalAlignment="Top">
+                            <materialDesign:PackIcon
+                            Kind="WhiteBalanceSunny"
+                        >
+
+                            </materialDesign:PackIcon>
+                            <materialDesign:ToggleButtonAssist.OnContent>
+                                <materialDesign:PackIcon
+                                Kind="WeatherNight" />
+                            </materialDesign:ToggleButtonAssist.OnContent>
+                        </ToggleButton>
+                        <Button
+                            Click="MinimizeButton_Click"
+                            VerticalContentAlignment="Center"
+                        Content="{materialDesign:PackIcon WindowMinimize}"
+                        Style="{StaticResource MaterialDesignFlatDarkButton}"/>
+                        <Button 
+                            Click="MaximizeRestoreButton_Click"
+                            VerticalContentAlignment="Center"
+                        Content="{materialDesign:PackIcon WindowMaximize}"
+                        Style="{StaticResource MaterialDesignFlatDarkButton}"/>
+                        <Button 
+                            Click="CloseButton_Click"
+                            VerticalContentAlignment="Center"
+                            Content="{materialDesign:PackIcon WindowClose}"
+                            Style="{StaticResource MaterialDesignFlatDarkButton}"/>
+                    </StackPanel>
+
+                </Grid>
+            </materialDesign:ColorZone>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+
+                <TextBlock Grid.Column="0"
                            Margin="0 30 10 0 "
                     Text="This tool automatically sizes the viewport title line on sheets to match each title's bounding box. You may provide an additional distance to extend the line beyond, as demonstrated by the blue dimension."
                            TextWrapping="Wrap"
                            />
-            <Image Grid.Column="1"
+                <Viewbox Grid.Column="1" Width="Auto" Height="100" Stretch="Uniform">
+                    <Canvas Width="442.500" Height="181.339">
+                        <Canvas>
+                            <!-- Layer 1/<Ellipse> -->
+                            <Path StrokeThickness="4.0" Stroke="{DynamicResource MaterialDesignBody}" StrokeMiterLimit="1.0" Data="F1 M 4.000,120.500 C 4.000,90.400 28.400,66.000 58.500,66.000 C 88.600,66.000 113.000,90.400 113.000,120.500 C 113.000,150.600 88.600,175.000 58.500,175.000 C 28.400,175.000 4.000,150.600 4.000,120.500 Z"/>
+                            <!-- Layer 1/<Line> -->
+                            <Path StrokeThickness="3.0" Stroke="{DynamicResource MaterialDesignBody}" StrokeMiterLimit="1.0" Data="F1 M 113.000,120.000 L 411.000,120.000"/>
+                            <!-- Layer 1/<Ellipse> -->
+                            <Path StrokeThickness="3.0" Stroke="{DynamicResource MaterialDesignBody}" StrokeMiterLimit="1.0" Fill="{DynamicResource PrimaryHueMidBrush}" Data="F1 M 411.500,119.750 C 411.500,115.470 414.970,112.000 419.250,112.000 C 423.530,112.000 427.000,115.470 427.000,119.750 C 427.000,124.030 423.530,127.500 419.250,127.500 C 414.970,127.500 411.500,124.030 411.500,119.750 Z"/>
+                            <!-- Layer 1/View Name -->
+                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Canvas.Left="141.000" Canvas.Top="57.492" FontSize="48.87" FontFamily="Arial">V</TextBlock>
+                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Canvas.Left="172.715" Canvas.Top="57.492" FontSize="48.87" FontFamily="Arial">iew Name</TextBlock>
+                            <!-- Layer 1/1:100 -->
+                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Canvas.Left="145.382" Canvas.Top="118.528" FontSize="48.87" FontFamily="Arial">1:100</TextBlock>
+                            <!-- Layer 1/<Rectangle> -->
+                            <Path StrokeThickness="2.0" Stroke="{DynamicResource PrimaryHueMidBrush}" StrokeMiterLimit="1.0" StrokeDashArray="6.00" Data="F1 M 389.000,177.000 L 1.000,177.000 L 1.000,63.000 L 389.000,63.000 L 389.000,177.000 Z"/>
+                            <!-- Layer 1/1 -->
+                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Canvas.Left="42.022" Canvas.Top="87.795" FontSize="48.87" FontFamily="Arial">1</TextBlock>
+                            <!-- Layer 1/<Line> -->
+                            <Path StrokeThickness="2.0" Stroke="{DynamicResource PrimaryHueMidBrush}" StrokeMiterLimit="1.0" Data="F1 M 420.000,100.000 L 420.000,0.000"/>
+                            <!-- Layer 1/<Line> -->
+                            <Path StrokeThickness="2.0" Stroke="{DynamicResource PrimaryHueMidBrush}" StrokeMiterLimit="1.0" Data="F1 M 388.500,56.500 L 388.500,3.500"/>
+                            <!-- Layer 1/<Line> -->
+                            <Path StrokeThickness="3.0" Stroke="{DynamicResource PrimaryHueMidBrush}" StrokeMiterLimit="1.0" Data="F1 M 369.500,18.500 L 442.500,18.500"/>
+                            <!-- Layer 1/<Line> -->
+                            <Path StrokeThickness="5.0" Stroke="{DynamicResource PrimaryHueMidBrush}" StrokeMiterLimit="1.0" Data="F1 M 404.500,33.500 L 434.500,3.500"/>
+                            <!-- Layer 1/<Line> -->
+                            <Path StrokeThickness="5.0" Stroke="{DynamicResource PrimaryHueMidBrush}" StrokeMiterLimit="1.0" Data="F1 M 373.500,33.500 L 403.500,3.500"/>
+                        </Canvas>
+                    </Canvas>
+                </Viewbox>
+                <!--<Image Grid.Column="1"
                     Height="100"
                        RenderOptions.BitmapScalingMode="HighQuality"
-                       Source="{Binding ImageExample, FallbackValue={StaticResource ExampleImageFallback}}" HorizontalAlignment="Left" VerticalAlignment="Top" />
-        </Grid>
+                       Source="{Binding ImageExample, FallbackValue={StaticResource ExampleImageFallback}}" HorizontalAlignment="Left" VerticalAlignment="Top" />-->
+            </Grid>
 
-        <Grid Grid.Row="2" Margin="0,40,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Column="0"
-                Content="Extension Distance:"
-                VerticalContentAlignment="Center"/>
-            <DockPanel Grid.Column="1">
-                <Button DockPanel.Dock="Right"
+            <Grid Grid.Row="2" Margin="0,40,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                  
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
+                Text="Extension Distance:" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
+                <DockPanel Grid.Column="0" Grid.Row="1">
+                    <Button DockPanel.Dock="Right"
                      Margin="0 0 20 0"
                      ToolTip="Copy calculated value to input field. Not required, it can be left as formula if you prefer the results to not be rounded."
                      Command="{Binding CopyText, Mode=OneWay}"
                      Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                      Visibility="{Binding InputIsCalculation, UpdateSourceTrigger=PropertyChanged}">
-                    <materialDesign:PackIcon Kind="ArrowLeftBold"/>
-                </Button>
-                <TextBox
+                        <materialDesign:PackIcon Kind="ArrowLeftBold"/>
+                    </Button>
+                    <TextBox
 
                  DockPanel.Dock="Right"
                  materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
@@ -121,19 +213,19 @@
                       VerticalContentAlignment="Center"
                       Text="{Binding CalculatedUnit, UpdateSourceTrigger=PropertyChanged}"
                  Visibility="{Binding InputIsCalculation, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox DockPanel.Dock="Left"
+                    <TextBox DockPanel.Dock="Left"
                       x:Name="inputUnits"
                       materialDesign:ValidationAssist.Suppress="True"
-                      ToolTip="Blue dimension in image above."
+                      ToolTip="Dimension noted in image above"
                       Text="{Binding InputUnit, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"
                       VerticalContentAlignment="Center"
              />
 
-            </DockPanel>
-            <Grid Grid.Column="2">
-                <ItemsControl ItemsSource="{Binding ComboBoxUnits}"
+                </DockPanel>
+                <Grid Grid.Column="1" Grid.Row="1">
+                    <ItemsControl ItemsSource="{Binding ComboBoxUnits}"
                        DisplayMemberPath="Name" Height="0" Margin="15,0"/>
-                <ComboBox
+                    <ComboBox
                    VerticalAlignment="Center"
                    Height="40"
                    ItemsSource="{Binding ComboBoxUnits, UpdateSourceTrigger=PropertyChanged}"
@@ -142,34 +234,49 @@
                    VerticalContentAlignment="Center"
          />
 
+                </Grid>
+               
+                <Button Grid.Column="2" Grid.Row="1" Grid.RowSpan="4" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="30 0 0 0"
+                 Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                 ToolTip="Save extension distance into the model"
+                 Command="{Binding SaveUnits, Mode=OneWay}"
+                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+
+
+
+                    <materialDesign:PackIcon Kind="ContentSave"
+                                             Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"/>
+                </Button>
+
+            </Grid>
+            <Label Foreground="#B00020" Grid.Row="3" Grid.Column="0">
+                <Label.Content>
+                    <Binding Path="(Validation.Errors)/ErrorContent" Source="{x:Reference inputUnits}" TargetNullValue=""/>
+                </Label.Content>
+            </Label>
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Display Unit Rounding:" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="0 0 10 0"/>
+                <Grid Grid.Column="1" HorizontalAlignment="Left">
+                    <ItemsControl ItemsSource="{Binding AccuracyOptions}"
+                                  DisplayMemberPath="Name" Height="0" Margin="15,0"/>
+                    <ComboBox
+                        HorizontalAlignment="Left"
+                        ItemsSource="{Binding AccuracyOptions, UpdateSourceTrigger=PropertyChanged}" Height="40" 
+                        SelectedItem="{Binding Accuracy}"
+                        DisplayMemberPath="Name"
+                    />
+                </Grid>
+
+
             </Grid>
 
 
-            <Label Grid.Column="3" Content="Display Unit Rounding:" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
-            <ComboBox Grid.Column="4"
-                   Margin=" 0 0 20 0 "
 
-
-               ItemsSource="{Binding AccuracyOptions, UpdateSourceTrigger=PropertyChanged}" Height="40" 
-                   SelectedItem="{Binding Accuracy}"
-               />
-            <Button Grid.Column="5"
-                 Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                 Command="{Binding SaveUnits, Mode=OneWay}">
-
-
-                <materialDesign:PackIcon Kind="ContentSave"/>
-            </Button>
-
-        </Grid>
-
-        <Label Foreground="#B00020" Grid.Row="3">
-            <Label.Content>
-                <Binding Path="(Validation.Errors)/ErrorContent" Source="{x:Reference inputUnits}" TargetNullValue=""/>
-            </Label.Content>
-        </Label>
-
-        <materialDesign:ColorZone Grid.Row="4" Margin="0 30 0 0"
+            <materialDesign:ColorZone Grid.Row="5" Margin="0 35 0 0"
                                           Padding="8 4 8 4"
                                           Width="450"
                                           HorizontalAlignment="Right"
@@ -177,37 +284,39 @@
                                           CornerRadius="2"
                                           Mode="Standard"
                                          >
-            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
 
-                <ToggleButton Width="45"
+                    <ToggleButton Width="45"
                     Margin="0 0 20 0"
                     
                     IsChecked="{Binding ShowCheckedItemsOnly}"
                               Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                              ToolTip="Show Selected Sheets Only">
-                    <materialDesign:PackIcon
+                              ToolTip="Show Selected Sheets Only"
+                                  >
+                        
+                        <materialDesign:PackIcon
                         Kind="CheckboxMarkedOutline"
                         >
 
-                    </materialDesign:PackIcon>
-                    <materialDesign:ToggleButtonAssist.OnContent>
-                        <materialDesign:PackIcon
+                        </materialDesign:PackIcon>
+                        <materialDesign:ToggleButtonAssist.OnContent>
+                            <materialDesign:PackIcon
                             Kind="CheckboxMarked" />
-                    </materialDesign:ToggleButtonAssist.OnContent>
-                </ToggleButton>
+                        </materialDesign:ToggleButtonAssist.OnContent>
+                    </ToggleButton>
 
 
-                <materialDesign:PackIcon Kind="Search"
+                    <materialDesign:PackIcon Kind="Search"
                                                  VerticalAlignment="Center" />
-                <TextBox MinWidth="200"
+                    <TextBox MinWidth="200"
                                  Margin="8 0 0 0"
                                  Text="{Binding TextToFilter, UpdateSourceTrigger=PropertyChanged}"
                                  materialDesign:HintAssist.Hint="Search..."
                                  materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
                                  BorderThickness="0" />
-                <Grid HorizontalAlignment="Left">
-                    <ItemsControl ItemsSource="{Binding SheetParameters}" DisplayMemberPath="Name" Height="0" Margin="15,0" Padding="0,0,10,0"/>
-                    <ComboBox x:Name="things"
+                    <Grid HorizontalAlignment="Left">
+                        <ItemsControl ItemsSource="{Binding SheetParameters}" DisplayMemberPath="Name" Height="0" Margin="15,0" Padding="0,0,10,0"/>
+                        <ComboBox x:Name="things"
                               ToolTip="Sheet parameter to search"
                                       ItemsSource="{Binding SheetParameters}"
                                       DisplayMemberPath="Name"
@@ -216,12 +325,12 @@
                                       SelectedIndex="0"
                                       VerticalContentAlignment="Center"
                                       Width="Auto" />
-                </Grid>
-            </StackPanel>
+                    </Grid>
+                </StackPanel>
 
-        </materialDesign:ColorZone>
+            </materialDesign:ColorZone>
 
-        <DataGrid Grid.Row="5"
+            <DataGrid Grid.Row="6"
                     
                     ItemsSource="{Binding SheetView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
       AutoGenerateColumns="False"
@@ -232,53 +341,52 @@
       CanUserSortColumns="True"
       IsReadOnly="False"
       SelectionMode="Extended"
-      MaxHeight="400"
       Margin="10"
      >
 
-            <DataGrid.Columns>
-                <DataGridCheckBoxColumn MinWidth="50"
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn MinWidth="50"
                             Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
-                    <DataGridCheckBoxColumn.Header>
-                        <CheckBox IsChecked="{Binding Path=DataContext.SelectAllChecked, 
+                        <DataGridCheckBoxColumn.Header>
+                            <CheckBox IsChecked="{Binding Path=DataContext.SelectAllChecked, 
 RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
-                    </DataGridCheckBoxColumn.Header>
+                        </DataGridCheckBoxColumn.Header>
 
-                    <DataGridCheckBoxColumn.HeaderStyle>
-                        <Style TargetType="{x:Type DataGridColumnHeader}"
+                        <DataGridCheckBoxColumn.HeaderStyle>
+                            <Style TargetType="{x:Type DataGridColumnHeader}"
                    BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
-                            <Setter Property="HorizontalContentAlignment"
+                                <Setter Property="HorizontalContentAlignment"
                         Value="Center" />
-                        </Style>
-                    </DataGridCheckBoxColumn.HeaderStyle>
-                </DataGridCheckBoxColumn>
-                <DataGridTextColumn Header="Sheet Number"
+                            </Style>
+                        </DataGridCheckBoxColumn.HeaderStyle>
+                    </DataGridCheckBoxColumn>
+                    <DataGridTextColumn Header="Sheet Number"
                         Binding="{Binding SheetNumber, Mode=OneWay}"
                         Width="100"
                         IsReadOnly="True"
                         MinWidth="80">
-                    <DataGridTextColumn.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock TextWrapping="Wrap"
+                        <DataGridTextColumn.HeaderTemplate>
+                            <DataTemplate>
+                                <TextBlock TextWrapping="Wrap"
                            TextAlignment="Center"
                            Text="Sheet Number" />
-                        </DataTemplate>
-                    </DataGridTextColumn.HeaderTemplate>
-                </DataGridTextColumn>
+                            </DataTemplate>
+                        </DataGridTextColumn.HeaderTemplate>
+                    </DataGridTextColumn>
 
 
-                <DataGridTextColumn Header="Sheet Name"
+                    <DataGridTextColumn Header="Sheet Name"
                         Binding="{Binding SheetName, Mode=OneWay}"
                         Width="*"
                         IsReadOnly="True"
                         MinWidth="120" />
 
-            </DataGrid.Columns>
-        </DataGrid>
+                </DataGrid.Columns>
+            </DataGrid>
 
 
 
-        <Button Grid.Row="6" 
+            <Button Grid.Row="7" 
                         Margin="0,20,0,0"
                         DockPanel.Dock="Bottom"
                         Content="Adjust Title Lines"
@@ -287,83 +395,23 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
                         Command="{Binding Run, Mode=OneWay}"
                         CommandParameter="{Binding ElementName=Win}" />
 
-        <!--TODO: Delete the label below-->
-        <Label Grid.Row="7" 
+            <!--TODO: Delete the label below-->
+            <!--<Label Grid.Row="7" 
                        
-                       Content="{Binding lengthInternalUnits, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>
-
-        <ToggleButton Grid.Row="8" 
-                      IsChecked="{Binding IsDarkMode, Mode=OneWay}" 
-                      Command="{Binding ToggleThemeCommand}"
-                      Visibility="Collapsed"/>
-
-        <ToggleButton Grid.Row="8" Width="45"
-                      Margin="0 0 20 0"
-         
-                      IsChecked="{Binding IsDarkMode, Mode=OneWay}" 
-                      Command="{Binding ToggleThemeCommand}"
-                      Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                      ToolTip="Show Selected Sheets Only">
-            <materialDesign:PackIcon
-                Kind="WhiteBalanceSunny"
-            >
-
-            </materialDesign:PackIcon>
-            <materialDesign:ToggleButtonAssist.OnContent>
-                <materialDesign:PackIcon
-                    Kind="WeatherNight" />
-            </materialDesign:ToggleButtonAssist.OnContent>
-        </ToggleButton>
-
-
-        <Viewbox Grid.Row="8" Width="Auto" Stretch="Uniform" Visibility="Collapsed">
-
-            <Canvas Width="78.333" Height="11.154">
-
-                    <!-- Layer 1/<Group>/<Compound Path> -->
-                    <Path Fill="#ff000000" Data="F1 M 0.276,7.376 C 0.743,7.676 1.415,7.904 2.135,7.904 C 3.202,7.904 3.826,7.340 3.826,6.524 C 3.826,5.781 3.394,5.337 2.303,4.930 C 0.983,4.450 0.168,3.754 0.168,2.627 C 0.168,1.368 1.211,0.432 2.782,0.432 C 3.598,0.432 4.209,0.624 4.557,0.828 L 4.270,1.679 C 4.018,1.523 3.478,1.295 2.746,1.295 C 1.643,1.295 1.223,1.955 1.223,2.507 C 1.223,3.262 1.715,3.634 2.830,4.066 C 4.197,4.594 4.881,5.253 4.881,6.441 C 4.881,7.688 3.970,8.779 2.062,8.779 C 1.283,8.779 0.432,8.540 0.000,8.251 L 0.276,7.376 Z"/>
-
-                    <!-- Layer 1/<Group>/<Compound Path> -->
-                    <Path Fill="#ff000000" Data="F1 M 7.523,1.452 L 7.523,2.843 L 9.034,2.843 L 9.034,3.646 L 7.523,3.646 L 7.523,6.776 C 7.523,7.496 7.727,7.904 8.314,7.904 C 8.602,7.904 8.770,7.880 8.926,7.832 L 8.974,8.635 C 8.770,8.708 8.446,8.779 8.039,8.779 C 7.547,8.779 7.151,8.611 6.899,8.335 C 6.611,8.012 6.491,7.496 6.491,6.812 L 6.491,3.646 L 5.592,3.646 L 5.592,2.843 L 6.491,2.843 L 6.491,1.763 L 7.523,1.452 Z"/>
-
-                    <!-- Layer 1/<Group>/<Compound Path> -->
-                    <Path Fill="#ff000000" Data="F1 M 15.081,7.052 C 15.081,7.664 15.092,8.192 15.128,8.647 L 14.193,8.647 L 14.133,7.700 L 14.109,7.700 C 13.845,8.167 13.222,8.779 12.190,8.779 C 11.279,8.779 10.187,8.264 10.187,6.237 L 10.187,2.843 L 11.243,2.843 L 11.243,6.045 C 11.243,7.148 11.590,7.904 12.538,7.904 C 13.246,7.904 13.737,7.412 13.929,6.933 C 13.989,6.789 14.025,6.597 14.025,6.393 L 14.025,2.843 L 15.081,2.843 L 15.081,7.052 Z"/>
-
-                    <!-- Layer 1/<Group>/<Compound Path> -->
-                    <Path Fill="#ff000000" Data="F1 M 20.434,8.647 L 20.434,3.646 L 17.987,3.646 L 17.987,8.647 L 16.943,8.647 L 16.943,3.646 L 16.140,3.646 L 16.140,2.843 L 16.943,2.843 L 16.943,2.663 C 16.943,1.847 17.135,1.151 17.591,0.684 C 17.927,0.348 18.407,0.144 19.054,0.144 C 19.390,0.144 19.702,0.252 19.882,0.348 L 19.666,1.140 C 19.510,1.056 19.282,0.984 19.042,0.984 C 18.215,0.984 17.987,1.691 17.987,2.603 L 17.987,2.843 L 20.434,2.843 L 20.434,2.567 C 20.434,1.751 20.613,1.008 21.105,0.540 C 21.501,0.156 22.029,0.000 22.508,0.000 C 22.892,0.000 23.216,0.084 23.408,0.168 L 23.276,0.984 C 23.108,0.912 22.904,0.852 22.592,0.852 C 21.705,0.852 21.477,1.631 21.477,2.531 L 21.477,2.843 L 22.868,2.843 L 22.868,3.646 L 21.477,3.646 L 21.477,8.647 L 20.434,8.647 Z"/>
-
-                    <!-- Layer 1/<Group>/<Compound Path> -->
-                    <Path Fill="#ff000000" Data="F1 M 29.434,5.685 C 28.282,5.661 26.975,5.865 26.975,6.992 C 26.975,7.688 27.431,8.000 27.958,8.000 C 28.726,8.000 29.218,7.520 29.386,7.028 C 29.422,6.908 29.434,6.789 29.434,6.692 L 29.434,5.685 Z M 30.453,7.256 C 30.453,7.760 30.477,8.251 30.537,8.647 L 29.590,8.647 L 29.506,7.916 L 29.470,7.916 C 29.146,8.372 28.522,8.779 27.695,8.779 C 26.520,8.779 25.920,7.952 25.920,7.112 C 25.920,5.709 27.167,4.941 29.410,4.954 L 29.410,4.833 C 29.410,4.366 29.278,3.490 28.091,3.502 C 27.539,3.502 26.975,3.658 26.567,3.934 L 26.328,3.227 C 26.807,2.927 27.515,2.723 28.247,2.723 C 30.021,2.723 30.453,3.934 30.453,5.085 L 30.453,7.256 Z"/>
-
-                    <!-- Layer 1/<Group>/<Compound Path> -->
-                    <Path Fill="#ff000000" Data="F1 M 32.159,4.414 C 32.159,3.802 32.146,3.322 32.111,2.843 L 33.046,2.843 L 33.106,3.802 L 33.130,3.802 C 33.418,3.262 34.090,2.723 35.049,2.723 C 35.853,2.723 37.100,3.203 37.100,5.193 L 37.100,8.647 L 36.044,8.647 L 36.044,5.301 C 36.044,4.366 35.697,3.586 34.701,3.586 C 34.018,3.586 33.478,4.078 33.286,4.666 C 33.238,4.797 33.214,4.978 33.214,5.157 L 33.214,8.647 L 32.159,8.647 L 32.159,4.414 Z"/>
-
-                    <!-- Layer 1/<Group>/<Compound Path> -->
-                    <Path Fill="#ff000000" Data="F1 M 42.777,5.206 C 42.777,5.073 42.765,4.894 42.729,4.762 C 42.573,4.102 41.997,3.550 41.206,3.550 C 40.114,3.550 39.466,4.510 39.466,5.781 C 39.466,6.957 40.054,7.928 41.182,7.928 C 41.889,7.928 42.537,7.448 42.729,6.668 C 42.765,6.524 42.777,6.381 42.777,6.213 L 42.777,5.206 Z M 43.820,0.132 L 43.820,7.148 C 43.820,7.664 43.844,8.251 43.868,8.647 L 42.933,8.647 L 42.885,7.640 L 42.849,7.640 C 42.537,8.288 41.841,8.779 40.894,8.779 C 39.491,8.779 38.399,7.592 38.399,5.829 C 38.387,3.898 39.599,2.723 41.001,2.723 C 41.901,2.723 42.489,3.143 42.753,3.598 L 42.777,3.598 L 42.777,0.132 L 43.820,0.132 Z"/>
-
-                    <!-- Layer 1/<Group>/<Compound Path> -->
-                    <Path Fill="#ff000000" Data="F1 M 49.403,1.452 L 49.403,2.843 L 50.914,2.843 L 50.914,3.646 L 49.403,3.646 L 49.403,6.776 C 49.403,7.496 49.606,7.904 50.194,7.904 C 50.482,7.904 50.650,7.880 50.806,7.832 L 50.854,8.635 C 50.650,8.708 50.326,8.779 49.918,8.779 C 49.427,8.779 49.031,8.611 48.779,8.335 C 48.491,8.012 48.371,7.496 48.371,6.812 L 48.371,3.646 L 47.472,3.646 L 47.472,2.843 L 48.371,2.843 L 48.371,1.763 L 49.403,1.452 Z"/>
-
-                    <!-- Layer 1/<Group>/<Compound Path> -->
-                    <Path Fill="#ff000000" Data="F1 M 52.103,0.132 L 53.159,0.132 L 53.159,3.766 L 53.183,3.766 C 53.351,3.466 53.614,3.190 53.938,3.011 C 54.250,2.831 54.622,2.723 55.018,2.723 C 55.797,2.723 57.044,3.203 57.044,5.193 L 57.044,8.647 L 55.989,8.647 L 55.989,5.313 C 55.989,4.378 55.641,3.598 54.646,3.598 C 53.962,3.598 53.435,4.078 53.230,4.642 C 53.170,4.797 53.159,4.954 53.159,5.146 L 53.159,8.647 L 52.103,8.647 L 52.103,0.132 Z"/>
-
-                    <!-- Layer 1/<Group>/<Compound Path> -->
-                    <Path Fill="#ff000000" Data="F1 M 58.763,8.647 L 58.763,2.843 L 59.819,2.843 L 59.819,8.647 L 58.763,8.647 Z M 59.938,1.211 C 59.938,1.571 59.687,1.859 59.267,1.859 C 58.883,1.859 58.631,1.571 58.631,1.211 C 58.631,0.852 58.895,0.552 59.291,0.552 C 59.675,0.552 59.938,0.840 59.938,1.211 Z"/>
-
-                    <!-- Layer 1/<Group>/<Compound Path> -->
-                    <Path Fill="#ff000000" Data="F1 M 61.572,4.414 C 61.572,3.802 61.560,3.322 61.524,2.843 L 62.459,2.843 L 62.520,3.802 L 62.543,3.802 C 62.831,3.262 63.503,2.723 64.462,2.723 C 65.266,2.723 66.513,3.203 66.513,5.193 L 66.513,8.647 L 65.458,8.647 L 65.458,5.301 C 65.458,4.366 65.110,3.586 64.114,3.586 C 63.431,3.586 62.891,4.078 62.699,4.666 C 62.651,4.797 62.627,4.978 62.627,5.157 L 62.627,8.647 L 61.572,8.647 L 61.572,4.414 Z"/>
-
-                    <!-- Layer 1/<Group>/<Compound Path> -->
-                    <Path Fill="#ff000000" Data="F1 M 72.141,5.133 C 72.141,4.954 72.129,4.797 72.081,4.666 C 71.889,4.042 71.385,3.538 70.605,3.538 C 69.598,3.538 68.878,4.390 68.878,5.733 C 68.878,6.873 69.466,7.820 70.594,7.820 C 71.253,7.820 71.841,7.412 72.057,6.741 C 72.117,6.561 72.141,6.357 72.141,6.177 L 72.141,5.133 Z M 73.196,7.796 C 73.196,9.139 72.920,9.943 72.369,10.458 C 71.793,10.974 70.978,11.154 70.246,11.154 C 69.550,11.154 68.783,10.986 68.315,10.674 L 68.579,9.859 C 68.962,10.111 69.562,10.327 70.282,10.327 C 71.361,10.327 72.153,9.763 72.153,8.288 L 72.153,7.652 L 72.129,7.652 C 71.817,8.192 71.181,8.624 70.282,8.624 C 68.843,8.624 67.811,7.400 67.811,5.793 C 67.811,3.826 69.095,2.723 70.438,2.723 C 71.445,2.723 71.985,3.238 72.249,3.718 L 72.273,3.718 L 72.309,2.843 L 73.244,2.843 C 73.208,3.250 73.196,3.730 73.196,4.426 L 73.196,7.796 Z"/>
-
-                    <!-- Layer 1/<Group>/<Compound Path> -->
-                    <Path Fill="#ff000000" Data="F1 M 74.795,7.580 C 75.119,7.772 75.670,7.988 76.198,7.988 C 76.954,7.988 77.313,7.616 77.313,7.125 C 77.313,6.621 77.014,6.357 76.246,6.069 C 75.191,5.685 74.699,5.122 74.699,4.426 C 74.699,3.490 75.467,2.723 76.702,2.723 C 77.290,2.723 77.806,2.878 78.117,3.083 L 77.865,3.850 C 77.638,3.706 77.218,3.502 76.678,3.502 C 76.054,3.502 75.719,3.862 75.719,4.294 C 75.719,4.773 76.054,4.989 76.810,5.290 C 77.806,5.661 78.333,6.165 78.333,7.028 C 78.333,8.060 77.530,8.779 76.174,8.779 C 75.539,8.779 74.951,8.611 74.543,8.372 L 74.795,7.580 Z"/>
-
-                </Canvas>
-
-        </Viewbox>
+                       Content="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>-->
 
 
 
-    </Grid>
+            <ProgressBar 
+                Margin="0 20 0 0"
+                
+                Grid.Row="9" Maximum="{Binding MaxProgressValue, UpdateSourceTrigger=PropertyChanged}" Value="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ProgressVisibility, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+
+
+
+
+        </Grid>
+    </Border>
 </Window>

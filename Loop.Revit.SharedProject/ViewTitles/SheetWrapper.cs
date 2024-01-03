@@ -6,7 +6,7 @@ namespace Loop.Revit.ViewTitles
 {
     public class SheetWrapper : INotifyPropertyChanged
     {
-        public string SheetNumber { get; set; }
+        public string SheetNumber   { get; set; }
         public string SheetName { get; set; }
         public ElementId Id { get; set; }
 

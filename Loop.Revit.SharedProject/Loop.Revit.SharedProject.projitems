@@ -24,6 +24,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)SecondButton\SecondButtonView.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SecondButton\SecondButtonViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SecondButton\SpatialObjectWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Settings\SettingsCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Settings\SettingsModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Settings\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Settings\SettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\SpatialObjectDeletedMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\SpatialObjectWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonCommand.cs" />
@@ -37,11 +43,21 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ErrorsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ExtensibleStorage\ExtensibleStorageHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ImageUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\AccuracyWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\NewTestUnits.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\UnitCleanup.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfRevitUnitValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfUnit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\UserSettings\UserSetting.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\UserSettings\UserSettingsManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\ColorScheme.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogView.xaml.cs">
+      <DependentUpon>SmallDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ProgressResultsMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\PropertyWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\SheetWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\UnitsWrapper.cs" />
@@ -71,7 +87,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Settings\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Resource Include="$(MSBuildThisFileDirectory)Utilities\Wpf\LoopThemeColours.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Page Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

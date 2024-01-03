@@ -43,7 +43,7 @@ namespace Loop.Revit.FirstButton
                 //MessageBox.Show("Hello World", "Loop", MessageBoxButton.OK);
                 return Result.Succeeded;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Result.Failed;
             }

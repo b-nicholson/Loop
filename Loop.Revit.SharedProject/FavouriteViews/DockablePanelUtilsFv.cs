@@ -19,7 +19,7 @@ namespace Loop.Revit.FavouriteViews
             {
                 app.RegisterDockablePane(panelId, "Favourite Views", v);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // ignored
             }

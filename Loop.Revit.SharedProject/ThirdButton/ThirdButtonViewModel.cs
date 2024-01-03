@@ -33,9 +33,8 @@ namespace Loop.Revit.ThirdButton
             SpatialObjects = Model.CollectSpatialObjects();
             Close = new RelayCommand<Window>(OnClose);
             Delete = new RelayCommand<Window>(OnDelete);
-            
 
-            WeakReferenceMessenger.Default.Register<ThirdButtonViewModel ,SpatialObjectDeletedMessage>(this,  (r, m) => r.OnSpatialElementDeletedMessage(m));
+            WeakReferenceMessenger.Default.Register<ThirdButtonViewModel, SpatialObjectDeletedMessage>(this,  (r, m) => r.OnSpatialElementDeletedMessage(m));
         }
 
         private void OnSpatialElementDeletedMessage(SpatialObjectDeletedMessage obj)

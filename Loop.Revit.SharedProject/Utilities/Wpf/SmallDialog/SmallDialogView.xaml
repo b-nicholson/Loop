@@ -1,0 +1,94 @@
+﻿<Window x:Name="Win"
+        x:Class="Loop.Revit.Utilities.Wpf.SmallDialog.SmallDialogView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:MaterialDesignFont}"
+        xmlns:local="clr-namespace:Loop.Revit.Utilities.Wpf"
+        local:WpfThemeProperties.ToggleTheme="{Binding IsDarkMode}"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResize"
+        WindowStartupLocation="CenterScreen"
+        Width="350"
+        Height="Auto"
+        SizeToContent="Height"
+        >
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0"/>
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <materialDesign:CustomColorTheme BaseTheme="Light"
+                                                 PrimaryColor="#FF25C5C5"
+                                                 SecondaryColor="DarkGreen" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary>
+                    <BooleanToVisibilityConverter x:Key="VisibilityConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+
+    </Window.Resources>
+
+    <Border Background="{DynamicResource PrimaryHueMidBrush}" CornerRadius="10" BorderThickness="1" BorderBrush="DimGray">
+        <Grid Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" MouseLeftButtonDown="Window_MouseLeftButtonDown" Cursor="Hand">
+            <TextBlock 
+                       Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                       Text="{Binding Title, FallbackValue=Success!}"
+                       HorizontalAlignment="Center"
+                       Margin="0 0 0 10 "/>
+            </StackPanel>
+            <TextBlock Grid.Row="1" TextWrapping="WrapWithOverflow" Text="{Binding Message, FallbackValue= Successfully saved settings to document. Remember to save/sync to keep your changes.}"/>
+           
+            <StackPanel Grid.Row="2" Margin="0 20 0 0" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button
+                    Width="70"
+                    Margin="5 0"
+                    Content="{Binding Button3Content, FallbackValue=Reset}"
+                    Visibility="{Binding Button3Vis, Converter={StaticResource VisibilityConverter}, FallbackValue=Colla}"
+                    Command ="{Binding Button3Command}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                    Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                    Foreground="{DynamicResource MaterialDesignBody}"
+                    BorderBrush="{DynamicResource MaterialDesignBody}"/>
+                <Button
+                    Width="70"
+                    Margin="5 0"
+                    Content="{Binding Button2Content, FallbackValue=No}"
+                    Visibility="{Binding Button2Vis, Converter={StaticResource VisibilityConverter}, FallbackValue=Visible}"
+                    Command ="{Binding Button2Command}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                    Style="{StaticResource MaterialDesignOutlinedDarkButton}"
+                    Foreground="{DynamicResource MaterialDesignBody}"
+                    BorderBrush="{DynamicResource MaterialDesignBody}"/>
+                <Button
+                    Width="70"
+                    Margin="5 0"
+                    Content="{Binding Button1Content, FallbackValue=Yes}"
+                    Visibility="{Binding Button1Vis, Converter={StaticResource VisibilityConverter}, FallbackValue=Visible}"
+                    Command ="{Binding Button1Command}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                    Style="{StaticResource MaterialDesignRaisedLightButton}"
+                    Foreground="{DynamicResource MaterialDesignBody}"
+                    BorderBrush="{DynamicResource MaterialDesignBody}"/>
+            </StackPanel>
+
+        </Grid>
+    </Border>
+</Window>

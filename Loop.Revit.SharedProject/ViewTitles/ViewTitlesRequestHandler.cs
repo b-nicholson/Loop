@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using Autodesk.Revit.DB;
-using System.Windows.Controls;
 using Autodesk.Revit.UI;
 using Loop.Revit.Utilities.ExtensibleStorage;
-using Autodesk.Revit.DB.ExtensibleStorage;
-using System.Reflection;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -47,7 +42,7 @@ namespace Loop.Revit.ViewTitles
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // ignore
             }
@@ -64,11 +59,13 @@ namespace Loop.Revit.ViewTitles
             var t = new Transaction(Doc, "Save Viewport Titles Extension Length");
             t.Start();
 
-            var schema = ExtensibleStorageHelper.CreateSimpleSchema(Model.ExtensibleStorageGuid, schemaName, schemaDescription, schemaInfo, SpecTypeId.Length);
+            var schema = ExtensibleStorageHelper.CreateSimpleSchema(
+                Model.ExtensibleStorageGuid, schemaName, schemaDescription, schemaInfo, SpecTypeId.Length);
             var paramInfo = new List<(string, dynamic)> { (paramName, Model.ExtensionDistance) };
 
-            // I have no idea why it takes centimeters as the input, it's the only way it stores correctly and seems to ignore everything
-            var dataStorage = ExtensibleStorageHelper.CreateDataStorage(Doc, schema, Model.ExtensibleStorageGuid,
+            // I have no idea why it stores a weird number when looking it up manually in lookup,
+            // it comes back out correctly though
+            ExtensibleStorageHelper.CreateDataStorage(Doc, schema, Model.ExtensibleStorageGuid,
                 "Viewport Title Length Extension Distance", paramInfo, UnitTypeId.Feet);
             t.Commit();
         }
@@ -91,38 +88,62 @@ namespace Loop.Revit.ViewTitles
             var ids = selected.SelectMany(sheet => sheet.ViewportIds).ToList();
 
 
-            var Doc = app.ActiveUIDocument.Document;
-            var viewports = new FilteredElementCollector(Doc, ids).OfCategory(BuiltInCategory.OST_Viewports).Cast<Viewport>();
+            var doc = app.ActiveUIDocument.Document;
+            var viewports = new FilteredElementCollector(doc, ids)
+                .OfCategory(BuiltInCategory.OST_Viewports)
+                .Cast<Viewport>();
+            var viewportCount = viewports.Count();
+            int viewportProcessingProgress = 0;
             
-            var t = new Transaction(Doc, "Change Viewport Label Line Length");
+            var t = new Transaction(doc, "Change Viewport Label Line Length");
             t.Start();
 
+            WeakReferenceMessenger.Default.Send(new ProgressResultsMessage(viewportProcessingProgress,
+                viewportCount));
 
 
             foreach (var vp in viewports)
             {
-                vp.LabelLineLength = 0.001;
-                var rotation = vp.Rotation;
+                var viewportTypeId = vp.GetTypeId();
+                var viewportType = doc.GetElement(viewportTypeId);
+
+          
+                // Access the "Show Title" parameter
+                var showTitleParam = viewportType.get_Parameter(BuiltInParameter.VIEWPORT_ATTR_SHOW_LABEL);
+                var showTitleLineParam = viewportType.get_Parameter(BuiltInParameter.VIEWPORT_ATTR_SHOW_EXTENSION_LINE);
+
+                var showTitle = Convert.ToBoolean(showTitleParam.AsInteger());
+                var showLine = Convert.ToBoolean(showTitleLineParam.AsInteger());
+
+                if (showTitle && showLine)
+                {
+                    vp.LabelLineLength = 0.001;
+                    var rotation = vp.Rotation;
 
 
-                if (rotation != ViewportRotation.None)
-                    vp.Rotation = ViewportRotation.None;
+                    if (rotation != ViewportRotation.None)
+                        vp.Rotation = ViewportRotation.None;
 
-                var outlines = vp.GetLabelOutline();
-                var outlineMax = outlines.MaximumPoint;
-                var outlineMin = outlines.MinimumPoint;
+                    var outlines = vp.GetLabelOutline();
+                    var outlineMax = outlines.MaximumPoint;
+                    var outlineMin = outlines.MinimumPoint;
 
-                var labelOffset = vp.LabelOffset;
-                var boxMinPoint = vp.GetBoxOutline().MinimumPoint;
-                var newPoint = (boxMinPoint + labelOffset).X;
-                var symbolSize = newPoint - outlineMin.X;
+                    var labelOffset = vp.LabelOffset;
+                    var boxMinPoint = vp.GetBoxOutline().MinimumPoint;
+                    var newPoint = (boxMinPoint + labelOffset).X;
+                    var symbolSize = newPoint - outlineMin.X;
 
                 
-                var length = Math.Max(outlineMax.X - outlineMin.X, outlineMax.Y - outlineMin.Y) - symbolSize + extensionDistance;
+                    var length = Math.Max(outlineMax.X - outlineMin.X, outlineMax.Y - outlineMin.Y) - symbolSize + extensionDistance;
 
-                vp.LabelLineLength = length;
-                if (rotation != ViewportRotation.None)
-                    vp.Rotation = rotation;
+                    vp.LabelLineLength = length;
+                    if (rotation != ViewportRotation.None)
+                        vp.Rotation = rotation;
+                }
+                viewportProcessingProgress++;
+
+                WeakReferenceMessenger.Default.Send(new ProgressResultsMessage(viewportProcessingProgress,
+                    viewportCount));
             }
 
 

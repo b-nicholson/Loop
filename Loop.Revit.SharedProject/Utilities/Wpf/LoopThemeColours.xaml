@@ -1,0 +1,83 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options">
+
+
+    <Color x:Key="LoopPrimary">#3843bd </Color>
+    <Color x:Key="LoopSecondary">#FFEA7300</Color>
+
+
+<!--<Color x:Key="Primary50">           #f9fbe7</Color>
+    <Color x:Key="Primary50Foreground"> #DD000000</Color>
+    <Color x:Key="Primary100">          #f0f4c3</Color>
+    <Color x:Key="Primary100Foreground">#DD000000</Color>
+    <Color x:Key="Primary200">          #e6ee9c</Color>
+    <Color x:Key="Primary200Foreground">#DD000000</Color>
+    <Color x:Key="Primary300">          #dce775</Color>
+    <Color x:Key="Primary300Foreground">#DD000000</Color>
+    <Color x:Key="Primary400">          #d4e157</Color>
+    <Color x:Key="Primary400Foreground">#DD000000</Color>
+    <Color x:Key="Primary500">          #cddc39</Color>
+    <Color x:Key="Primary500Foreground">#DD000000</Color>
+    <Color x:Key="Primary600">          #c0ca33</Color>
+    <Color x:Key="Primary600Foreground">#DD000000</Color>
+    <Color x:Key="Primary700">          #afb42b</Color>
+    <Color x:Key="Primary700Foreground">#DD000000</Color>
+    <Color x:Key="Primary800">          #9e9d24</Color>
+    <Color x:Key="Primary800Foreground">#DD000000</Color>
+    <Color x:Key="Primary900">          #827717</Color>
+    <Color x:Key="Primary900Foreground">#DDFFFFFF</Color>
+
+
+
+    <Color x:Key="Secondary100">#ff80ab</Color>
+    <Color x:Key="Secondary100Foreground">#DD000000</Color>
+    <Color x:Key="Secondary200">#ff4081</Color>
+    <Color x:Key="Secondary200Foreground">#FFFFFFFF</Color>
+    <Color x:Key="Secondary400">#f50057</Color>
+    <Color x:Key="Secondary400Foreground">#DDFFFFFF</Color>
+    <Color x:Key="Secondary700">#c51162</Color>
+    <Color x:Key="Secondary700Foreground">#DDFFFFFF</Color>
+
+
+
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Primary.Light"
+                     Color="{StaticResource Primary200}"
+                     po:Freeze="True" />
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Primary.Light.Foreground"
+                     Color="{StaticResource Primary200Foreground}"
+                     po:Freeze="True" />
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Primary"
+                     Color="{StaticResource Primary500}"
+                     po:Freeze="True" />
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Primary.Foreground"
+                     Color="{StaticResource Primary500Foreground}"
+                     po:Freeze="True" />
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Primary.Dark"
+                     Color="{StaticResource Primary700}"
+                     po:Freeze="True" />
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Primary.Dark.Foreground"
+                     Color="{StaticResource Primary700Foreground}"
+                     po:Freeze="True" />
+
+
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Secondary.Light"
+                     Color="{StaticResource Secondary200}"
+                     po:Freeze="True" />
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Secondary.Light.Foreground"
+                     Color="{StaticResource Secondary200Foreground}"
+                     po:Freeze="True" />
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Secondary"
+                     Color="{StaticResource Secondary400}"
+                     po:Freeze="True" />
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Secondary.Foreground"
+                     Color="{StaticResource Secondary400Foreground}"
+                     po:Freeze="True" />
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Secondary.Dark"
+                     Color="{StaticResource Secondary700}"
+                     po:Freeze="True" />
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Secondary.Dark.Foreground"
+                     Color="{StaticResource Secondary700Foreground}"
+                     po:Freeze="True" />-->
+
+</ResourceDictionary>

@@ -5,9 +5,10 @@ using Autodesk.Revit.UI;
 using Loop.Revit.FavouriteViews;
 using Loop.Revit.FirstButton;
 using Loop.Revit.SecondButton;
+using Loop.Revit.Settings;
 using Loop.Revit.ThirdButton;
-using Loop.Revit.Utilities;
 using Loop.Revit.ViewTitles;
+
 
 namespace Loop.Revit
 {
@@ -26,7 +27,7 @@ namespace Loop.Revit
             {
                 app.CreateRibbonTab(tabName);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //ignored
             }
@@ -45,6 +46,8 @@ namespace Loop.Revit
             FavouriteViewsCommand.CreateButton(ribbonPanel);
             ribbonPanel.AddSeparator();
             ViewTitlesCommand.CreateButton(ribbonPanel);
+            ribbonPanel.AddSeparator();
+            SettingsCommand.CreateButton(ribbonPanel);
 
             DockablePanelUtilsFv.RegisterDockablePanel(app);
 

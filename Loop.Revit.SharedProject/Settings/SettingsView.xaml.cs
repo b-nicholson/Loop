@@ -1,24 +1,18 @@
-﻿
-using System;
+﻿using System.Windows.Input;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
-using System.Windows.Input;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 
-
-namespace Loop.Revit.ViewTitles
+namespace Loop.Revit.Settings
 {
-    public sealed partial class ViewTitlesView
+    public sealed partial class SettingsView
     {
-        public ViewTitlesView()
+        public SettingsView()
         {
             // Useless dummy code to force revit to load the libraries https://stackoverflow.com/questions/55594443/how-to-include-materialdesignxamltoolkit-to-wpf-class-library
             ColorZoneAssist.SetMode(new System.Windows.Controls.GroupBox(), ColorZoneMode.Light);
-            new Hue("name", System.Windows.Media.Color.FromArgb(1, 2, 3, 4), System.Windows.Media.Color.FromArgb(1, 5, 6, 7));
+            Hue hue = new Hue("name", System.Windows.Media.Color.FromArgb(1, 2, 3, 4), System.Windows.Media.Color.FromArgb(1, 5, 6, 7));
             InitializeComponent();
-            System.Diagnostics.Debug.WriteLine("Current Directory: " + System.IO.Directory.GetCurrentDirectory());
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -37,10 +31,10 @@ namespace Loop.Revit.ViewTitles
             switch (WindowState)
             {
                 case WindowState.Normal:
-                    var (height, width) = GetVirtualWindowSize();
+                    var sizingParams = GetVirtualWindowSize();
                     WindowState = WindowState.Maximized;
-                    MaxHeight = height;
-                    MaxWidth = width;
+                    MaxHeight = sizingParams.height;
+                    MaxWidth = sizingParams.width;
                     break;
                 case WindowState.Maximized:
                     WindowState = WindowState.Normal;
@@ -67,7 +61,5 @@ namespace Loop.Revit.ViewTitles
             virtualWindow.Close();
             return (returnHeight, returnWidth);
         }
-
-
     }
 }

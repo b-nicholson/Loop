@@ -6,77 +6,88 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Media.Imaging;
 using Autodesk.Revit.DB;
 using Loop.Revit.Utilities;
-using MaterialDesignThemes.Wpf;
 using Utilities.Units;
 using Visibility = System.Windows.Visibility;
-using Loop.Revit.Utilities.Wpf;
-
 using CommunityToolkit.Mvvm.ComponentModel;
-
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using System.Threading.Tasks;
+using Loop.Revit.Utilities.Units;
+using Loop.Revit.Utilities.Wpf.SmallDialog;
 
 namespace Loop.Revit.ViewTitles
 {
     public class ViewTitlesViewModel : ObservableObject, INotifyDataErrorInfo
     {
         private readonly ErrorsViewModel _errorsViewModel;
-
         private readonly ViewTitlesModel _model;
 
-        public RelayCommand<Window> Run { get; set; }
+        #region Command Properties
+        public AsyncRelayCommand<Window> Run { get; set; }
         public RelayCommand<Window> CopyText { get; set; }
-
         public RelayCommand<Window> SaveUnits { get; set; }
-        
+        public RelayCommand ToggleThemeCommand { get; }
+        #endregion
+
+        #region Progress Bar Properties
+
+        private int _currentProgress;
+        public int CurrentProgress
+        {
+            get => _currentProgress;
+            set
+            {
+                SetProperty(ref _currentProgress, value);
+                CheckProgressBarVisibility();
+            }
+        }
+
+        private int _maxProgressValue;
+        public int MaxProgressValue
+        {
+            get => _maxProgressValue;
+            set => SetProperty(ref _maxProgressValue, value);
+        }
+
+        private Visibility _progressVisibility = Visibility.Collapsed;
+        public Visibility ProgressVisibility
+        {
+            get => _progressVisibility;
+            set => SetProperty(ref _progressVisibility, value);
+        }
+        #endregion
+
+        #region Theme Properties
 
         private bool _isDarkMode;
-
         public bool IsDarkMode
         {
             get => _isDarkMode;
-            set
-            {
-                SetProperty(ref _isDarkMode, value);
-                OnPropertyChanged(nameof(IsDarkMode));
-            } 
+            set => SetProperty(ref _isDarkMode, value);
         }
+        #endregion
 
-        public RelayCommand ToggleThemeCommand { get; }
-
-
-
-        #region DataGrid Stuff
+        #region DataGrid Properties
         //Data to bind to DataGrid
         private ObservableCollection<SheetWrapper> _sheets;
         public ObservableCollection<SheetWrapper> Sheets
         {
             get => _sheets;
-            set { _sheets = value;
-                OnPropertyChanged(nameof(Sheets));
-            }
+            set => SetProperty(ref _sheets, value);
         }
 
         //ICollectionView so we can search using Filter methods
         public ICollectionView SheetView { get; set; }
 
         private int _selectedSheetCount;
-
         public int SelectedSheetCount
         {
             get => _selectedSheetCount;
-            set
-            {
-                _selectedSheetCount = value;
-                OnPropertyChanged(nameof(SelectedSheetCount));
-            }
+            set => SetProperty(ref _selectedSheetCount, value);
         }
-
-
-
-
+        
         //Multi select stuff
         private bool _isAllSheetsSelected;
         public bool IsAllSheetsSelected
@@ -85,8 +96,7 @@ namespace Loop.Revit.ViewTitles
             set
             {
                 if (_isAllSheetsSelected == value) return;
-                _isAllSheetsSelected = value;
-                OnPropertyChanged(nameof(IsAllSheetsSelected));
+                SetProperty(ref _isAllSheetsSelected, value);
                 SelectAllSheets(value);
             }
         }
@@ -112,8 +122,7 @@ namespace Loop.Revit.ViewTitles
             {
                 if (_selectAllChecked != value)
                 {
-                    _selectAllChecked = value;
-                    OnPropertyChanged(nameof(SelectAllChecked));
+                    SetProperty(ref _selectAllChecked, value);
                     UpdateItemSelections(value);
                 }
             }
@@ -151,17 +160,15 @@ namespace Loop.Revit.ViewTitles
             get => _textToFilter;
             set
             {
-                _textToFilter = value;
-                OnPropertyChanged(nameof(TextToFilter));
+                SetProperty(ref _textToFilter, value);
                 try
                 {
                     SheetView.Filter = FilterByName;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // this can throw exceptions for stupid reasons, just ignore
                 }
-
             }
         }
 
@@ -177,7 +184,7 @@ namespace Loop.Revit.ViewTitles
                 {
                     SheetView.Filter = FilterByName;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // this can throw exceptions for stupid reasons, just ignore
                 }
@@ -187,111 +194,66 @@ namespace Loop.Revit.ViewTitles
 
         #endregion
 
-
         #region Units
-        public ObservableCollection<RevitUnit> ComboBoxUnits => new ObservableCollection<RevitUnit>(RevitUnitTypes.GetUnitsByType(SpecTypeId.Length));
-
+        public ObservableCollection<RevitUnit> ComboBoxUnits => 
+            new ObservableCollection<RevitUnit>(RevitUnitTypes.GetUnitsByType(SpecTypeId.Length));
 
         private RevitUnit _selectedUnit;
-
         public RevitUnit SelectedUnit
         {
             get => _selectedUnit;
             set
             {
                 _selectedUnit = value;
-
-                //InputUnit = _inputUnit;
-
                 if (value != null)
                 {
                     ConvertUnitsToInternal();
-                    AccuracyOptions = new ObservableCollection<double>(value.Accuracy);
-
-
+                    AccuracyOptions = new ObservableCollection<AccuracyWrapper>(value.Accuracy);
                     SetAccuracy();
                     OnPropertyChanged(nameof(Accuracy));
-
-
                 }
-
-
             }
         }
 
-        private double _accuracy;
-
-        public double Accuracy
+        private AccuracyWrapper _accuracy;
+        public AccuracyWrapper Accuracy
         {
             get => _accuracy;
             set
             {
-                _accuracy = value;
-                OnPropertyChanged(nameof(Accuracy));
-                ConvertUnit(lengthInternalUnits);
-
-
+                SetProperty(ref _accuracy, value);
+                ConvertUnit(LengthInternalUnits);
             }
         }
 
-        private ObservableCollection<double> _accuracyOptions;
-
-        public ObservableCollection<double> AccuracyOptions
+        private ObservableCollection<AccuracyWrapper> _accuracyOptions;
+        public ObservableCollection<AccuracyWrapper> AccuracyOptions
         {
             get => _accuracyOptions;
             set
             {
                 _accuracyOptions?.Clear();
-                _accuracyOptions = value;
-                OnPropertyChanged(nameof(AccuracyOptions));
+                SetProperty(ref _accuracyOptions, value);
             }
         }
 
-
-        //private string _errorMessage;
-        //public string ErrorMessage
-        //{
-        //    get => _errorMessage;
-        //    set
-        //    {
-        //        _errorMessage = value;
-        //    }
-        //}
-
-        //private readonly WpfRevitUnitValidator _validator = new WpfRevitUnitValidator();
-
-
-
-        // for hiding and showing the units calculator
         private Visibility _inputIsCalculation = Visibility.Collapsed;
-
         public Visibility InputIsCalculation
         {
             get => _inputIsCalculation;
-            set
-            {
-                _inputIsCalculation = value;
-                OnPropertyChanged(nameof(InputIsCalculation));
-            }
+            set => SetProperty(ref _inputIsCalculation, value);
         }
 
-
         private string _calculatedUnit;
-
         public string CalculatedUnit
         {
             get => _calculatedUnit;
             set
             {
-                if (value != null)
-                {
-                    _calculatedUnit = value;
-                    OnPropertyChanged(nameof(CalculatedUnit));
-                }
+                if (value == null) return;
+                SetProperty(ref _calculatedUnit, value);
             }
         }
-
-
 
         private string _inputUnit;
         public string InputUnit
@@ -299,32 +261,20 @@ namespace Loop.Revit.ViewTitles
             get => _inputUnit;
             set
             {
-                _inputUnit = value;
+                SetProperty(ref _inputUnit, value);
                 ConvertUnitsToInternal();
-
-                if (value.StartsWith("="))
-                {
-                    InputIsCalculation = Visibility.Visible;
-                }
-                else
-                    InputIsCalculation = Visibility.Collapsed;
-
-                // use ValidateProperty if using fluent validation
-                //ValidateProperty(nameof(InputUnit));
-
+                InputIsCalculation = value.StartsWith("=") ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
         private double _lengthInternalUnits;
-
-        public double lengthInternalUnits
+        public double LengthInternalUnits
         {
             get => _lengthInternalUnits;
             set
             {
-                _lengthInternalUnits = value;
                 _model.ExtensionDistance = value;
-                OnPropertyChanged(nameof(lengthInternalUnits));
+                SetProperty(ref _lengthInternalUnits, value);
             }
         }
 
@@ -335,58 +285,32 @@ namespace Loop.Revit.ViewTitles
         #endregion
 
         #region Sheet Parameters
-        public ObservableCollection<PropertyInfo> SheetParams => new ObservableCollection<PropertyInfo>(
-            typeof(SheetWrapper).GetProperties().Where(prop => prop.PropertyType == typeof(string)).ToList());
-
-        //var stuff3 = typeof(SheetWrapper).GetProperties().Where(prop => prop.PropertyType == typeof(string)).ToList();
 
         private ObservableCollection<PropertyWrapper> _sheetParameters;
         public ObservableCollection<PropertyWrapper> SheetParameters
         {
             get => _sheetParameters;
-            set
-            {
-                _sheetParameters = value;
-                OnPropertyChanged(nameof(SheetParameters));
-            }
+            set => SetProperty(ref _sheetParameters, value);
         }
 
         private PropertyWrapper _selectedPropWrapper;
         public PropertyWrapper SelectedPropertyWrapper
         {
-            get { return _selectedPropWrapper; }
+            get => _selectedPropWrapper;
             set
             {
-                _selectedPropWrapper = value;
-                OnPropertyChanged(nameof(SelectedPropertyWrapper));
+                SetProperty(ref _selectedPropWrapper, value);
                 try
                 {
                     SheetView.Filter = FilterByName;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // this can throw exceptions for stupid reasons, just ignore
                 }
             }
         }
         #endregion
-
-        #region Example Image stuff
-        //property to control the example image in the xaml window 
-        private BitmapImage _imageExample;
-        public BitmapImage ImageExample
-        {
-            get => _imageExample;
-            set
-            {
-                _imageExample = value;
-                OnPropertyChanged(nameof(ImageExample));
-            }
-        }
-        #endregion
-
-
-
 
         public ViewTitlesViewModel(ViewTitlesModel model)
         {
@@ -395,10 +319,10 @@ namespace Loop.Revit.ViewTitles
             _errorsViewModel = new ErrorsViewModel();
             _errorsViewModel.ErrorsChanged += ErrorsViewModel_ErrorsChanged;
 
-
             #region Datagrid stuff
             Sheets = new ObservableCollection<SheetWrapper>(_model.CollectSheets().OrderBy(o => o.SheetNumber).ToList());
 
+            //TODO move to a method inside model
             var activeView = _model.ActiveView;
             if (activeView.ViewType == ViewType.DrawingSheet)
             {
@@ -413,13 +337,9 @@ namespace Loop.Revit.ViewTitles
 
                 }
             }
-      
-
-
 
             //put the obs. coll. into a ICollectionView so we can filter it
             SheetView = CollectionViewSource.GetDefaultView(Sheets);
-
 
             // create a filter for the DataGrid
             SheetView.Filter = FilterByName;
@@ -428,34 +348,26 @@ namespace Loop.Revit.ViewTitles
             // Set combobox unit to the unit used in the model
             SelectedUnit = ComboBoxUnits.FirstOrDefault(u => u.UnitTypeId == _model.CollectUnitsTypeId());
 
-
-            //Set image in window
-            ImageExample = ImageUtils.LoadImage(Assembly.GetExecutingAssembly(), "viewTitles.example.png");
-
             //Set Accuracy units
             SetAccuracy();
 
             //Load ExtensibleStorage
             _model.LoadDataStorage();
-            var things = _model.ExtensionDistance;
-            var things2 = SelectedUnit;
-            var things3 = Accuracy;
-            var convertedUnit = _model.FormatUnits(_model.ExtensionDistance, SelectedUnit, Accuracy);
+            var convertedUnit = _model.FormatUnits(_model.ExtensionDistance, SelectedUnit, Accuracy.Value);
             InputUnit = convertedUnit;
-
 
             #region Sheet Properties for Filtering
             var allSheetProperties = new ObservableCollection<PropertyInfo>(typeof(SheetWrapper).GetProperties()
                 .Where(prop => prop.PropertyType == typeof(string)).ToList());
 
-            var propertyWrappers = new ObservableCollection<PropertyWrapper>();
-            propertyWrappers.Add(new PropertyWrapper("ALL", allSheetProperties));
+            var propertyWrappers = new ObservableCollection<PropertyWrapper>
+            {
+                new PropertyWrapper("ALL", allSheetProperties)
+            };
 
             foreach (var prop in allSheetProperties)
             {
-                var oc = new ObservableCollection<PropertyInfo>();
-                oc.Add(prop);
-
+                var oc = new ObservableCollection<PropertyInfo> {prop};
                 propertyWrappers.Add(new PropertyWrapper(prop.Name, oc));
             }
 
@@ -463,14 +375,21 @@ namespace Loop.Revit.ViewTitles
             SelectedPropertyWrapper = propertyWrappers[0];
             #endregion
 
- 
-
-            Run = new RelayCommand<Window>(OnRun);
+            //TODO check if async actually does anything
+            Run = new AsyncRelayCommand<Window>(OnRun);
             CopyText = new RelayCommand<Window>(OnCopyText);
             SaveUnits = new RelayCommand<Window>(OnSaveSettings);
             ToggleThemeCommand = new RelayCommand(() => IsDarkMode = !IsDarkMode);
+
+            WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, ProgressResultsMessage>(this, (r, m) => r.OnProgressUpdate(m));
         }
 
+        private void OnProgressUpdate(ProgressResultsMessage obj)
+        {
+            CurrentProgress = obj.CurrentSheetProgress;
+            MaxProgressValue = obj.TotalSheetCount;
+
+        }
 
         private void SetAccuracy()
         {
@@ -478,7 +397,7 @@ namespace Loop.Revit.ViewTitles
             {
                 Accuracy = AccuracyOptions[_model.FindClosestUnitAccuracyIndex(SelectedUnit)];
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //do nothing
             }
@@ -493,10 +412,6 @@ namespace Loop.Revit.ViewTitles
                 if (ShowCheckedItemsOnly) return sheetInfo.IsSelected;
                 else return true;
             }
-
-
-
-            
 
             var selection = SelectedPropertyWrapper;
             var parametersToTarget = selection.Value;
@@ -518,15 +433,15 @@ namespace Loop.Revit.ViewTitles
             }
             else return sheetInfo != null && isFound;
         }
-        
-        private void OnRun(Window win)
+
+        private async Task OnRun(Window win)
         {
             var selected = Sheets.Where(x => x.IsSelected).ToList();
             if (selected.Count == 0)
             {
                 return;
             }
-            _model.ChangeTitleLength(selected);
+            await Task.Run(() => _model.ChangeTitleLength(selected));
         }
 
         private void OnCopyText(Window win)
@@ -537,9 +452,14 @@ namespace Loop.Revit.ViewTitles
 
         private void OnSaveSettings(Window win)
         {
-            _model.CreateDataStorage(lengthInternalUnits);
+            _model.CreateDataStorage(LengthInternalUnits);
+            SmallDialog.Create("Success!",
+                "Settings have been added inside your active document. Remember to save/sync to keep your changes. This will be accessible by all users.",
+                button1Content: "Ok",
+                darkMode: IsDarkMode,
+                owner: win
+            );
         }
-
 
         #region INotifyErrorInfo
         public IEnumerable GetErrors(string propertyName)
@@ -571,7 +491,7 @@ namespace Loop.Revit.ViewTitles
                     _errorsViewModel.AddError(nameof(InputUnit), errorMessages);
                 }
 
-                lengthInternalUnits = validationNumber;
+                LengthInternalUnits = validationNumber;
 
 
                 ConvertUnit(validationNumber);
@@ -582,25 +502,23 @@ namespace Loop.Revit.ViewTitles
 
         private void ConvertUnit(double numberToConvert)
         {
-            var convertedUnit = _model.FormatUnits(numberToConvert, SelectedUnit, Accuracy);
+            if (Accuracy == null) return;
+            var accuracyValue = Accuracy.Value;
+            var convertedUnit = _model.FormatUnits(numberToConvert, SelectedUnit, accuracyValue);
             CalculatedUnit = convertedUnit;
         }
 
-        //fluent validation
-        private void ValidateProperty(string propertyName)
+        private void CheckProgressBarVisibility()
         {
-            // this is commented out becuase i'm not actually using fluent validation for this anymore. saving for future use/reference.
-
-
-            _errorsViewModel.ClearErrors(propertyName);
-            //var result = _validator.Validate(UserUnit);
-            //if (result.Errors.Any())
-            //{
-            //    string firstErrorMessage = result.Errors.First().ErrorMessage;
-            //    _errorsViewModel.AddError(propertyName, firstErrorMessage);
-            //}
+            if (CurrentProgress < MaxProgressValue)
+            {
+                ProgressVisibility = Visibility.Visible;
+            }
+            else
+            {
+                ProgressVisibility = Visibility.Collapsed;
+            }
         }
-
 
     }
 }
