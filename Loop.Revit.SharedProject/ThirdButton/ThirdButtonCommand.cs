@@ -38,7 +38,7 @@ namespace Loop.Revit.ThirdButton
 
                 return Result.Succeeded;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Result.Failed;
             }

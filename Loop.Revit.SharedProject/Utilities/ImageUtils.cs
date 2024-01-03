@@ -22,7 +22,7 @@ namespace Loop.Revit.Utilities
                 img.EndInit();
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //ignored
             }

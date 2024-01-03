@@ -32,7 +32,7 @@ namespace Loop.Revit.ThirdButton
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                // ignore
             }

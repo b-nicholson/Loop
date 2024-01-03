@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using Autodesk.Revit.DB;
-using System.Windows.Controls;
 using Autodesk.Revit.UI;
 using Loop.Revit.Utilities.ExtensibleStorage;
-using Autodesk.Revit.DB.ExtensibleStorage;
-using System.Reflection;
 using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -49,7 +42,7 @@ namespace Loop.Revit.ViewTitles
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // ignore
             }
@@ -66,11 +59,13 @@ namespace Loop.Revit.ViewTitles
             var t = new Transaction(Doc, "Save Viewport Titles Extension Length");
             t.Start();
 
-            var schema = ExtensibleStorageHelper.CreateSimpleSchema(Model.ExtensibleStorageGuid, schemaName, schemaDescription, schemaInfo, SpecTypeId.Length);
+            var schema = ExtensibleStorageHelper.CreateSimpleSchema(
+                Model.ExtensibleStorageGuid, schemaName, schemaDescription, schemaInfo, SpecTypeId.Length);
             var paramInfo = new List<(string, dynamic)> { (paramName, Model.ExtensionDistance) };
 
-            // I have no idea why it takes centimeters as the input, it's the only way it stores correctly and seems to ignore everything
-            var dataStorage = ExtensibleStorageHelper.CreateDataStorage(Doc, schema, Model.ExtensibleStorageGuid,
+            // I have no idea why it stores a weird number when looking it up manually in lookup,
+            // it comes back out correctly though
+            ExtensibleStorageHelper.CreateDataStorage(Doc, schema, Model.ExtensibleStorageGuid,
                 "Viewport Title Length Extension Distance", paramInfo, UnitTypeId.Feet);
             t.Commit();
         }
@@ -93,12 +88,14 @@ namespace Loop.Revit.ViewTitles
             var ids = selected.SelectMany(sheet => sheet.ViewportIds).ToList();
 
 
-            var Doc = app.ActiveUIDocument.Document;
-            var viewports = new FilteredElementCollector(Doc, ids).OfCategory(BuiltInCategory.OST_Viewports).Cast<Viewport>();
+            var doc = app.ActiveUIDocument.Document;
+            var viewports = new FilteredElementCollector(doc, ids)
+                .OfCategory(BuiltInCategory.OST_Viewports)
+                .Cast<Viewport>();
             var viewportCount = viewports.Count();
             int viewportProcessingProgress = 0;
             
-            var t = new Transaction(Doc, "Change Viewport Label Line Length");
+            var t = new Transaction(doc, "Change Viewport Label Line Length");
             t.Start();
 
             WeakReferenceMessenger.Default.Send(new ProgressResultsMessage(viewportProcessingProgress,
@@ -108,7 +105,7 @@ namespace Loop.Revit.ViewTitles
             foreach (var vp in viewports)
             {
                 var viewportTypeId = vp.GetTypeId();
-                var viewportType = Doc.GetElement(viewportTypeId);
+                var viewportType = doc.GetElement(viewportTypeId);
 
           
                 // Access the "Show Title" parameter

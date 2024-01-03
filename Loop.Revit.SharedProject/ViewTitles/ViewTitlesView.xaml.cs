@@ -16,7 +16,7 @@ namespace Loop.Revit.ViewTitles
         {
             // Useless dummy code to force revit to load the libraries https://stackoverflow.com/questions/55594443/how-to-include-materialdesignxamltoolkit-to-wpf-class-library
             ColorZoneAssist.SetMode(new System.Windows.Controls.GroupBox(), ColorZoneMode.Light);
-            Hue hue = new Hue("name", System.Windows.Media.Color.FromArgb(1, 2, 3, 4), System.Windows.Media.Color.FromArgb(1, 5, 6, 7));
+            new Hue("name", System.Windows.Media.Color.FromArgb(1, 2, 3, 4), System.Windows.Media.Color.FromArgb(1, 5, 6, 7));
             InitializeComponent();
             System.Diagnostics.Debug.WriteLine("Current Directory: " + System.IO.Directory.GetCurrentDirectory());
         }
@@ -37,10 +37,10 @@ namespace Loop.Revit.ViewTitles
             switch (WindowState)
             {
                 case WindowState.Normal:
-                    var sizingParams = GetVirtualWindowSize();
+                    var (height, width) = GetVirtualWindowSize();
                     WindowState = WindowState.Maximized;
-                    MaxHeight = sizingParams.height;
-                    MaxWidth = sizingParams.width;
+                    MaxHeight = height;
+                    MaxWidth = width;
                     break;
                 case WindowState.Maximized:
                     WindowState = WindowState.Normal;

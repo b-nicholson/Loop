@@ -21,7 +21,7 @@ namespace Loop.Revit.FavouriteViews
                 var app = commandData.Application;
                 DockablePanelUtilsFv.ShowDockablePanel(app);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Result.Failed;
             }
