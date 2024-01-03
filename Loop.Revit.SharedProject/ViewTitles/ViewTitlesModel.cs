@@ -56,9 +56,6 @@ namespace Loop.Revit.ViewTitles
                 internalUnitsList.Add(UnitUtils.ConvertToInternalUnits(option.Value, selectedUnit.UnitTypeId));
             }
 
-
-
-
             var units = Doc.GetUnits();
             var formatOpts = units.GetFormatOptions(SpecTypeId.Length);
             var accuracy = formatOpts.Accuracy;
@@ -87,21 +84,17 @@ namespace Loop.Revit.ViewTitles
             var outputUnit = UnitFormatUtils.Format(unit.Unit, SpecTypeId.Length, inputDouble, true, outputFormatOptions);
 
             return outputUnit;
-
         }
 
 
         public (double, string) TryParseTextToInternalUnits(string inputText, Units unit)
         {
-            double outputDouble;
-            string outputMessage = String.Empty;
-
             //Always Converts to Internal Units, doesn't care what parsing options you give it
-            var newunit = UnitFormatUtils.TryParse(unit, SpecTypeId.Length, inputText, out outputDouble, out outputMessage);
+            UnitFormatUtils.TryParse(
+                unit, SpecTypeId.Length, inputText, out var outputDouble, out var outputMessage);
 
             return (outputDouble, outputMessage);
         }
-
 
         public void CreateDataStorage(double units)
         {

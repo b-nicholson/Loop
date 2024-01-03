@@ -27,7 +27,7 @@ namespace Loop.Revit
             {
                 app.CreateRibbonTab(tabName);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 //ignored
             }

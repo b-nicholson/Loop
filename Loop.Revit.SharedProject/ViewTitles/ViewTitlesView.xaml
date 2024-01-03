@@ -292,7 +292,7 @@
                     IsChecked="{Binding ShowCheckedItemsOnly}"
                               Style="{StaticResource MaterialDesignSwitchToggleButton}"
                               ToolTip="Show Selected Sheets Only"
-                                  Background="{DynamicResource MaterialDesignPaper}">
+                                  >
                         
                         <materialDesign:PackIcon
                         Kind="CheckboxMarkedOutline"

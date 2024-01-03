@@ -1,10 +1,8 @@
 ﻿using Autodesk.Revit.Attributes;
 using Autodesk.Revit.UI;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Text;
 using System.Windows.Interop;
 using Autodesk.Revit.DB;
 using Loop.Revit.Utilities;
@@ -37,7 +35,7 @@ namespace Loop.Revit.Settings
 
                 return Result.Succeeded;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Result.Failed;
             }

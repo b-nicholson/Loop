@@ -66,7 +66,7 @@ namespace Loop.Revit.ViewTitles
                 return Result.Succeeded;
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return Result.Failed;
             }
