@@ -1,12 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using Autodesk.Revit.DB;
+
 
 namespace Loop.Revit.Utilities.UserSettings
 {
     public class UserSettingsManager
     {
-        private static string _defaultFilePath { get; set; }
+        private static string DefaultFilePath { get; set; }
 
         // Save settings to a JSON file
         public static void SaveSettings(UserSetting settings, string filePath = null)
@@ -14,7 +18,7 @@ namespace Loop.Revit.Utilities.UserSettings
             if (filePath == null)
             {
                 SetDefaultFilePath();
-                filePath = _defaultFilePath;
+                filePath = DefaultFilePath;
             }
 
             var options = new JsonSerializerOptions
@@ -24,7 +28,10 @@ namespace Loop.Revit.Utilities.UserSettings
 
             string jsonString = JsonSerializer.Serialize(settings, options);
             File.WriteAllText(filePath, jsonString);
+
+            GlobalSettings.Settings = settings;
         }
+
 
         // Load settings from a JSON file
         public static UserSetting LoadSettings(string filePath = null)
@@ -32,7 +39,7 @@ namespace Loop.Revit.Utilities.UserSettings
             if (filePath == null)
             {
                 SetDefaultFilePath();
-                filePath = _defaultFilePath;
+                filePath = DefaultFilePath;
             }
             if (!File.Exists(filePath))
             {
@@ -42,7 +49,8 @@ namespace Loop.Revit.Utilities.UserSettings
             }
 
             string jsonString = File.ReadAllText(filePath);
-            return JsonSerializer.Deserialize<UserSetting>(jsonString);
+            var setting = JsonSerializer.Deserialize<UserSetting>(jsonString);
+            return setting;
         }
 
         public static void ExportSettings(UserSetting settings, string exportFilePath)
@@ -53,14 +61,15 @@ namespace Loop.Revit.Utilities.UserSettings
         // Import settings from a specified file path
         public static UserSetting ImportSettings(string importFilePath)
         {
-            return LoadSettings(importFilePath);
+            var setting = LoadSettings(importFilePath);
+            return setting;
         }
         public static void DeleteSettings(string filePath = null)
         {
             if (filePath == null)
             {
                 SetDefaultFilePath();
-                filePath = _defaultFilePath;
+                filePath = DefaultFilePath;
             }
             // Check if the file exists before trying to delete
             if (File.Exists(filePath))
@@ -71,7 +80,7 @@ namespace Loop.Revit.Utilities.UserSettings
 
         private static void SetDefaultFilePath()
         {
-            _defaultFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Settings.json";
+            DefaultFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Settings.json";
        
         }
     }

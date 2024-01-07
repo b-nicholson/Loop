@@ -96,6 +96,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
 
@@ -171,7 +172,9 @@
                     Style="{StaticResource HorizontalDividerBorder}" />
             <Expander Grid.Row="3"
                       HorizontalAlignment="Stretch"
-                      Header="Settings Options">
+                      Header="Settings Options"
+                      materialDesign:TransitionAssist.DisableTransitions="True"
+                      >
                 <StackPanel Margin="24,8,24,16"
                             Orientation="Vertical"
                             TextBlock.Foreground="{DynamicResource MaterialDesignBody}">
@@ -196,7 +199,7 @@
                             <ColumnDefinition />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Import an existing settings file from your local computer"
+                        <TextBlock Text="Export current settings to a file"
                                    Width="Auto"
                                    Margin="0 0 20 0"
                                    Style="{StaticResource HorizontalExpanderContentTextBlock}" />
@@ -224,6 +227,13 @@
             </Expander>
             <Border Grid.Row="4"
                     Style="{StaticResource HorizontalDividerBorder}" />
+
+            <Button Grid.Row="5"
+                    Content="Save"
+                    Command="{Binding SaveSettings}"
+                    Width="100"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"/>
 
 
         </Grid>

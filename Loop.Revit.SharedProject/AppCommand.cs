@@ -7,6 +7,7 @@ using Loop.Revit.FirstButton;
 using Loop.Revit.SecondButton;
 using Loop.Revit.Settings;
 using Loop.Revit.ThirdButton;
+using Loop.Revit.Utilities.UserSettings;
 using Loop.Revit.ViewTitles;
 
 
@@ -20,6 +21,8 @@ namespace Loop.Revit
         public static ViewTitlesRequestHandler ViewTitlesHandler { get; set; }
         public static ExternalEvent ViewTitlesEvent { get; set; }
 
+        public static UserSetting CurrentSetting { get; set; }
+
         public Result OnStartup(UIControlledApplication app)
         {
             string tabName = "Loop";
@@ -31,7 +34,7 @@ namespace Loop.Revit
             {
                 //ignored
             }
-
+            
             string panelName = "Group 1";
 
             var ribbonPanel = app.GetRibbonPanels(tabName).FirstOrDefault(x => x.Name == panelName) ??
@@ -59,6 +62,9 @@ namespace Loop.Revit
 
             ViewTitlesHandler = new ViewTitlesRequestHandler();
             ViewTitlesEvent = ExternalEvent.Create(ViewTitlesHandler);
+
+           var settings = UserSettingsManager.LoadSettings();
+           GlobalSettings.Settings = settings;
 
             return Result.Succeeded;
         }

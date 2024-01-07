@@ -13,6 +13,14 @@ namespace Loop.Revit.Settings
     {
         #region Common Properties
         public SettingsModel Model { get; set; }
+
+        private UserSetting _tempSetting;
+
+        public UserSetting TemporarySettings
+        {
+            get => _tempSetting;
+            set => SetProperty(ref _tempSetting, value);
+        }
         
 
         #endregion
@@ -48,12 +56,14 @@ namespace Loop.Revit.Settings
 
         #endregion
 
+        public RelayCommand SaveSettings { get; set; }
+
         public SettingsViewModel(SettingsModel model)
         {
             Model = model;
 
 
-            var loadedSettings = UserSettingsManager.LoadSettings();
+            TemporarySettings = GlobalSettings.Settings;
 
 
             //loadedSettings.Username = "JohnDoe";
@@ -74,6 +84,14 @@ namespace Loop.Revit.Settings
             ImportSettings = new RelayCommand(OnImportSettings);
             ExportSettings = new RelayCommand(OnExportSettings);
             ClearSettings = new RelayCommand(OnClearSettings);
+            SaveSettings = new RelayCommand(OnSaveSettings);
+        }
+
+        private void OnSaveSettings()
+        {
+            GlobalSettings.Settings.Age = 12345;
+            UserSettingsManager.SaveSettings(GlobalSettings.Settings);
+
         }
 
         private void OnImportSettings()
@@ -83,10 +101,8 @@ namespace Loop.Revit.Settings
             if (!string.IsNullOrEmpty(filePath))
             {
                 var settings = UserSettingsManager.LoadSettings(filePath);
-                if (settings != null)
-                {
-                    UserSettingsManager.SaveSettings(settings);
-                }
+                UserSettingsManager.SaveSettings(settings);
+             
             }
         }
 
@@ -99,10 +115,6 @@ namespace Loop.Revit.Settings
             {
                 UserSettingsManager.ExportSettings(settings, newPath);
             }
-
-            var test = System.Environment.SetEnvironmentVariable("test", true);
-
-
         }
 
         private void OnClearSettings()
