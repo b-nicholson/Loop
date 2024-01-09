@@ -3,15 +3,24 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
+using MaterialDesignThemes.Wpf;
 
 namespace Loop.Revit.Utilities.Wpf.SmallDialog
 {
 
     public class SmallDialog
     {
-        public static bool Create(string title, string message, string button1Content = null, string button2Content = null, string button3Content = null, bool darkMode = false, bool modeless = false, Window owner = null)
+        public static Enum Create(string title, string message, SdButton button1 = null, SdButton button2 = null, SdButton button3 = null, bool darkMode = false, bool modeless = false, PackIconKind iconKind = PackIconKind.None, Window owner = null)
         {
-            var smallDialogViewModel = new SmallDialogViewModel(title, message,  button1Content, button2Content, button3Content, darkMode);
+            var smallDialogViewModel = new SmallDialogViewModel(
+                title:title,
+                message:message,
+                button1:button1,
+                button2:button2,
+                button3:button3,
+                darkMode:darkMode,
+                iconKind: iconKind
+                );
             var smallDialogView = new SmallDialogView { DataContext = smallDialogViewModel };
             smallDialogView.ShowInTaskbar = false;
             if (owner != null)

@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Autodesk.Revit.DB;
+﻿using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Loop.Revit.Utilities;
 using Loop.Revit.Utilities.UserSettings;
+using Loop.Revit.Utilities.Wpf.SmallDialog;
+using System.Text.Json;
+using System.Windows;
+using MaterialDesignThemes.Wpf;
 
 namespace Loop.Revit.Settings
 {
@@ -51,7 +52,7 @@ namespace Loop.Revit.Settings
 
         #region Import/Export Properties
         public RelayCommand ImportSettings { get; set; }
-        public RelayCommand ExportSettings { get; set; }
+        public RelayCommand<Window> ExportSettings { get; set; }
         public RelayCommand ClearSettings { get; set; }
 
         #endregion
@@ -62,19 +63,7 @@ namespace Loop.Revit.Settings
         {
             Model = model;
 
-
-            TemporarySettings = GlobalSettings.Settings;
-
-
-            //loadedSettings.Username = "JohnDoe";
-            //loadedSettings.Age = 30;
-            //loadedSettings.IsSubscribed = true;
-            //UserSettingsManager.SaveSettings(loadedSettings);
-
-            //UserSettingsManager.DeleteSettings();
-
-
-
+            TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
 
 
 
@@ -82,15 +71,22 @@ namespace Loop.Revit.Settings
             ToggleThemeCommand = new RelayCommand(() => IsDarkMode = !IsDarkMode);
 
             ImportSettings = new RelayCommand(OnImportSettings);
-            ExportSettings = new RelayCommand(OnExportSettings);
+            ExportSettings = new RelayCommand<Window>(OnExportSettings);
             ClearSettings = new RelayCommand(OnClearSettings);
             SaveSettings = new RelayCommand(OnSaveSettings);
         }
 
+        private UserSetting DuplicateGlobalSetting(UserSetting setting)
+        {
+            string jsonString = JsonSerializer.Serialize(setting);
+            return JsonSerializer.Deserialize<UserSetting>(jsonString);
+        }
+
         private void OnSaveSettings()
         {
-            GlobalSettings.Settings.Age = 12345;
-            UserSettingsManager.SaveSettings(GlobalSettings.Settings);
+            //GlobalSettings.Settings.Age = 12345;
+            //UserSettingsManager.SaveSettings(GlobalSettings.Settings);
+            TemporarySettings.Age = 453645645;
 
         }
 
@@ -106,9 +102,44 @@ namespace Loop.Revit.Settings
             }
         }
 
-        private void OnExportSettings()
+        private void OnExportSettings(Window win)
         {
             // TODO add success messages and error handling
+
+            var tempset = TemporarySettings;
+            var globalset = GlobalSettings.Settings;
+
+            if (!TemporarySettings.Equals(GlobalSettings.Settings))
+            {
+                //var vm = new SmallDialogViewModel(
+                //    title:"Settings Not Saved",
+                //    message: "Changes to the current settings have not been saved, would you like to save them, or discard them before exporting",
+                //    button1Content:"Save",
+                //    button2Content:"Discard",
+                //    darkMode: IsDarkMode,
+                //    iconKind:PackIconKind.AlertBoxOutline
+                //    );
+                //var v = new SmallDialogView()
+                //{
+                //    DataContext = vm
+                //};
+                //v.ShowDialog();
+
+
+
+                var yo = SmallDialog.Create(
+                    title: "Settings Not Saved",
+                    message:
+                    "Changes to the current settings have not been saved, would you like to save them, or discard them before exporting?",
+                    button1: new SdButton("Save", SmallDialogResults.Yes),
+                    button2: new SdButton("Discard", SmallDialogResults.No),
+                    darkMode: IsDarkMode,
+                    iconKind: PackIconKind.AlertBoxOutline,
+                    owner:win
+                    );
+            }
+
+
             var settings = UserSettingsManager.LoadSettings();
             var newPath = DialogUtils.SaveSingleFile("JSON files|*.json", "json");
             if (!string.IsNullOrEmpty(newPath))

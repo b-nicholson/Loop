@@ -54,23 +54,42 @@
                        HorizontalAlignment="Center"
                        Margin="0 0 0 10 "/>
             </StackPanel>
-            <TextBlock Grid.Row="1" TextWrapping="WrapWithOverflow" Text="{Binding Message, FallbackValue= Successfully saved settings to document. Remember to save/sync to keep your changes.}"/>
-           
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Viewbox Grid.Column="0" Width="{Binding ElementName=BodyText, Path=ActualHeight}">
+                <materialDesign:PackIcon
+                                         Kind="{Binding IconKind}"
+                                         Visibility="{Binding IconVis, Converter={StaticResource VisibilityConverter}, FallbackValue=Visible}"
+                                         HorizontalAlignment="Stretch"
+                                         />
+                </Viewbox>
+                <StackPanel  Grid.Column="1">
+                    <TextBlock x:Name="BodyText"
+                               TextWrapping="WrapWithOverflow"
+                               MinWidth="100"
+                               
+                               Text="{Binding Message, FallbackValue= Successfully saved settings to document. Remember to save/sync to keep your changes.}" />
+                </StackPanel>
+                
+            </Grid>
             <StackPanel Grid.Row="2" Margin="0 20 0 0" Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button
-                    Width="70"
+                    Width="Auto"
                     Margin="5 0"
-                    Content="{Binding Button3Content, FallbackValue=Reset}"
-                    Visibility="{Binding Button3Vis, Converter={StaticResource VisibilityConverter}, FallbackValue=Colla}"
+                    Content="{Binding Button3.Name, FallbackValue=Reset}"
+                    Visibility="{Binding Button3Vis, Converter={StaticResource VisibilityConverter}, FallbackValue=Collapsed}"
                     Command ="{Binding Button3Command}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                     Style="{StaticResource MaterialDesignOutlinedDarkButton}"
                     Foreground="{DynamicResource MaterialDesignBody}"
                     BorderBrush="{DynamicResource MaterialDesignBody}"/>
                 <Button
-                    Width="70"
+                    Width="Auto"
                     Margin="5 0"
-                    Content="{Binding Button2Content, FallbackValue=No}"
+                    Content="{Binding Button2.Name, FallbackValue=No}"
                     Visibility="{Binding Button2Vis, Converter={StaticResource VisibilityConverter}, FallbackValue=Visible}"
                     Command ="{Binding Button2Command}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
@@ -78,9 +97,9 @@
                     Foreground="{DynamicResource MaterialDesignBody}"
                     BorderBrush="{DynamicResource MaterialDesignBody}"/>
                 <Button
-                    Width="70"
+                    Width="Auto"
                     Margin="5 0"
-                    Content="{Binding Button1Content, FallbackValue=Yes}"
+                    Content="{Binding Button1.Name, FallbackValue=Yes}"
                     Visibility="{Binding Button1Vis, Converter={StaticResource VisibilityConverter}, FallbackValue=Visible}"
                     Command ="{Binding Button1Command}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"

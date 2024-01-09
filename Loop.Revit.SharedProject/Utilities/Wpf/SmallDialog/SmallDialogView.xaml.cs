@@ -1,5 +1,6 @@
 ﻿
 
+using System.Windows;
 using System.Windows.Input;
 
 namespace Loop.Revit.Utilities.Wpf.SmallDialog
@@ -15,5 +16,6 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
         {
             this.DragMove();
         }
+
     }
 }

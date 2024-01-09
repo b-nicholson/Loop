@@ -453,12 +453,14 @@ namespace Loop.Revit.ViewTitles
         private void OnSaveSettings(Window win)
         {
             _model.CreateDataStorage(LengthInternalUnits);
-            SmallDialog.Create("Success!",
-                "Settings have been added inside your active document. Remember to save/sync to keep your changes. This will be accessible by all users.",
-                button1Content: "Ok",
-                darkMode: IsDarkMode,
-                owner: win
-            );
+
+            //TODO update implementation
+            //SmallDialog.Create("Success!",
+            //    "Settings have been added inside your active document. Remember to save/sync to keep your changes. This will be accessible by all users.",
+            //    button1Content: "Ok",
+            //    darkMode: IsDarkMode,
+            //    owner: win
+            //);
         }
 
         #region INotifyErrorInfo

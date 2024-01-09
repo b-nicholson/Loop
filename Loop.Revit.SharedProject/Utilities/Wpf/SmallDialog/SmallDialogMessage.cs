@@ -6,9 +6,9 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
 {
     public class SmallDialogMessage
     {
-        public bool Result { get; set; }
+        public Enum Result { get; set; }
 
-        public SmallDialogMessage(bool result)
+        public SmallDialogMessage(Enum result)
         {
             Result = result;
         }

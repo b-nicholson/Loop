@@ -3,6 +3,7 @@ using System.Windows;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System;
+using MaterialDesignThemes.Wpf;
 
 namespace Loop.Revit.Utilities.Wpf.SmallDialog
 {
@@ -19,6 +20,22 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
         {
             get => _message;
             set => SetProperty(ref _message, value);
+        }
+        private PackIconKind _iconKind;
+
+        public PackIconKind IconKind
+        {
+            get { return _iconKind; }
+            set => SetProperty(ref _iconKind, value);
+        }
+
+        private bool _iconVis;
+
+        public bool IconVis
+        {
+            get => _iconVis;
+            set => SetProperty(ref _iconVis, value);
+
         }
 
         public RelayCommand<Window> Button1Command { get; set; }
@@ -44,27 +61,33 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
             set => SetProperty(ref _button3Vis, value);
         }
 
-        private string _button1Content;
-        public string Button1Content
+        private SdButton _button1;
+
+        public SdButton Button1
         {
-            get => _button1Content; 
-            set=> SetProperty(ref _button1Content, value);
+            get => _button1;
+            set => SetProperty(ref _button1, value);
         }
-        private string _button2Content;
-        public string Button2Content
+        private SdButton _button2;
+
+        public SdButton Button2
         {
-            get => _button2Content;
-            set => SetProperty(ref _button2Content, value);
-        }
-        private string _button3Content;
-        public string Button3Content
-        {
-            get => _button3Content;
-            set => SetProperty(ref _button3Content, value);
+            get => _button2;
+            set => SetProperty(ref _button2, value);
         }
 
-        private bool _results;
-        public bool Results
+        private SdButton _button3;
+
+        public SdButton Button3
+        {
+            get => _button3;
+            set => SetProperty(ref _button3, value);
+        }
+
+
+
+        private Enum _results;
+        public Enum Results
         {
             get => _results;
             set => SetProperty(ref _results, value);
@@ -72,26 +95,33 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
 
         public bool IsDarkMode { get; set; }
 
-        public SmallDialogViewModel(string title, string message, string button1Content = null, string button2Content = null, string button3Content = null, bool darkMode = false)
+        public SmallDialogViewModel(string title, string message, SdButton button1 = null, SdButton button2 = null, SdButton button3 = null, bool darkMode = false, PackIconKind iconKind = PackIconKind.None)
         {
             Message = message;
             Title = title;
             IsDarkMode = darkMode;
+            IconKind = iconKind;
 
-            if (button1Content != null)
+            Button1 = button1;
+            Button2 = button2;
+            Button3 = button3;
+
+            if (iconKind != PackIconKind.None)
+            {
+                IconVis = true;
+            }
+
+            if (button1 != null)
             {
                 Button1Vis = true;
-                Button1Content = button1Content;
             }
-            if (button2Content != null)
+            if (button2 != null)
             {
                 Button2Vis = true;
-                Button2Content = button2Content;
             }
-            if (button3Content != null)
+            if (button3 != null)
             {
                 Button3Vis = true;
-                Button3Content = button3Content;
             }
 
             Button1Command = new RelayCommand<Window>(OnButton1Command);
@@ -101,19 +131,19 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
 
         public void OnButton1Command(Window win)
         {
-            Results = true;
+            Results = Button1.Results;
             WeakReferenceMessenger.Default.Send(new SmallDialogMessage(Results));
             win.Close();
         }
         public void OnButton2Command(Window win)
         {
-            Results = false;
+            Results = Button2.Results;
             WeakReferenceMessenger.Default.Send(new SmallDialogMessage(Results));
             win.Close();
         }
         public void OnButton3Command(Window win)
         {
-            Results = true;
+            Results = Button3.Results;
             WeakReferenceMessenger.Default.Send(new SmallDialogMessage(Results));
             win.Close();
         }
