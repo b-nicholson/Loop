@@ -86,8 +86,8 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
 
 
 
-        private Enum _results;
-        public Enum Results
+        private SmallDialogResults _results;
+        public SmallDialogResults Results
         {
             get => _results;
             set => SetProperty(ref _results, value);

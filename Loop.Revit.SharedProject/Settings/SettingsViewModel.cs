@@ -86,7 +86,7 @@ namespace Loop.Revit.Settings
         {
             //GlobalSettings.Settings.Age = 12345;
             //UserSettingsManager.SaveSettings(GlobalSettings.Settings);
-            TemporarySettings.Age = 453645645;
+            TemporarySettings.Age = 451165;
 
         }
 
@@ -105,30 +105,11 @@ namespace Loop.Revit.Settings
         private void OnExportSettings(Window win)
         {
             // TODO add success messages and error handling
-
-            var tempset = TemporarySettings;
-            var globalset = GlobalSettings.Settings;
-
+            
             if (!TemporarySettings.Equals(GlobalSettings.Settings))
             {
-                //var vm = new SmallDialogViewModel(
-                //    title:"Settings Not Saved",
-                //    message: "Changes to the current settings have not been saved, would you like to save them, or discard them before exporting",
-                //    button1Content:"Save",
-                //    button2Content:"Discard",
-                //    darkMode: IsDarkMode,
-                //    iconKind:PackIconKind.AlertBoxOutline
-                //    );
-                //var v = new SmallDialogView()
-                //{
-                //    DataContext = vm
-                //};
-                //v.ShowDialog();
-
-
-
-                var yo = SmallDialog.Create(
-                    title: "Settings Not Saved",
+                var dialogResults = SmallDialog.Create(
+                    title: "Settings Not Saved!",
                     message:
                     "Changes to the current settings have not been saved, would you like to save them, or discard them before exporting?",
                     button1: new SdButton("Save", SmallDialogResults.Yes),
@@ -137,7 +118,28 @@ namespace Loop.Revit.Settings
                     iconKind: PackIconKind.AlertBoxOutline,
                     owner:win
                     );
+
+                if (dialogResults == SmallDialogResults.Yes)
+                {
+                    UserSettingsManager.SaveSettings(TemporarySettings);
+                }
+                else
+                {
+                    SmallDialog.Create(
+                        title: "Settings Discarded",
+                        message:
+                        "Temporary Settings have been reset to the last saved state.",
+                        button1: new SdButton("OK", SmallDialogResults.Yes),
+                        darkMode: IsDarkMode,
+                        owner: win
+                        );
+                    TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
+                }
+
+               
             }
+
+            
 
 
             var settings = UserSettingsManager.LoadSettings();

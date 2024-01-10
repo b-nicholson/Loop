@@ -10,7 +10,7 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
 
     public class SmallDialog
     {
-        public static Enum Create(string title, string message, SdButton button1 = null, SdButton button2 = null, SdButton button3 = null, bool darkMode = false, bool modeless = false, PackIconKind iconKind = PackIconKind.None, Window owner = null)
+        public static SmallDialogResults Create(string title, string message, SdButton button1 = null, SdButton button2 = null, SdButton button3 = null, bool darkMode = false, bool modeless = false, PackIconKind iconKind = PackIconKind.None, Window owner = null)
         {
             var smallDialogViewModel = new SmallDialogViewModel(
                 title:title,

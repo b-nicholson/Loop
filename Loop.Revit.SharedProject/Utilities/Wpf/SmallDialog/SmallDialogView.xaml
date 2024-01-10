@@ -59,7 +59,8 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Viewbox Grid.Column="0" Width="{Binding ElementName=BodyText, Path=ActualHeight}">
+                <Viewbox Grid.Column="0" Width="{Binding ElementName=BodyText, Path=ActualHeight}"
+                         Visibility="{Binding IconVis, Converter={StaticResource VisibilityConverter}, FallbackValue=Visible}">
                 <materialDesign:PackIcon
                                          Kind="{Binding IconKind}"
                                          Visibility="{Binding IconVis, Converter={StaticResource VisibilityConverter}, FallbackValue=Visible}"

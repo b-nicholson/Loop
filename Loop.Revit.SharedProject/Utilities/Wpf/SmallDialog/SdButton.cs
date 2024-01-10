@@ -14,14 +14,14 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
             set => SetProperty(ref _name, value);
         }
 
-        private Enum _results;
-        public Enum Results
+        private SmallDialogResults _results;
+        public SmallDialogResults Results
         {
             get => _results;
             set => SetProperty(ref _results, value);
         }
 
-        public SdButton(string name, Enum results)
+        public SdButton(string name, SmallDialogResults results)
         {
             Name = name;
             Results = results;

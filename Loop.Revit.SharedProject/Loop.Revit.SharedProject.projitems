@@ -50,6 +50,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\UserSettings\UserSetting.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\UserSettings\UserSettingsManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\ColorScheme.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Converters\BrushToHexConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Converters\ColorToBrushConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SdButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogResults.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialog.cs" />
