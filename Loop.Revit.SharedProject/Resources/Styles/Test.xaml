@@ -1,0 +1,7 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="Gah">#3b4453</Color>
+    <Color x:Key="hah">#A020F0</Color>
+    <SolidColorBrush x:Key="Blah" Color="{DynamicResource Gah}"></SolidColorBrush>
+</ResourceDictionary>
