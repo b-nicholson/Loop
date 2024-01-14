@@ -52,6 +52,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\ColorScheme.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Converters\BrushToHexConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Converters\ColorToBrushConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\PaletteHelperExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SdButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogResults.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialog.cs" />
@@ -60,6 +61,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogView.xaml.cs">
       <DependentUpon>SmallDialogView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\CustomColorThemeForMaterialDesign.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\IWindowService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\WindowService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ProgressResultsMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\PropertyWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\SheetWrapper.cs" />

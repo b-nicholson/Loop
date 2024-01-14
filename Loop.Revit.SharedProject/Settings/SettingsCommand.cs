@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Windows.Interop;
 using Autodesk.Revit.DB;
 using Loop.Revit.Utilities;
+using Loop.Revit.Utilities.Wpf.WindowServices;
 
 namespace Loop.Revit.Settings
 {
@@ -20,11 +21,11 @@ namespace Loop.Revit.Settings
             {
                 var uiApp = commandData.Application;
                 var m = new SettingsModel(uiApp);
-                var vm = new SettingsViewModel(m);
-                var v = new SettingsView
-                {
-                    DataContext = vm
-                };
+                
+                var v = new SettingsView();
+                var vm = new SettingsViewModel(m, new WindowService(v));
+
+                v.DataContext = vm;
 
                 var unused = new WindowInteropHelper(v)
                 {
