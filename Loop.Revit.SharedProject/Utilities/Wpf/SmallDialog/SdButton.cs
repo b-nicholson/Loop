@@ -1,6 +1,5 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
-using ControlzEx.Standard;
 
 namespace Loop.Revit.Utilities.Wpf.SmallDialog
 {

@@ -10,8 +10,6 @@
         TextElement.FontSize="14"
         Width="600"
         FontFamily="{materialDesign:MaterialDesignFont}"
-        xmlns:local="clr-namespace:Loop.Revit.Utilities.Wpf"
-        local:WpfThemeProperties.ToggleTheme="{Binding IsDarkMode}"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
@@ -26,21 +24,13 @@
 
 
     <Window.Resources>
-        <!--<ResourceDictionary Source="../Resources/Styles/ElementStyles.xaml"/>-->
-
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-
-                <!--<ResourceDictionary Source="pack://application:,,,/Loop.Revit;component/Utilities/LoopThemeColours.xaml" />
                 <materialDesign:CustomColorTheme BaseTheme="Light"
-                                                 PrimaryColor="{StaticResource LoopPrimary}"
-                                                 SecondaryColor="{StaticResource LoopSecondary}"
-                                                 ColorAdjustment="{materialDesign:ColorAdjustment DesiredContrastRatio=4.5, Colors=All, Contrast=Medium}" />-->
-
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
-
-
+                                                 PrimaryColor="Green"
+                                                 SecondaryColor="Orange"
+                                                 ColorAdjustment="{materialDesign:ColorAdjustment DesiredContrastRatio=4.5, Colors=All, Contrast=Low}" />
+                
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
@@ -91,36 +81,21 @@
                     Style="{StaticResource MaterialDesignHeadline5TextBlock}"
                 />
                     <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right">
-                        <ToggleButton Width="45" VerticalContentAlignment="Center"
-                                  IsChecked="{Binding IsDarkMode, Mode=OneWay}" 
-                                  Command="{Binding ToggleThemeCommand}"
-                                  Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                                  ToolTip="Toggle Dark/Light Theme" HorizontalAlignment="Right" VerticalAlignment="Top">
-                            <materialDesign:PackIcon
-                            Kind="WhiteBalanceSunny"
-                        >
-
-                            </materialDesign:PackIcon>
-                            <materialDesign:ToggleButtonAssist.OnContent>
-                                <materialDesign:PackIcon
-                                Kind="WeatherNight" />
-                            </materialDesign:ToggleButtonAssist.OnContent>
-                        </ToggleButton>
                         <Button
                             Click="MinimizeButton_Click"
                             VerticalContentAlignment="Center"
                         Content="{materialDesign:PackIcon WindowMinimize}"
-                        Style="{StaticResource MaterialDesignFlatDarkButton}"/>
+                        Style="{StaticResource MaterialDesignFlatButton}"/>
                         <Button 
                             Click="MaximizeRestoreButton_Click"
                             VerticalContentAlignment="Center"
                         Content="{materialDesign:PackIcon WindowMaximize}"
-                        Style="{StaticResource MaterialDesignFlatDarkButton}"/>
+                        Style="{StaticResource MaterialDesignFlatButton}"/>
                         <Button 
                             Click="CloseButton_Click"
                             VerticalContentAlignment="Center"
                             Content="{materialDesign:PackIcon WindowClose}"
-                            Style="{StaticResource MaterialDesignFlatDarkButton}"/>
+                            Style="{StaticResource MaterialDesignFlatButton}"/>
                     </StackPanel>
 
                 </Grid>

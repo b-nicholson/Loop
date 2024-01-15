@@ -11,6 +11,7 @@ using System.Windows;
 using Loop.Revit.Utilities.Wpf;
 using MaterialDesignThemes.Wpf;
 using System.Windows.Media;
+using Loop.Revit.Utilities.Json;
 using MaterialDesignColors;
 using Color = System.Windows.Media.Color;
 using Loop.Revit.Utilities.Wpf.WindowServices;
@@ -20,195 +21,17 @@ namespace Loop.Revit.Settings
     public class SettingsViewModel: ObservableObject
     {
         private readonly IWindowService _windowService;
-        public RelayCommand CloseCommand { get; set; }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        private readonly PaletteHelper _paletteHelper = new PaletteHelper();
-
-        private Color _primaryColor;
-        private Color _secondaryColor;
-        private Color _primaryForegroundColor;
-        private Color _secondaryForegroundColor;
-
-
-        private ColorScheme _activeScheme;
-        public ColorScheme ActiveScheme
-        {
-            get => _activeScheme;
-            set
-            {
-                if (_activeScheme != value)
-                {
-                    _activeScheme = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private Color? _selectedColor;
-
-        public Color? SelectedColor
+        
+        private Color _selectedColor;
+        public Color SelectedColor
         {
             get => _selectedColor;
             set
             {
-                if (_selectedColor != value)
-                {
-                    _selectedColor = value;
-                    OnPropertyChanged();
-
-                    // if we are triggering a change internally its a hue change and the colors will match
-                    // so we don't want to trigger a custom color change.
-                    var currentSchemeColor = default(Color); // or some other default initialization
-
-                    switch (ActiveScheme)
-                    {
-                        case ColorScheme.Primary:
-                            currentSchemeColor = _primaryColor;
-                            break;
-                        case ColorScheme.Secondary:
-                            currentSchemeColor = _secondaryColor;
-                            break;
-                        case ColorScheme.PrimaryForeground:
-                            currentSchemeColor = _primaryForegroundColor;
-                            break;
-                        case ColorScheme.SecondaryForeground:
-                            currentSchemeColor = _secondaryForegroundColor;
-                            break;
-                        default:
-                            throw new NotSupportedException(
-                                $"{ActiveScheme} is not a handled ColorScheme. Ye daft programmer!");
-                    }
-
-                    if (_selectedColor != currentSchemeColor && value is Color color)
-                    {
-                        ChangeCustomColor(color);
-                    }
-                }
+                SetProperty(ref _selectedColor, value);
+                ChangePrimaryColour(value);
             }
         }
-
-
-        private void ChangeCustomColor(object obj) {
-            if (obj == null) throw new ArgumentNullException(nameof(obj));
-            var color = (Color)obj;
-
-            if (ActiveScheme == ColorScheme.Primary)
-            {
-                _paletteHelper.ChangePrimaryColor(color);
-                _primaryColor = color;
-            }
-            else if (ActiveScheme == ColorScheme.Secondary)
-            {
-                _paletteHelper.ChangeSecondaryColor(color);
-                _secondaryColor = color;
-            }
-            else if (ActiveScheme == ColorScheme.PrimaryForeground)
-            {
-                SetPrimaryForegroundToSingleColor(color);
-                _primaryForegroundColor = color;
-            }
-            else if (ActiveScheme == ColorScheme.SecondaryForeground)
-            {
-                SetSecondaryForegroundToSingleColor(color);
-                _secondaryForegroundColor = color;
-            }
-        }
-
-        private void ChangeHue(object obj)
-        {
-            if (obj == null) throw new ArgumentNullException(nameof(obj));
-            var hue = (Color)obj;
-
-            SelectedColor = hue;
-            if (ActiveScheme == ColorScheme.Primary)
-            {
-                _paletteHelper.ChangePrimaryColor(hue);
-                _primaryColor = hue;
-                _primaryForegroundColor = _paletteHelper.GetTheme().PrimaryMid.GetForegroundColor();
-            }
-            else if (ActiveScheme == ColorScheme.Secondary)
-            {
-                _paletteHelper.ChangeSecondaryColor(hue);
-                _secondaryColor = hue;
-                _secondaryForegroundColor = _paletteHelper.GetTheme().SecondaryMid.GetForegroundColor();
-            }
-            else if (ActiveScheme == ColorScheme.PrimaryForeground)
-            {
-                SetPrimaryForegroundToSingleColor(hue);
-                _primaryForegroundColor = hue;
-            }
-            else if (ActiveScheme == ColorScheme.SecondaryForeground)
-            {
-                SetSecondaryForegroundToSingleColor(hue);
-                _secondaryForegroundColor = hue;
-            }
-        }
-
-        private void SetPrimaryForegroundToSingleColor(Color color)
-        {
-            var theme = _paletteHelper.GetTheme();
-
-            theme.PrimaryLight = new ColorPair(theme.PrimaryLight.Color, color);
-            theme.PrimaryMid = new ColorPair(theme.PrimaryMid.Color, color);
-            theme.PrimaryDark = new ColorPair(theme.PrimaryDark.Color, color);
-
-            _paletteHelper.SetTheme(theme);
-        }
-
-        private void SetSecondaryForegroundToSingleColor(Color color)
-        {
-            var theme = _paletteHelper.GetTheme();
-
-            theme.SecondaryLight = new ColorPair(theme.SecondaryLight.Color, color);
-            theme.SecondaryMid = new ColorPair(theme.SecondaryMid.Color, color);
-            theme.SecondaryDark = new ColorPair(theme.SecondaryDark.Color, color);
-
-            _paletteHelper.SetTheme(theme);
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         #region Common Properties
         public SettingsModel Model { get; set; }
@@ -250,10 +73,12 @@ namespace Loop.Revit.Settings
 
         #region Import/Export Properties
         public RelayCommand ImportSettings { get; set; }
-        public RelayCommand<Window> ExportSettings { get; set; }
+        public RelayCommand ExportSettings { get; set; }
         public RelayCommand ClearSettings { get; set; }
 
         #endregion
+
+        public RelayCommand CloseCommand { get; set; }
 
         public RelayCommand SaveSettings { get; set; }
 
@@ -261,41 +86,52 @@ namespace Loop.Revit.Settings
         {
             Model = model;
             _windowService = windowService;
-            CloseCommand = new RelayCommand(CloseWindow);
+            
 
             TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
+            LoadSettings();
+            SelectedColor = Color.FromRgb(255,0,0);
 
 
-
+            CloseCommand = new RelayCommand(CloseWindow);
             ChangeTheme = new RelayCommand(OnChangeTheme);
-            ToggleThemeCommand = new RelayCommand(() => IsDarkMode = !IsDarkMode);
-
+            ToggleThemeCommand = new RelayCommand(ToggleDarkMode);
             ImportSettings = new RelayCommand(OnImportSettings);
-            ExportSettings = new RelayCommand<Window>(OnExportSettings);
+            ExportSettings = new RelayCommand(OnExportSettings);
             ClearSettings = new RelayCommand(OnClearSettings);
             SaveSettings = new RelayCommand(OnSaveSettings);
         }
 
+        private void LoadSettings()
+        {
+            IsDarkMode = TemporarySettings.IsDarkModeTheme;
+            _windowService.ToggleDarkMode(IsDarkMode);
+            SelectedColor = TemporarySettings.PrimaryThemeColor;
+            ChangePrimaryColour(SelectedColor);
+        }
+
+        private void ToggleDarkMode()
+        {
+            IsDarkMode = !IsDarkMode;
+            TemporarySettings.IsDarkModeTheme = IsDarkMode;
+            _windowService.ToggleDarkMode(IsDarkMode);
+
+        }
+
+        private void ChangePrimaryColour(Color color)
+        {
+            TemporarySettings.PrimaryThemeColor = color;
+            var theme = _windowService.GetMaterialDesignTheme();
+            theme.SetPrimaryColor(color);
+            _windowService.SetMaterialDesignTheme(theme);
+
+        }
+
         private void CloseWindow()
         {
-            var oi = _windowService.GetMaterialDesignTheme();
-            
-            oi.SetBaseTheme(Theme.Light);
-            oi.SetPrimaryColor(Color.FromRgb(239,239,139));
-            oi.SetSecondaryColor(Color.FromRgb(156, 166, 89));
-
-
-
-            var mat2 = new CustomColorThemeForMaterialDesign();
-            mat2.PrimaryColor = Color.FromRgb(230,239,239);
-            mat2.SecondaryColor = Color.FromRgb(156, 166, 89);
-
-
-            //_windowService.SetMaterialDesignTheme(mat2.CustomTheme);
-            _windowService.SetMaterialDesignTheme(oi);
-            _windowService.ToggleDarkMode(true);
-
-            var tt = "s";
+            CheckUserWantsTempSettings("Changes to the current settings have not been saved, would you like to save them, or discard them before closing?");
+            _windowService.CloseWindow();
+     
         }
 
         private UserSetting DuplicateGlobalSetting(UserSetting setting)
@@ -306,9 +142,11 @@ namespace Loop.Revit.Settings
 
         private void OnSaveSettings()
         {
-            //GlobalSettings.Settings.Age = 12345;
-            //UserSettingsManager.SaveSettings(GlobalSettings.Settings);
-            TemporarySettings.Age = 451165;
+          
+            UserSettingsManager.SaveSettings(TemporarySettings);
+            TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
+
+
 
         }
 
@@ -324,26 +162,30 @@ namespace Loop.Revit.Settings
             }
         }
 
-        private void OnExportSettings(Window win)
+
+        private void CheckUserWantsTempSettings(string mainMessage)
         {
             // TODO add success messages and error handling
-            
+
+            var win = _windowService.GetWindow();
+            var theme = _windowService.GetMaterialDesignTheme();
+
             if (!TemporarySettings.Equals(GlobalSettings.Settings))
             {
                 var dialogResults = SmallDialog.Create(
                     title: "Settings Not Saved!",
-                    message:
-                    "Changes to the current settings have not been saved, would you like to save them, or discard them before exporting?",
+                    message: mainMessage,
                     button1: new SdButton("Save", SmallDialogResults.Yes),
                     button2: new SdButton("Discard", SmallDialogResults.No),
-                    darkMode: IsDarkMode,
                     iconKind: PackIconKind.AlertBoxOutline,
-                    owner:win
-                    );
+                    theme: theme,
+                    owner: win
+                );
 
                 if (dialogResults == SmallDialogResults.Yes)
                 {
                     UserSettingsManager.SaveSettings(TemporarySettings);
+                    TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
                 }
                 else
                 {
@@ -352,17 +194,21 @@ namespace Loop.Revit.Settings
                         message:
                         "Temporary Settings have been reset to the last saved state.",
                         button1: new SdButton("OK", SmallDialogResults.Yes),
-                        darkMode: IsDarkMode,
+                        theme: theme,
                         owner: win
-                        );
+                    );
                     TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
                 }
 
-               
+
             }
 
-            
 
+        }
+
+        private void OnExportSettings()
+        {
+            CheckUserWantsTempSettings("Changes to the current settings have not been saved, would you like to save them, or discard them before exporting?");
 
             var settings = UserSettingsManager.LoadSettings();
             var newPath = DialogUtils.SaveSingleFile("JSON files|*.json", "json");

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 using MaterialDesignThemes.Wpf;
 
@@ -18,6 +16,11 @@ namespace Loop.Revit.Utilities.Wpf.WindowServices
         public void CloseWindow()
         {
             _window.Close();
+        }
+
+        public Window GetWindow()
+        {
+            return _window;
         }
 
         public ITheme GetMaterialDesignTheme()

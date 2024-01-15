@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Text.Json;
 using Autodesk.Revit.DB;
+using Loop.Revit.Utilities.Json;
 
 
 namespace Loop.Revit.Utilities.UserSettings
@@ -23,7 +24,7 @@ namespace Loop.Revit.Utilities.UserSettings
 
             var options = new JsonSerializerOptions
             {
-                WriteIndented = true
+                Converters = { new JsonColorConverter() }
             };
 
             string jsonString = JsonSerializer.Serialize(settings, options);
@@ -48,8 +49,13 @@ namespace Loop.Revit.Utilities.UserSettings
                 return newSetting; // Return new instance with default settings if file does not exist
             }
 
+            var options = new JsonSerializerOptions
+            {
+                Converters = { new JsonColorConverter() }
+            };
+
             string jsonString = File.ReadAllText(filePath);
-            var setting = JsonSerializer.Deserialize<UserSetting>(jsonString);
+            var setting = JsonSerializer.Deserialize<UserSetting>(jsonString, options);
             return setting;
         }
 

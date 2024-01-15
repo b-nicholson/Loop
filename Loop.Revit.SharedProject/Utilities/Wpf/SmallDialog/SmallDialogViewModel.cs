@@ -2,13 +2,16 @@
 using System.Windows;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using System;
+using Loop.Revit.Utilities.UserSettings;
 using MaterialDesignThemes.Wpf;
+using Loop.Revit.Utilities.Wpf.WindowServices;
 
 namespace Loop.Revit.Utilities.Wpf.SmallDialog
 {
     public class SmallDialogViewModel : ObservableObject
     {
+        private readonly IWindowService _windowService;
+
         private string _title;
         public string Title
         {
@@ -38,9 +41,9 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
 
         }
 
-        public RelayCommand<Window> Button1Command { get; set; }
-        public RelayCommand<Window> Button2Command { get; set; }
-        public RelayCommand<Window> Button3Command { get; set; }
+        public RelayCommand Button1Command { get; set; }
+        public RelayCommand Button2Command { get; set; }
+        public RelayCommand Button3Command { get; set; }
 
         private bool _button1Vis;
         public bool Button1Vis
@@ -95,11 +98,12 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
 
         public bool IsDarkMode { get; set; }
 
-        public SmallDialogViewModel(string title, string message, SdButton button1 = null, SdButton button2 = null, SdButton button3 = null, bool darkMode = false, PackIconKind iconKind = PackIconKind.None)
+        public SmallDialogViewModel(string title, string message, IWindowService windowService, SdButton button1 = null, SdButton button2 = null, SdButton button3 = null, PackIconKind iconKind = PackIconKind.None, ITheme theme = null)
         {
+            _windowService = windowService;
             Message = message;
             Title = title;
-            IsDarkMode = darkMode;
+            IsDarkMode = GlobalSettings.Settings.IsDarkModeTheme;
             IconKind = iconKind;
 
             Button1 = button1;
@@ -110,7 +114,6 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
             {
                 IconVis = true;
             }
-
             if (button1 != null)
             {
                 Button1Vis = true;
@@ -124,28 +127,43 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
                 Button3Vis = true;
             }
 
-            Button1Command = new RelayCommand<Window>(OnButton1Command);
-            Button2Command = new RelayCommand<Window>(OnButton2Command);
-            Button3Command = new RelayCommand<Window>(OnButton3Command);
+            Button1Command = new RelayCommand(OnButton1Command);
+            Button2Command = new RelayCommand(OnButton2Command);
+            Button3Command = new RelayCommand(OnButton3Command);
+
+
+            _windowService.ToggleDarkMode(IsDarkMode);
+            if (theme != null)
+            {
+                _windowService.SetMaterialDesignTheme(theme);
+            }
+            else
+            {
+                var color = GlobalSettings.Settings.PrimaryThemeColor;
+                var globalDarkMode = GlobalSettings.Settings.IsDarkModeTheme;
+                var initTheme = _windowService.GetMaterialDesignTheme();
+                initTheme.SetPrimaryColor(color);
+                _windowService.SetMaterialDesignTheme(initTheme);
+            }
         }
 
-        public void OnButton1Command(Window win)
+        public void OnButton1Command()
         {
             Results = Button1.Results;
             WeakReferenceMessenger.Default.Send(new SmallDialogMessage(Results));
-            win.Close();
+            _windowService.CloseWindow();
         }
-        public void OnButton2Command(Window win)
+        public void OnButton2Command()
         {
             Results = Button2.Results;
             WeakReferenceMessenger.Default.Send(new SmallDialogMessage(Results));
-            win.Close();
+            _windowService.CloseWindow();
         }
-        public void OnButton3Command(Window win)
+        public void OnButton3Command()
         {
             Results = Button3.Results;
             WeakReferenceMessenger.Default.Send(new SmallDialogMessage(Results));
-            win.Close();
+            _windowService.CloseWindow();
         }
 
   

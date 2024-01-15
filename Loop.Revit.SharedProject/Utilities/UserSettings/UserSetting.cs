@@ -1,4 +1,6 @@
 ﻿
+using System.Windows.Media;
+
 namespace Loop.Revit.Utilities.UserSettings
 {
     public class UserSetting
@@ -8,6 +10,9 @@ namespace Loop.Revit.Utilities.UserSettings
         public bool IsSubscribed { get; set; } = false;
         public bool IsDarkModeTheme { get; set; } = false;
 
+        public Color PrimaryThemeColor { get; set; } = Color.FromRgb(0, 107, 255);
+
+        public double AppVersion { get; set; } = 0.1;
 
         public override bool Equals(object obj)
         {

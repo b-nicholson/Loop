@@ -15,12 +15,15 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Threading.Tasks;
 using Loop.Revit.Utilities.Units;
-using Loop.Revit.Utilities.Wpf.SmallDialog;
+using Loop.Revit.Utilities.UserSettings;
+using Loop.Revit.Utilities.Wpf.WindowServices;
+using MaterialDesignThemes.Wpf;
 
 namespace Loop.Revit.ViewTitles
 {
     public class ViewTitlesViewModel : ObservableObject, INotifyDataErrorInfo
     {
+        private readonly IWindowService _windowService;
         private readonly ErrorsViewModel _errorsViewModel;
         private readonly ViewTitlesModel _model;
 
@@ -28,7 +31,6 @@ namespace Loop.Revit.ViewTitles
         public AsyncRelayCommand<Window> Run { get; set; }
         public RelayCommand<Window> CopyText { get; set; }
         public RelayCommand<Window> SaveUnits { get; set; }
-        public RelayCommand ToggleThemeCommand { get; }
         #endregion
 
         #region Progress Bar Properties
@@ -59,15 +61,6 @@ namespace Loop.Revit.ViewTitles
         }
         #endregion
 
-        #region Theme Properties
-
-        private bool _isDarkMode;
-        public bool IsDarkMode
-        {
-            get => _isDarkMode;
-            set => SetProperty(ref _isDarkMode, value);
-        }
-        #endregion
 
         #region DataGrid Properties
         //Data to bind to DataGrid
@@ -312,9 +305,10 @@ namespace Loop.Revit.ViewTitles
         }
         #endregion
 
-        public ViewTitlesViewModel(ViewTitlesModel model)
+        public ViewTitlesViewModel(ViewTitlesModel model, IWindowService windowService)
         {
             _model = model;
+            _windowService = windowService;
 
             _errorsViewModel = new ErrorsViewModel();
             _errorsViewModel.ErrorsChanged += ErrorsViewModel_ErrorsChanged;
@@ -379,9 +373,21 @@ namespace Loop.Revit.ViewTitles
             Run = new AsyncRelayCommand<Window>(OnRun);
             CopyText = new RelayCommand<Window>(OnCopyText);
             SaveUnits = new RelayCommand<Window>(OnSaveSettings);
-            ToggleThemeCommand = new RelayCommand(() => IsDarkMode = !IsDarkMode);
 
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, ProgressResultsMessage>(this, (r, m) => r.OnProgressUpdate(m));
+
+            LoadSettings();
+        }
+
+        private void LoadSettings()
+        {
+            var darkmode = GlobalSettings.Settings.IsDarkModeTheme;
+            _windowService.ToggleDarkMode(darkmode);
+            var colour = GlobalSettings.Settings.PrimaryThemeColor;
+            var theme = _windowService.GetMaterialDesignTheme();
+            theme.SetPrimaryColor(colour);
+            _windowService.SetMaterialDesignTheme(theme);
+            
         }
 
         private void OnProgressUpdate(ProgressResultsMessage obj)

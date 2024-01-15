@@ -5,17 +5,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         FontFamily="{materialDesign:MaterialDesignFont}"
-        xmlns:local="clr-namespace:Loop.Revit.Utilities.Wpf"
-        local:WpfThemeProperties.ToggleTheme="{Binding IsDarkMode}"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
         ResizeMode="CanResize"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterOwner"
         Width="350"
         Height="Auto"
         SizeToContent="Height"
@@ -85,8 +83,8 @@
                     Command ="{Binding Button3Command}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                     Style="{StaticResource MaterialDesignOutlinedDarkButton}"
-                    Foreground="{DynamicResource MaterialDesignBody}"
-                    BorderBrush="{DynamicResource MaterialDesignBody}"/>
+                        Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+                        BorderBrush="{DynamicResource PrimaryHueMidForegroundBrush}"/>
                 <Button
                     Width="Auto"
                     Margin="5 0"
@@ -95,8 +93,8 @@
                     Command ="{Binding Button2Command}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                     Style="{StaticResource MaterialDesignOutlinedDarkButton}"
-                    Foreground="{DynamicResource MaterialDesignBody}"
-                    BorderBrush="{DynamicResource MaterialDesignBody}"/>
+                        Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+                        BorderBrush="{DynamicResource PrimaryHueMidForegroundBrush}"/>
                 <Button
                     Width="Auto"
                     Margin="5 0"
@@ -105,8 +103,8 @@
                     Command ="{Binding Button1Command}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                     Style="{StaticResource MaterialDesignRaisedLightButton}"
-                    Foreground="{DynamicResource MaterialDesignBody}"
-                    BorderBrush="{DynamicResource MaterialDesignBody}"/>
+                        Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
+                        BorderBrush="{DynamicResource PrimaryHueLightForegroundBrush}"/>
             </StackPanel>
 
         </Grid>

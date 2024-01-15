@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Windows;
+using Loop.Revit.Utilities.Wpf.WindowServices;
 using MaterialDesignThemes.Wpf;
 
 namespace Loop.Revit.Utilities.Wpf.SmallDialog
@@ -10,18 +7,21 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
 
     public class SmallDialog
     {
-        public static SmallDialogResults Create(string title, string message, SdButton button1 = null, SdButton button2 = null, SdButton button3 = null, bool darkMode = false, bool modeless = false, PackIconKind iconKind = PackIconKind.None, Window owner = null)
+        public static SmallDialogResults Create(string title, string message, SdButton button1 = null, SdButton button2 = null, SdButton button3 = null, bool modeless = false, PackIconKind iconKind = PackIconKind.None, Window owner = null, ITheme theme =null)
         {
+            var smallDialogView = new SmallDialogView();
+
             var smallDialogViewModel = new SmallDialogViewModel(
+                windowService: new WindowService(smallDialogView),
                 title:title,
                 message:message,
                 button1:button1,
                 button2:button2,
                 button3:button3,
-                darkMode:darkMode,
-                iconKind: iconKind
+                iconKind: iconKind,
+                theme: theme
                 );
-            var smallDialogView = new SmallDialogView { DataContext = smallDialogViewModel };
+            smallDialogView.DataContext = smallDialogViewModel;
             smallDialogView.ShowInTaskbar = false;
             if (owner != null)
             {
