@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:converters="clr-namespace:Loop.Revit.Utilities.Wpf.Converters"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
@@ -39,9 +40,13 @@
                     <BitmapImage x:Key="ExampleImageFallback"
                                  UriSource="/Resources/example.png" />
                 </ResourceDictionary>
+                
 
             </ResourceDictionary.MergedDictionaries>
+            <converters:ColorToBrushConverter x:Key="ColorToBrushConverter" />
+            <converters:BrushToHexConverter x:Key="BrushToHexConverter" />
         </ResourceDictionary>
+
 
         <!--<Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
             <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
@@ -374,9 +379,7 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
             <!--<Label Grid.Row="7" 
                        
                        Content="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>-->
-
-
-
+    
             <ProgressBar 
                 Margin="0 20 0 0"
                 

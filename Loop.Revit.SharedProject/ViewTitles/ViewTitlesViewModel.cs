@@ -14,6 +14,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using Loop.Revit.Utilities.Units;
 using Loop.Revit.Utilities.UserSettings;
 using Loop.Revit.Utilities.Wpf.WindowServices;
@@ -26,6 +27,8 @@ namespace Loop.Revit.ViewTitles
         private readonly IWindowService _windowService;
         private readonly ErrorsViewModel _errorsViewModel;
         private readonly ViewTitlesModel _model;
+
+
 
         #region Command Properties
         public AsyncRelayCommand<Window> Run { get; set; }

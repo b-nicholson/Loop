@@ -33,6 +33,14 @@ namespace Loop.Revit.Settings
             }
         }
 
+        private bool _overlayVisibility;
+
+        public bool OverlayVisibility
+        {
+            get => _overlayVisibility;
+            set => SetProperty(ref _overlayVisibility, value);
+        }
+
         #region Common Properties
         public SettingsModel Model { get; set; }
 
@@ -90,7 +98,6 @@ namespace Loop.Revit.Settings
 
             TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
             LoadSettings();
-            SelectedColor = Color.FromRgb(255,0,0);
 
 
             CloseCommand = new RelayCommand(CloseWindow);
@@ -129,7 +136,8 @@ namespace Loop.Revit.Settings
 
         private void CloseWindow()
         {
-            CheckUserWantsTempSettings("Changes to the current settings have not been saved, would you like to save them, or discard them before closing?");
+            CheckUserWantsTempSettings(
+                "Changes to the current settings have not been saved, would you like to save them, or discard them before closing?");
             _windowService.CloseWindow();
      
         }
@@ -142,9 +150,9 @@ namespace Loop.Revit.Settings
 
         private void OnSaveSettings()
         {
-          
-            UserSettingsManager.SaveSettings(TemporarySettings);
-            TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
+            var settingsToSave = DuplicateGlobalSetting(TemporarySettings);
+            UserSettingsManager.SaveSettings(settingsToSave);
+            //TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
 
 
 
@@ -158,7 +166,11 @@ namespace Loop.Revit.Settings
             {
                 var settings = UserSettingsManager.LoadSettings(filePath);
                 UserSettingsManager.SaveSettings(settings);
-             
+
+                var dupSettings = DuplicateGlobalSetting(settings);
+                TemporarySettings = dupSettings;
+                LoadSettings();
+
             }
         }
 
@@ -172,6 +184,7 @@ namespace Loop.Revit.Settings
 
             if (!TemporarySettings.Equals(GlobalSettings.Settings))
             {
+                OverlayVisibility = true;
                 var dialogResults = SmallDialog.Create(
                     title: "Settings Not Saved!",
                     message: mainMessage,
@@ -199,6 +212,8 @@ namespace Loop.Revit.Settings
                     );
                     TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
                 }
+                OverlayVisibility = false;
+
 
 
             }
@@ -223,6 +238,8 @@ namespace Loop.Revit.Settings
             // TODO add success messages and error handling
             UserSettingsManager.DeleteSettings();
             UserSettingsManager.LoadSettings();
+            TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
+            LoadSettings();
         }
 
         private void OnChangeTheme()

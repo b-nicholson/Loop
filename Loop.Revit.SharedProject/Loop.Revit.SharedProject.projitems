@@ -53,7 +53,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\ColorScheme.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Converters\BrushToHexConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Converters\ColorToBrushConverter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\ColorPicker.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\PaletteHelperExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SdButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogResults.cs" />
@@ -105,10 +104,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Utilities\Wpf\ColorPicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

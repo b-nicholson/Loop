@@ -103,8 +103,8 @@
                     Command ="{Binding Button1Command}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
                     Style="{StaticResource MaterialDesignRaisedLightButton}"
-                        Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
-                        BorderBrush="{DynamicResource PrimaryHueLightForegroundBrush}"/>
+                        Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+                        BorderBrush="{DynamicResource PrimaryHueMidForegroundBrush}"/>
             </StackPanel>
 
         </Grid>

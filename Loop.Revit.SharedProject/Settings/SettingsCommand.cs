@@ -3,10 +3,12 @@ using Autodesk.Revit.UI;
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Interop;
 using Autodesk.Revit.DB;
 using Loop.Revit.Utilities;
 using Loop.Revit.Utilities.Wpf.WindowServices;
+using System.Windows.Threading;
 
 namespace Loop.Revit.Settings
 {
@@ -15,26 +17,41 @@ namespace Loop.Revit.Settings
     [Journaling(JournalingMode.NoCommandData)]
     public class SettingsCommand : IExternalCommand
     {
+        private Thread _uiThread;
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             try
             {
+                //its kinda useless for this to be multi-threaded + modeless but the ColorPicker crashes on going to the far right when it is modal.
+
                 var uiApp = commandData.Application;
                 var m = new SettingsModel(uiApp);
-                
-                var v = new SettingsView();
-                var vm = new SettingsViewModel(m, new WindowService(v));
+                _uiThread = new Thread(() =>
+                    {
+                        SynchronizationContext.SetSynchronizationContext(
+                            new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
+                        var v = new SettingsView();
+                        var vm = new SettingsViewModel(m, new WindowService(v));
 
-                v.DataContext = vm;
+                        v.DataContext = vm;
 
-                var unused = new WindowInteropHelper(v)
-                {
-                    Owner = Process.GetCurrentProcess().MainWindowHandle
-                };
+                        var unused = new WindowInteropHelper(v)
+                        {
+                            Owner = Process.GetCurrentProcess().MainWindowHandle
+                        };
+                        v.Closed += (s, e) => Dispatcher.CurrentDispatcher.InvokeShutdown();
 
-                v.ShowDialog();
+                        v.Show();
+                        Dispatcher.Run();
+                    });
+
+                _uiThread.SetApartmentState(ApartmentState.STA);
+                _uiThread.IsBackground = true;
+                _uiThread.Start();
+
 
                 return Result.Succeeded;
+
             }
             catch (Exception)
             {
