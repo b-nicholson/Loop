@@ -1,23 +1,17 @@
-﻿using System;
-using System.Numerics;
-using Autodesk.Revit.DB;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Loop.Revit.Utilities;
 using Loop.Revit.Utilities.UserSettings;
 using Loop.Revit.Utilities.Wpf.SmallDialog;
 using System.Text.Json;
-using System.Windows;
-using Loop.Revit.Utilities.Wpf;
 using MaterialDesignThemes.Wpf;
-using System.Windows.Media;
-using Loop.Revit.Utilities.Json;
-using MaterialDesignColors;
 using Color = System.Windows.Media.Color;
 using Loop.Revit.Utilities.Wpf.WindowServices;
 
+
 namespace Loop.Revit.Settings
 {
+    //TODO: long snackbar messages (the exception ones) need another interface.
     public class SettingsViewModel: ObservableObject
     {
         private readonly IWindowService _windowService;
@@ -32,6 +26,8 @@ namespace Loop.Revit.Settings
                 ChangePrimaryColour(value);
             }
         }
+
+        public SnackbarMessageQueue MessageQueue { get; } = new SnackbarMessageQueue();
 
         private bool _overlayVisibility;
 
@@ -151,34 +147,61 @@ namespace Loop.Revit.Settings
         private void OnSaveSettings()
         {
             var settingsToSave = DuplicateGlobalSetting(TemporarySettings);
-            UserSettingsManager.SaveSettings(settingsToSave);
-            //TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
-
-
-
+            var saveResult = UserSettingsManager.SaveSettings(settingsToSave);
+            if (saveResult.Success == false)
+            {
+                MessageQueue.Enqueue("❎ Save Failed: " + saveResult.Message);
+                return;
+            }
+            MessageQueue.Enqueue("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+            MessageQueue.Enqueue("✅ Settings Saved");
         }
 
         private void OnImportSettings()
-        {
-            // TODO add success messages and error handling
-            var filePath = DialogUtils.SelectSingleFile("JSON files|*.json", "json");
-            if (!string.IsNullOrEmpty(filePath))
+        { 
+            var win = _windowService.GetWindow();
+            var theme = _windowService.GetMaterialDesignTheme();
+            var dialogResults = SmallDialog.Create(
+                title: "Are You Sure?",
+                message: "Importing settings will overwrite the current configuration, do you wish to proceed?",
+                button1: new SdButton("No", SmallDialogResults.No),
+                button2: new SdButton("Yes", SmallDialogResults.Yes),
+                iconKind: PackIconKind.AlertBoxOutline,
+                theme: theme,
+                owner: win
+            );
+            if (dialogResults != SmallDialogResults.Yes)
             {
-                var settings = UserSettingsManager.LoadSettings(filePath);
-                UserSettingsManager.SaveSettings(settings);
-
-                var dupSettings = DuplicateGlobalSetting(settings);
-                TemporarySettings = dupSettings;
-                LoadSettings();
-
+                MessageQueue.Enqueue("❎ Import Cancelled");
+                return;
             }
+            var filePath = DialogUtils.SelectSingleFile("JSON files|*.json", "json");
+            if (string.IsNullOrEmpty(filePath))
+            {
+                MessageQueue.Enqueue("❎ Import Cancelled");
+                return;
+            }
+            var settingsResult = UserSettingsManager.LoadSettings(filePath);
+            if (settingsResult.Success == false)
+            {
+                MessageQueue.Enqueue("❎ Import Failed: " + settingsResult.Message);
+                return;
+            }
+            var saveResults = UserSettingsManager.SaveSettings(settingsResult.ReturnObject);
+            if (saveResults.Message == false)
+            {
+                MessageQueue.Enqueue("❎ Save Settings Failed: " + saveResults.Message);
+                return;
+            }
+            var dupSettings = DuplicateGlobalSetting(settingsResult.ReturnObject);
+            TemporarySettings = dupSettings;
+            LoadSettings();
+            MessageQueue.Enqueue("✅ Settings Imported");
         }
 
 
         private void CheckUserWantsTempSettings(string mainMessage)
         {
-            // TODO add success messages and error handling
-
             var win = _windowService.GetWindow();
             var theme = _windowService.GetMaterialDesignTheme();
 
@@ -213,33 +236,69 @@ namespace Loop.Revit.Settings
                     TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
                 }
                 OverlayVisibility = false;
-
-
-
             }
-
-
         }
 
         private void OnExportSettings()
         {
             CheckUserWantsTempSettings("Changes to the current settings have not been saved, would you like to save them, or discard them before exporting?");
 
-            var settings = UserSettingsManager.LoadSettings();
+            var settingsResult = UserSettingsManager.LoadSettings();
+            if (settingsResult.Success == false)
+            {
+                MessageQueue.Enqueue("❎ Failed to Load Settings: " + settingsResult.Message);
+                return;
+                
+            }
             var newPath = DialogUtils.SaveSingleFile("JSON files|*.json", "json");
             if (!string.IsNullOrEmpty(newPath))
             {
-                UserSettingsManager.ExportSettings(settings, newPath);
+                UserSettingsManager.ExportSettings(settingsResult.ReturnObject, newPath);
+                MessageQueue.Enqueue("✅ Settings Exported");
+            }
+            else
+            {
+                MessageQueue.Enqueue("❎ Export Cancelled");
             }
         }
 
         private void OnClearSettings()
         {
-            // TODO add success messages and error handling
-            UserSettingsManager.DeleteSettings();
-            UserSettingsManager.LoadSettings();
-            TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
-            LoadSettings();
+            var win = _windowService.GetWindow();
+            var theme = _windowService.GetMaterialDesignTheme();
+            var dialogResults = SmallDialog.Create(
+                title: "Are You Sure?",
+                message: "Settings will be discarded, do you wish to proceed?",
+                button1: new SdButton("No", SmallDialogResults.No),
+                button2: new SdButton("Yes", SmallDialogResults.Yes),
+                iconKind: PackIconKind.AlertBoxOutline,
+                theme: theme,
+                owner: win
+            );
+
+            if (dialogResults == SmallDialogResults.Yes)
+            {
+                var deleteResult = UserSettingsManager.DeleteSettings();
+                if (deleteResult.Success == false)
+                {
+                    MessageQueue.Enqueue("❎ Settings Clear Failed: " + deleteResult.Message);
+                }
+                var loadResult = UserSettingsManager.LoadSettings();
+                if (loadResult.Success == false)
+                {
+                    MessageQueue.Enqueue("❎ Creation of New Settings Failed: " + loadResult.Message);
+                }
+
+                TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
+                LoadSettings();
+                MessageQueue.Enqueue("✅ Settings Cleared");
+            }
+            else
+            {
+                MessageQueue.Enqueue("❎ Settings Reset Cancelled");
+            }
+
+          
         }
 
         private void OnChangeTheme()

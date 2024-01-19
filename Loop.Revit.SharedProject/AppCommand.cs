@@ -63,7 +63,12 @@ namespace Loop.Revit
             ViewTitlesHandler = new ViewTitlesRequestHandler();
             ViewTitlesEvent = ExternalEvent.Create(ViewTitlesHandler);
 
-           var settings = UserSettingsManager.LoadSettings();
+           var settingsResult = UserSettingsManager.LoadSettings();
+           var settings = new UserSetting();
+           if (settingsResult.Success == true)
+           {
+               settings = settingsResult.ReturnObject;
+           }
            GlobalSettings.Settings = settings;
 
             return Result.Succeeded;

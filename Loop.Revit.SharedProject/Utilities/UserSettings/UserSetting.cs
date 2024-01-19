@@ -12,7 +12,7 @@ namespace Loop.Revit.Utilities.UserSettings
 
         public Color PrimaryThemeColor { get; set; } = Color.FromRgb(0, 107, 255);
 
-        public double AppVersion { get; set; } = 0.1;
+        public string AppVersion { get; set; } = "0.1";
 
         public override bool Equals(object obj)
         {

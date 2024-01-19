@@ -14,8 +14,10 @@ namespace Loop.Revit.Utilities.UserSettings
         private static string DefaultFilePath { get; set; }
 
         // Save settings to a JSON file
-        public static void SaveSettings(UserSetting settings, string filePath = null)
+        public static OperationResult SaveSettings(UserSetting settings, string filePath = null)
         {
+            var results = new OperationResult();
+
             if (filePath == null)
             {
                 SetDefaultFilePath();
@@ -26,17 +28,28 @@ namespace Loop.Revit.Utilities.UserSettings
             {
                 Converters = { new JsonColorConverter() }
             };
+            try
+            {
+                string jsonString = JsonSerializer.Serialize(settings, options);
+                File.WriteAllText(filePath, jsonString);
+                GlobalSettings.Settings = settings;
+                results.Success = true;
+            }
+            catch (Exception e)
+            {
+                results.Exception = e;
+                results.Message = e.Message;
+            }
 
-            string jsonString = JsonSerializer.Serialize(settings, options);
-            File.WriteAllText(filePath, jsonString);
-
-            GlobalSettings.Settings = settings;
+            return results;
         }
 
 
         // Load settings from a JSON file
-        public static UserSetting LoadSettings(string filePath = null)
+        public static OperationResult LoadSettings(string filePath = null)
         {
+            var results = new OperationResult();
+
             if (filePath == null)
             {
                 SetDefaultFilePath();
@@ -46,32 +59,53 @@ namespace Loop.Revit.Utilities.UserSettings
             {
                 var newSetting = new UserSetting();
                 SaveSettings(newSetting, filePath);
-                return newSetting; // Return new instance with default settings if file does not exist
+
+                results.Success = true;
+                results.Message = "Settings Successfully Created";
+                results.ReturnObject = newSetting;
+
+                return results; // Return new instance with default settings if file does not exist
             }
 
             var options = new JsonSerializerOptions
             {
                 Converters = { new JsonColorConverter() }
             };
+            try
+            {
+                string jsonString = File.ReadAllText(filePath);
+                var setting = JsonSerializer.Deserialize<UserSetting>(jsonString, options);
 
-            string jsonString = File.ReadAllText(filePath);
-            var setting = JsonSerializer.Deserialize<UserSetting>(jsonString, options);
-            return setting;
+                results.Success = true;
+                results.Message = "Settings Successfully Loaded";
+                results.ReturnObject = setting;
+
+            }
+            catch (Exception e)
+            {
+                results.Exception = e;
+                results.Message = e.Message;
+            }
+            
+            return results;
         }
 
-        public static void ExportSettings(UserSetting settings, string exportFilePath)
+        public static OperationResult ExportSettings(UserSetting settings, string exportFilePath)
         {
-            SaveSettings(settings, exportFilePath);
+            var saveResult = SaveSettings(settings, exportFilePath);
+            return saveResult;
         }
 
         // Import settings from a specified file path
-        public static UserSetting ImportSettings(string importFilePath)
+        public static OperationResult ImportSettings(string importFilePath)
         {
             var setting = LoadSettings(importFilePath);
             return setting;
         }
-        public static void DeleteSettings(string filePath = null)
+        public static OperationResult DeleteSettings(string filePath = null)
         {
+            var results = new OperationResult();
+
             if (filePath == null)
             {
                 SetDefaultFilePath();
@@ -80,8 +114,20 @@ namespace Loop.Revit.Utilities.UserSettings
             // Check if the file exists before trying to delete
             if (File.Exists(filePath))
             {
-                File.Delete(filePath);
+                try
+                {
+                    File.Delete(filePath);
+                    results.Success = true;
+                    results.Message = "Settings Successfully Deleted";
+                }
+                catch (Exception e)
+                {
+                    results.Exception = e;
+                    results.Message = e.Message;
+                }
             }
+
+            return results;
         }
 
         private static void SetDefaultFilePath()

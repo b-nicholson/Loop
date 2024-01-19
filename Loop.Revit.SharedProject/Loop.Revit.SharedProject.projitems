@@ -44,6 +44,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ExtensibleStorage\ExtensibleStorageHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ImageUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Json\JsonColorConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\OperationResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\AccuracyWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\UnitCleanup.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfUnit.cs" />
