@@ -5,13 +5,13 @@ using Loop.Revit.Utilities.UserSettings;
 using Loop.Revit.Utilities.Wpf.SmallDialog;
 using System.Text.Json;
 using MaterialDesignThemes.Wpf;
-using Color = System.Windows.Media.Color;
+using System.Windows.Media;
 using Loop.Revit.Utilities.Wpf.WindowServices;
 
 
 namespace Loop.Revit.Settings
 {
-    //TODO: long snackbar messages (the exception ones) need another interface.
+    //TODO: long snackbar messages (the exception ones) need another interface. maybe use the button option to load a smalldialog. make the smalldialog a method.
     public class SettingsViewModel: ObservableObject
     {
         private readonly IWindowService _windowService;
@@ -153,7 +153,6 @@ namespace Loop.Revit.Settings
                 MessageQueue.Enqueue("❎ Save Failed: " + saveResult.Message);
                 return;
             }
-            MessageQueue.Enqueue("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
             MessageQueue.Enqueue("✅ Settings Saved");
         }
 
