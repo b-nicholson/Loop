@@ -33,6 +33,7 @@ namespace Loop.Revit.Utilities.Wpf.SmallDialog
 
             return smallDialogViewModel.Results;
         }
+        
 
     }
 }

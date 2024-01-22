@@ -66,9 +66,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\CustomColorThemeForMaterialDesign.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\IWindowService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\WindowService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ProgressResultsMessage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\PropertyWrapper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\SheetWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\ProgressResultsMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\PropertyWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\SheetWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\OperationResultMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\UnitsWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesModel.cs" />
@@ -125,9 +126,6 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\viewTitles\example.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Content Include="$(MSBuildThisFileDirectory)ViewTitles\example.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\32x32\viewTitles.png" />

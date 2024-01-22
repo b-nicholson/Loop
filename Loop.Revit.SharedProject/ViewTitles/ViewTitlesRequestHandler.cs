@@ -5,6 +5,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Loop.Revit.Utilities.ExtensibleStorage;
 using CommunityToolkit.Mvvm.Messaging;
+using Loop.Revit.Utilities;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -56,18 +57,34 @@ namespace Loop.Revit.ViewTitles
             var paramName = "ExtensionDistance";
             var schemaInfo = new List<(string, Type)> { (paramName, typeof(double)) };
 
-            var t = new Transaction(Doc, "Save Viewport Titles Extension Length");
-            t.Start();
+            var result = new OperationResult();
 
-            var schema = ExtensibleStorageHelper.CreateSimpleSchema(
-                Model.ExtensibleStorageGuid, schemaName, schemaDescription, schemaInfo, SpecTypeId.Length);
-            var paramInfo = new List<(string, dynamic)> { (paramName, Model.ExtensionDistance) };
+            try
+            {
+                var t = new Transaction(Doc, "Save Viewport Titles Extension Length");
+                t.Start();
 
-            // I have no idea why it stores a weird number when looking it up manually in lookup,
-            // it comes back out correctly though
-            ExtensibleStorageHelper.CreateDataStorage(Doc, schema, Model.ExtensibleStorageGuid,
-                "Viewport Title Length Extension Distance", paramInfo, UnitTypeId.Feet);
-            t.Commit();
+                var schema = ExtensibleStorageHelper.CreateSimpleSchema(
+                    Model.ExtensibleStorageGuid, schemaName, schemaDescription, schemaInfo, SpecTypeId.Length);
+                var paramInfo = new List<(string, dynamic)> { (paramName, Model.ExtensionDistance) };
+
+                // I have no idea why it stores a weird number when looking it up manually in lookup,
+                // it comes back out correctly though
+                ExtensibleStorageHelper.CreateDataStorage(Doc, schema, Model.ExtensibleStorageGuid,
+                    "Viewport Title Length Extension Distance", paramInfo, UnitTypeId.Feet);
+                t.Commit();
+                result.Success = true;
+            }
+            catch (Exception e)
+            {
+                result.Exception = e;
+                result.Message = e.Message;
+                result.TraceBackMessage = e.StackTrace;
+            }
+
+
+            WeakReferenceMessenger.Default.Send(new OperationResultMessage(result));
+
         }
 
         public void AdjustViewTitles(UIApplication app)

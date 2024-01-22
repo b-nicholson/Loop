@@ -19,6 +19,7 @@ using Loop.Revit.Utilities.Units;
 using Loop.Revit.Utilities.UserSettings;
 using Loop.Revit.Utilities.Wpf.WindowServices;
 using MaterialDesignThemes.Wpf;
+using Loop.Revit.Utilities.Wpf.SmallDialog;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -28,6 +29,7 @@ namespace Loop.Revit.ViewTitles
         private readonly ErrorsViewModel _errorsViewModel;
         private readonly ViewTitlesModel _model;
 
+        public SnackbarMessageQueue MessageQueue { get; } = new SnackbarMessageQueue();
 
 
         #region Command Properties
@@ -378,6 +380,7 @@ namespace Loop.Revit.ViewTitles
             SaveUnits = new RelayCommand<Window>(OnSaveSettings);
 
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, ProgressResultsMessage>(this, (r, m) => r.OnProgressUpdate(m));
+            WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, OperationResultMessage>(this, (r, m) => r.OnOperationResult(m));
 
             LoadSettings();
         }
@@ -390,14 +393,20 @@ namespace Loop.Revit.ViewTitles
             var theme = _windowService.GetMaterialDesignTheme();
             theme.SetPrimaryColor(colour);
             _windowService.SetMaterialDesignTheme(theme);
-            
+        }
+
+        private void OnOperationResult(OperationResultMessage obj)
+        {
+            MessageQueue.Enqueue("❎ Settings Clear Failed",
+                actionContent: "Show",
+                actionHandler: new Action<string>(SnackBarErrorAction),
+                actionArgument: obj.Result.Message);
         }
 
         private void OnProgressUpdate(ProgressResultsMessage obj)
         {
             CurrentProgress = obj.CurrentSheetProgress;
             MaxProgressValue = obj.TotalSheetCount;
-
         }
 
         private void SetAccuracy()
@@ -463,13 +472,8 @@ namespace Loop.Revit.ViewTitles
         {
             _model.CreateDataStorage(LengthInternalUnits);
 
-            //TODO update implementation
-            //SmallDialog.Create("Success!",
-            //    "Settings have been added inside your active document. Remember to save/sync to keep your changes. This will be accessible by all users.",
-            //    button1Content: "Ok",
-            //    darkMode: IsDarkMode,
-            //    owner: win
-            //);
+            MessageQueue.Enqueue(content: "✅ Settings Saved");
+            MessageQueue.Enqueue(content: "Remember to Save/Sync to keep changes");
         }
 
         #region INotifyErrorInfo
@@ -529,6 +533,20 @@ namespace Loop.Revit.ViewTitles
             {
                 ProgressVisibility = Visibility.Collapsed;
             }
+        }
+
+        private void SnackBarErrorAction(string message)
+        {
+            var win = _windowService.GetWindow();
+            var theme = _windowService.GetMaterialDesignTheme();
+            SmallDialog.Create(
+                title: "Error!",
+                message: message,
+                button1: new SdButton("OK", SmallDialogResults.Yes),
+                theme: theme,
+                owner: win
+            );
+
         }
 
     }

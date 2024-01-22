@@ -39,6 +39,7 @@ namespace Loop.Revit.Utilities.UserSettings
             {
                 results.Exception = e;
                 results.Message = e.Message;
+                results.TraceBackMessage = e.StackTrace;
             }
 
             return results;
@@ -85,6 +86,7 @@ namespace Loop.Revit.Utilities.UserSettings
             {
                 results.Exception = e;
                 results.Message = e.Message;
+                results.TraceBackMessage = e.StackTrace;
             }
             
             return results;
@@ -124,6 +126,7 @@ namespace Loop.Revit.Utilities.UserSettings
                 {
                     results.Exception = e;
                     results.Message = e.Message;
+                    results.TraceBackMessage = e.StackTrace;
                 }
             }
 

@@ -66,9 +66,11 @@
                                          />
                 </Viewbox>
                 <StackPanel  Grid.Column="1">
-                    <TextBlock x:Name="BodyText"
+                    <TextBox x:Name="BodyText"
                                TextWrapping="WrapWithOverflow"
                                MinWidth="100"
+                               materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                               BorderThickness="0"
                                
                                Text="{Binding Message, FallbackValue= Successfully saved settings to document. Remember to save/sync to keep your changes.}" />
                 </StackPanel>

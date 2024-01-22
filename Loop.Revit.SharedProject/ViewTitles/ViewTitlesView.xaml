@@ -31,16 +31,14 @@
                                                  PrimaryColor="Green"
                                                  SecondaryColor="Orange"
                                                  ColorAdjustment="{materialDesign:ColorAdjustment DesiredContrastRatio=4.5, Colors=All, Contrast=Low}" />
-                
+
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
-
                 <ResourceDictionary>
                     <BitmapImage x:Key="ExampleImageFallback"
                                  UriSource="/Resources/example.png" />
                 </ResourceDictionary>
-                
+
 
             </ResourceDictionary.MergedDictionaries>
             <converters:ColorToBrushConverter x:Key="ColorToBrushConverter" />
@@ -115,7 +113,7 @@
 
                 <TextBlock Grid.Column="0"
                            Margin="0 30 10 0 "
-                    Text="This tool automatically sizes the viewport title line on sheets to match each title's bounding box. You may provide an additional distance to extend the line beyond, as demonstrated by the blue dimension."
+                    Text="This tool automatically sizes the viewport title line on sheets to match each title's bounding box. You may provide an additional distance to extend the line beyond, as demonstrated by the dimension."
                            TextWrapping="Wrap"
                            />
                 <Viewbox Grid.Column="1" Width="Auto" Height="100" Stretch="Uniform">
@@ -167,7 +165,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
-                  
+
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
                 Text="Extension Distance:" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
@@ -215,7 +213,7 @@
          />
 
                 </Grid>
-               
+
                 <Button Grid.Column="2" Grid.Row="1" Grid.RowSpan="4" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="30 0 0 0"
                  Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                  ToolTip="Save extension distance into the model"
@@ -273,7 +271,7 @@
                               Style="{StaticResource MaterialDesignSwitchToggleButton}"
                               ToolTip="Show Selected Sheets Only"
                                   >
-                        
+
                         <materialDesign:PackIcon
                         Kind="CheckboxMarkedOutline"
                         >
@@ -379,11 +377,12 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
             <!--<Label Grid.Row="7" 
                        
                        Content="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>-->
-    
+
             <ProgressBar 
                 Margin="0 20 0 0"
                 
                 Grid.Row="9" Maximum="{Binding MaxProgressValue, UpdateSourceTrigger=PropertyChanged}" Value="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ProgressVisibility, UpdateSourceTrigger=PropertyChanged}"/>
+            <materialDesign:Snackbar Grid.Row="10"/>
 
 
 

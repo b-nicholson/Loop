@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Loop.Revit.Utilities;
 using Loop.Revit.Utilities.UserSettings;
@@ -11,7 +12,6 @@ using Loop.Revit.Utilities.Wpf.WindowServices;
 
 namespace Loop.Revit.Settings
 {
-    //TODO: long snackbar messages (the exception ones) need another interface. maybe use the button option to load a smalldialog. make the smalldialog a method.
     public class SettingsViewModel: ObservableObject
     {
         private readonly IWindowService _windowService;
@@ -150,7 +150,10 @@ namespace Loop.Revit.Settings
             var saveResult = UserSettingsManager.SaveSettings(settingsToSave);
             if (saveResult.Success == false)
             {
-                MessageQueue.Enqueue("❎ Save Failed: " + saveResult.Message);
+                MessageQueue.Enqueue("❎ Save Failed:",
+                    actionContent: "Show",
+                    actionHandler: new Action<string>(SnackBarErrorAction),
+                    actionArgument: saveResult.FullMessage);
                 return;
             }
             MessageQueue.Enqueue("✅ Settings Saved");
@@ -183,13 +186,19 @@ namespace Loop.Revit.Settings
             var settingsResult = UserSettingsManager.LoadSettings(filePath);
             if (settingsResult.Success == false)
             {
-                MessageQueue.Enqueue("❎ Import Failed: " + settingsResult.Message);
+                MessageQueue.Enqueue("❎ Import Failed",
+                    actionContent: "Show",
+                    actionHandler: new Action<string>(SnackBarErrorAction),
+                    actionArgument: settingsResult.Message);
                 return;
             }
             var saveResults = UserSettingsManager.SaveSettings(settingsResult.ReturnObject);
             if (saveResults.Message == false)
             {
-                MessageQueue.Enqueue("❎ Save Settings Failed: " + saveResults.Message);
+                MessageQueue.Enqueue("❎ Save Settings Failed",
+                    actionContent: "Show", 
+                    actionHandler: new Action<string>(SnackBarErrorAction), 
+                    actionArgument: saveResults.Message);
                 return;
             }
             var dupSettings = DuplicateGlobalSetting(settingsResult.ReturnObject);
@@ -245,7 +254,10 @@ namespace Loop.Revit.Settings
             var settingsResult = UserSettingsManager.LoadSettings();
             if (settingsResult.Success == false)
             {
-                MessageQueue.Enqueue("❎ Failed to Load Settings: " + settingsResult.Message);
+                MessageQueue.Enqueue("❎ Failed to Load Settings:",
+                    actionContent: "Show",
+                    actionHandler: new Action<string>(SnackBarErrorAction),
+                    actionArgument: settingsResult.Message);
                 return;
                 
             }
@@ -280,24 +292,43 @@ namespace Loop.Revit.Settings
                 var deleteResult = UserSettingsManager.DeleteSettings();
                 if (deleteResult.Success == false)
                 {
-                    MessageQueue.Enqueue("❎ Settings Clear Failed: " + deleteResult.Message);
+                    MessageQueue.Enqueue("❎ Settings Clear Failed",
+                        actionContent: "Show",
+                        actionHandler: new Action<string>(SnackBarErrorAction),
+                        actionArgument: deleteResult.Message);
                 }
                 var loadResult = UserSettingsManager.LoadSettings();
                 if (loadResult.Success == false)
                 {
-                    MessageQueue.Enqueue("❎ Creation of New Settings Failed: " + loadResult.Message);
+                    MessageQueue.Enqueue("❎ Creation of New Settings Failed",
+                        actionContent: "Show",
+                        actionHandler: new Action<string>(SnackBarErrorAction),
+                        actionArgument: loadResult.Message);
                 }
 
                 TemporarySettings = DuplicateGlobalSetting(GlobalSettings.Settings);
                 LoadSettings();
-                MessageQueue.Enqueue("✅ Settings Cleared");
+     
+                MessageQueue.Enqueue(content: "✅ Settings Cleared");
             }
             else
             {
-                MessageQueue.Enqueue("❎ Settings Reset Cancelled");
+                MessageQueue.Enqueue("❎ Clear Settings Cancelled");
             }
+        }
 
-          
+        private void SnackBarErrorAction(string message)
+        {
+            var win = _windowService.GetWindow();
+            var theme = _windowService.GetMaterialDesignTheme();
+            SmallDialog.Create(
+                title: "Error!",
+                message: message,
+                button1: new SdButton("OK", SmallDialogResults.Yes),
+                theme: theme,
+                owner: win
+            );
+
         }
 
         private void OnChangeTheme()
