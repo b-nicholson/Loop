@@ -66,6 +66,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\CustomColorThemeForMaterialDesign.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\IWindowService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\WindowService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\CancelMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\ProgressResultsMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\PropertyWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\SheetWrapper.cs" />

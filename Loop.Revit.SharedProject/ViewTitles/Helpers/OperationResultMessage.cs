@@ -1,7 +1,6 @@
-﻿
-using Loop.Revit.Utilities;
+﻿using Loop.Revit.Utilities;
 
-namespace Loop.Revit.ViewTitles
+namespace Loop.Revit.ViewTitles.Helpers
 {
     public class OperationResultMessage
     {

@@ -305,7 +305,7 @@
 
 
             </Grid>
-            <materialDesign:Snackbar
+            <materialDesign:Snackbar HorizontalContentAlignment="Center" HorizontalAlignment="Center"
                                      MessageQueue="{Binding MessageQueue}" />
 
             <Border Background="{DynamicResource MaterialDesignPaper}"

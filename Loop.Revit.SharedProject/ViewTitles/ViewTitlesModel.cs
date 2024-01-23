@@ -7,6 +7,7 @@ using System.Text;
 using Autodesk.Revit.DB;
 using Utilities.Units;
 using Loop.Revit.Utilities.ExtensibleStorage;
+using Loop.Revit.ViewTitles.Helpers;
 using View = Autodesk.Revit.DB.View;
 
 namespace Loop.Revit.ViewTitles
@@ -107,13 +108,19 @@ namespace Loop.Revit.ViewTitles
 
         public void LoadDataStorage()
         {
-            var dataStorageValue = ExtensibleStorageHelper.LoadDataStorage(Doc, ExtensibleStorageGuid, new List<string> { "ExtensionDistance" }, UnitTypeId.Feet);
+            var result = ExtensibleStorageHelper.LoadDataStorage(Doc, ExtensibleStorageGuid, new List<string> { "ExtensionDistance" }, UnitTypeId.Feet);
 
-            if (dataStorageValue.Count != 0)
+
+            if (result.Success == true)
             {
-                var elem = (double)dataStorageValue[0];
-                ExtensionDistance = elem;
+                var dataStorageValue = result.ReturnObject;
 
+                if (dataStorageValue.Count != 0)
+                {
+                    var elem = (double)dataStorageValue[0];
+                    ExtensionDistance = elem;
+
+                }
             }
         }
 

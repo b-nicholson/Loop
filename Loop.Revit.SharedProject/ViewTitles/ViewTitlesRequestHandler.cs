@@ -6,6 +6,7 @@ using Autodesk.Revit.UI;
 using Loop.Revit.Utilities.ExtensibleStorage;
 using CommunityToolkit.Mvvm.Messaging;
 using Loop.Revit.Utilities;
+using Loop.Revit.ViewTitles.Helpers;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -24,6 +25,8 @@ namespace Loop.Revit.ViewTitles
 
         public object Arg1 { get; set; }
         public object Arg2 { get; set; }
+
+        private bool Cancel { get; set; }
 
         public void Execute(UIApplication app)
         {
@@ -90,6 +93,8 @@ namespace Loop.Revit.ViewTitles
         public void AdjustViewTitles(UIApplication app)
         {
 
+            var result = new OperationResult();
+
             if (!(Arg1 is List<SheetWrapper> selected))
             {
                 return;
@@ -114,6 +119,11 @@ namespace Loop.Revit.ViewTitles
             
             var t = new Transaction(doc, "Change Viewport Label Line Length");
             t.Start();
+         
+      
+                WeakReferenceMessenger.Default.Register<ViewTitlesRequestHandler, CancelMessage>(this, (r, m) => r.OnCancel(m));
+      
+            
 
             WeakReferenceMessenger.Default.Send(new ProgressResultsMessage(viewportProcessingProgress,
                 viewportCount));
@@ -121,6 +131,23 @@ namespace Loop.Revit.ViewTitles
 
             foreach (var vp in viewports)
             {
+                if (Cancel)
+                {
+                    t.RollBack();
+                    result.Success = true;
+                    result.Message = "Successfully Cancelled";
+
+                    Cancel = false;
+
+                    WeakReferenceMessenger.Default.Send(new ProgressResultsMessage(viewportCount, viewportCount));
+                    WeakReferenceMessenger.Default.Send(new OperationResultMessage(result));
+
+                    WeakReferenceMessenger.Default.Unregister<CancelMessage>(this);
+                    break;
+                }
+
+
+
                 var viewportTypeId = vp.GetTypeId();
                 var viewportType = doc.GetElement(viewportTypeId);
 
@@ -165,12 +192,22 @@ namespace Loop.Revit.ViewTitles
 
 
             t.Commit();
+            result.Success = true;
+            result.Message = "Successfully Changed " + viewportProcessingProgress.ToString() + " Viewports";
+            WeakReferenceMessenger.Default.Send(new OperationResultMessage(result));
+            WeakReferenceMessenger.Default.Unregister<CancelMessage>(this);
         }
+
 
 
         public string GetName()
         {
             return "View Titles Event Handler";
+        }
+
+        private void OnCancel(CancelMessage obj)
+        {
+            Cancel = obj.Cancel;
         }
     }
 }

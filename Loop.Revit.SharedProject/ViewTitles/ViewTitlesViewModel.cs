@@ -20,6 +20,8 @@ using Loop.Revit.Utilities.UserSettings;
 using Loop.Revit.Utilities.Wpf.WindowServices;
 using MaterialDesignThemes.Wpf;
 using Loop.Revit.Utilities.Wpf.SmallDialog;
+using Loop.Revit.ViewTitles.Helpers;
+using Autodesk.Revit.UI;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -36,6 +38,7 @@ namespace Loop.Revit.ViewTitles
         public AsyncRelayCommand<Window> Run { get; set; }
         public RelayCommand<Window> CopyText { get; set; }
         public RelayCommand<Window> SaveUnits { get; set; }
+        public RelayCommand Cancel { get; set; }
         #endregion
 
         #region Progress Bar Properties
@@ -378,11 +381,17 @@ namespace Loop.Revit.ViewTitles
             Run = new AsyncRelayCommand<Window>(OnRun);
             CopyText = new RelayCommand<Window>(OnCopyText);
             SaveUnits = new RelayCommand<Window>(OnSaveSettings);
+            Cancel = new RelayCommand(OnCancel);
 
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, ProgressResultsMessage>(this, (r, m) => r.OnProgressUpdate(m));
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, OperationResultMessage>(this, (r, m) => r.OnOperationResult(m));
 
             LoadSettings();
+        }
+
+        private void OnCancel()
+        {
+            WeakReferenceMessenger.Default.Send(new CancelMessage(true));
         }
 
         private void LoadSettings()
@@ -397,10 +406,22 @@ namespace Loop.Revit.ViewTitles
 
         private void OnOperationResult(OperationResultMessage obj)
         {
-            MessageQueue.Enqueue("❎ Settings Clear Failed",
-                actionContent: "Show",
-                actionHandler: new Action<string>(SnackBarErrorAction),
-                actionArgument: obj.Result.Message);
+
+            //TODO: Change the success method to adapt to the OperationResultMessage
+            if (obj.Result.Success == true)
+            {
+                MessageQueue.Enqueue(content: "✅ Settings Saved");
+                MessageQueue.Enqueue(content: "Remember to Save/Sync to keep changes");
+
+            }
+            else
+            {
+                MessageQueue.Enqueue("❎ Settings Not Saved",
+                    actionContent: "Show",
+                    actionHandler: new Action<string>(SnackBarErrorAction),
+                    actionArgument: obj.Result.Message);
+            }
+          
         }
 
         private void OnProgressUpdate(ProgressResultsMessage obj)
@@ -471,9 +492,6 @@ namespace Loop.Revit.ViewTitles
         private void OnSaveSettings(Window win)
         {
             _model.CreateDataStorage(LengthInternalUnits);
-
-            MessageQueue.Enqueue(content: "✅ Settings Saved");
-            MessageQueue.Enqueue(content: "Remember to Save/Sync to keep changes");
         }
 
         #region INotifyErrorInfo
