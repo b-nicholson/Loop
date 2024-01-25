@@ -95,7 +95,7 @@
                         Content="{materialDesign:PackIcon WindowMaximize}"
                         Style="{StaticResource MaterialDesignFlatButton}"/>
                         <Button 
-                            Click="CloseButton_Click"
+                            Command="{Binding Close}"
                             VerticalContentAlignment="Center"
                             Content="{materialDesign:PackIcon WindowClose}"
                             Style="{StaticResource MaterialDesignFlatButton}"/>
@@ -390,6 +390,7 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
                              Value="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged}"
                              Visibility="{Binding ProgressVisibility, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
+            <Button Grid.Row="10" Command="{Binding Test}"/>
 
             
             <materialDesign:Snackbar Grid.Row="10"

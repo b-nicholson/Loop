@@ -7,6 +7,7 @@ namespace Loop.Revit.Utilities
     public class OperationResult
     {
         public bool Success { get; set; } = false;
+        public string OperationType { get; set; }
         public string Message { get; set; }
         public string TraceBackMessage { get; set; }
 

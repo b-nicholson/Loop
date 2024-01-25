@@ -6,6 +6,7 @@ using Autodesk.Revit.UI;
 using Loop.Revit.Utilities.ExtensibleStorage;
 using CommunityToolkit.Mvvm.Messaging;
 using Loop.Revit.Utilities;
+using Loop.Revit.Utilities.CommonActions;
 using Loop.Revit.ViewTitles.Helpers;
 
 namespace Loop.Revit.ViewTitles
@@ -61,6 +62,7 @@ namespace Loop.Revit.ViewTitles
             var schemaInfo = new List<(string, Type)> { (paramName, typeof(double)) };
 
             var result = new OperationResult();
+            result.OperationType = nameof(CreateDataStorage);
 
             try
             {
@@ -85,7 +87,6 @@ namespace Loop.Revit.ViewTitles
                 result.TraceBackMessage = e.StackTrace;
             }
 
-
             WeakReferenceMessenger.Default.Send(new OperationResultMessage(result));
 
         }
@@ -94,6 +95,7 @@ namespace Loop.Revit.ViewTitles
         {
 
             var result = new OperationResult();
+            result.OperationType = nameof(AdjustViewTitles);
 
             if (!(Arg1 is List<SheetWrapper> selected))
             {
@@ -104,8 +106,6 @@ namespace Loop.Revit.ViewTitles
             {
                 return;
             }
-
-            //var ids = selected.Select(x => x.ViewportIds);
 
             var ids = selected.SelectMany(sheet => sheet.ViewportIds).ToList();
 
@@ -128,6 +128,7 @@ namespace Loop.Revit.ViewTitles
             WeakReferenceMessenger.Default.Send(new ProgressResultsMessage(viewportProcessingProgress,
                 viewportCount));
 
+            var nonEditableViewports = new List<Viewport>();
 
             foreach (var vp in viewports)
             {
@@ -146,7 +147,12 @@ namespace Loop.Revit.ViewTitles
                     break;
                 }
 
-
+                var editableResult = WorkSharingCheckoutStatus.Check(doc, vp);
+                if (editableResult.IsEditableByUser == false)
+                {
+                    nonEditableViewports.Add(vp);
+                    continue;
+                }
 
                 var viewportTypeId = vp.GetTypeId();
                 var viewportType = doc.GetElement(viewportTypeId);
@@ -164,7 +170,6 @@ namespace Loop.Revit.ViewTitles
                     vp.LabelLineLength = 0.001;
                     var rotation = vp.Rotation;
 
-
                     if (rotation != ViewportRotation.None)
                         vp.Rotation = ViewportRotation.None;
 
@@ -177,7 +182,6 @@ namespace Loop.Revit.ViewTitles
                     var newPoint = (boxMinPoint + labelOffset).X;
                     var symbolSize = newPoint - outlineMin.X;
 
-                
                     var length = Math.Max(outlineMax.X - outlineMin.X, outlineMax.Y - outlineMin.Y) - symbolSize + extensionDistance;
 
                     vp.LabelLineLength = length;
@@ -190,10 +194,19 @@ namespace Loop.Revit.ViewTitles
                     viewportCount));
             }
 
-
             t.Commit();
+
+            if (nonEditableViewports.Count > 0)
+            {
+                WeakReferenceMessenger.Default.Send(new NonEditableViewportsMessage(nonEditableViewports));
+            }
+
             result.Success = true;
-            result.Message = "Successfully Changed " + viewportProcessingProgress.ToString() + " Viewports";
+            result.Message = "✅ Successfully Changed " + 
+                             (viewportProcessingProgress-nonEditableViewports.Count).ToString() + 
+                             "/ " +
+                             viewportProcessingProgress.ToString() +
+                             " Viewports";
             WeakReferenceMessenger.Default.Send(new OperationResultMessage(result));
             WeakReferenceMessenger.Default.Unregister<CancelMessage>(this);
         }

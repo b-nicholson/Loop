@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Autodesk.Revit.DB;
+
+namespace Loop.Revit.ViewTitles.Helpers
+{
+    public class NonEditableViewportsMessage
+    {
+        public List<Viewport> Viewports { get; set; }
+
+        public NonEditableViewportsMessage(List<Viewport> viewports)
+        {
+            Viewports = viewports;
+        }
+    }
+}

@@ -14,6 +14,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Media;
 using Loop.Revit.Utilities.Units;
 using Loop.Revit.Utilities.UserSettings;
@@ -22,6 +23,8 @@ using MaterialDesignThemes.Wpf;
 using Loop.Revit.Utilities.Wpf.SmallDialog;
 using Loop.Revit.ViewTitles.Helpers;
 using Autodesk.Revit.UI;
+using Loop.Revit.Utilities.Wpf.OutputListDialog;
+using System.Windows.Markup;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -39,6 +42,8 @@ namespace Loop.Revit.ViewTitles
         public RelayCommand<Window> CopyText { get; set; }
         public RelayCommand<Window> SaveUnits { get; set; }
         public RelayCommand Cancel { get; set; }
+        public RelayCommand Test { get; set; }
+        public RelayCommand Close { get; set; }
         #endregion
 
         #region Progress Bar Properties
@@ -382,11 +387,53 @@ namespace Loop.Revit.ViewTitles
             CopyText = new RelayCommand<Window>(OnCopyText);
             SaveUnits = new RelayCommand<Window>(OnSaveSettings);
             Cancel = new RelayCommand(OnCancel);
+            Test = new RelayCommand(OnTest);
+            Close = new RelayCommand(OnClose);
+            
 
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, ProgressResultsMessage>(this, (r, m) => r.OnProgressUpdate(m));
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, OperationResultMessage>(this, (r, m) => r.OnOperationResult(m));
+            WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, NonEditableViewportsMessage>(this, (r, m) => r.OnNonEditableViewports(m));
 
             LoadSettings();
+        }
+
+        private void OnClose()
+        {
+            _windowService.CloseWindow();
+        }
+
+        private void OnTest()
+        {
+
+            var testSheets = _model.CollectSheets().OrderBy(o => o.SheetNumber).ToList();
+            //OutputListDialog.Create(testSheets, modeless: true);
+
+            var view = new OutputListDialogView();
+            var modeless = true;
+
+            var viewModel = new OutputListDialogViewModel(
+                windowService: new WindowService(view)
+            );
+            var observableData = new ObservableCollection<object>(testSheets);
+            var dataView = CollectionViewSource.GetDefaultView(observableData);
+
+
+            viewModel.DataGridElements = dataView;
+            view.DataContext = viewModel;
+            view.ShowInTaskbar = true;
+            //if (owner != null)
+            //{
+            //    view.Owner = owner;
+            //}
+            //TODO check if modal/modeless is useful. Not sure if usable in modeless.
+            if (modeless) view.Show();
+            //else view.ShowDialog();
+        }
+
+        private void OnNonEditableViewports(NonEditableViewportsMessage obj)
+        {
+
         }
 
         private void OnCancel()
@@ -410,9 +457,16 @@ namespace Loop.Revit.ViewTitles
             //TODO: Change the success method to adapt to the OperationResultMessage
             if (obj.Result.Success == true)
             {
-                MessageQueue.Enqueue(content: "✅ Settings Saved");
-                MessageQueue.Enqueue(content: "Remember to Save/Sync to keep changes");
-
+                switch (obj.Result.OperationType)
+                {
+                    case nameof(ViewTitlesRequestHandler.CreateDataStorage):
+                        MessageQueue.Enqueue(content: "✅ Settings Saved");
+                        MessageQueue.Enqueue(content: "Remember to Save/Sync to keep changes");
+                        break;
+                    case nameof(ViewTitlesRequestHandler.AdjustViewTitles):
+                        MessageQueue.Enqueue(content: obj.Result.Message);
+                        break;
+                }
             }
             else
             {
