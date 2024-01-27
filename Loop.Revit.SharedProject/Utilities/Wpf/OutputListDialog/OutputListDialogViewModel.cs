@@ -1,10 +1,16 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Loop.Revit.Utilities.UserSettings;
 using Loop.Revit.Utilities.Wpf.WindowServices;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
+using Autodesk.Revit.UI;
+using CommunityToolkit.Mvvm.Input;
+using Loop.Revit.Utilities.Wpf.DataGridUtils;
+using Autodesk.Revit.DB;
+using System.Windows.Controls.Primitives;
 
 namespace Loop.Revit.Utilities.Wpf.OutputListDialog
 {
@@ -15,13 +21,28 @@ namespace Loop.Revit.Utilities.Wpf.OutputListDialog
 
         public ICollectionView DataGridElements { get; set; }
 
-        public ObservableCollection<DataGridColumnModel> Columns { get; private set; }
+        public ObservableCollection<DataGridColumnModel> Columns { get; set; }
 
-        public OutputListDialogViewModel(IWindowService windowService, ITheme theme = null)
+        public RelayCommand<object> ButtonCommand { get; set; }
+
+        public UIDocument uiDoc { get; set; }
+
+        public OutputListDialogViewModel(IWindowService windowService, ObservableCollection<DataGridColumnModel> columns, ITheme theme = null)
         {
 
             _windowService = windowService;
             IsDarkMode = GlobalSettings.Settings.IsDarkModeTheme;
+            ButtonCommand = new RelayCommand<object>(OnButtonCommand);
+
+            foreach (var column in columns)
+            {
+                if (column is DataGridButtonColumnModel buttonColumn)
+                {
+                    buttonColumn.Command = ButtonCommand;
+                }
+            }
+
+            Columns = columns;
 
             _windowService.ToggleDarkMode(IsDarkMode);
             if (theme != null)
@@ -37,12 +58,15 @@ namespace Loop.Revit.Utilities.Wpf.OutputListDialog
                 _windowService.SetMaterialDesignTheme(initTheme);
             }
 
+            
 
-            Columns = new ObservableCollection<DataGridColumnModel>();
-            Columns.Add(new DataGridColumnModel { Header = "Column 1", BindingPath = "SheetNumber", Width = new DataGridLength(1, DataGridLengthUnitType.Auto) });
-            Columns.Add(new DataGridColumnModel { Header = "Column 2", BindingPath = "SheetName", Width = new DataGridLength(100, DataGridLengthUnitType.Star) });
+        }
 
-
+        private void OnButtonCommand(object parameter)
+        {
+            AppCommand.OutputListDialogHandler.Arg1 = parameter;
+            AppCommand.OutputListDialogHandler.Request = RequestId.FindElements;
+            AppCommand.OutputListDialogEvent.Raise();
         }
 
     }

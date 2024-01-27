@@ -56,9 +56,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\ColorScheme.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Converters\BrushToHexConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Converters\ColorToBrushConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridButtonColumnModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridColumnModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridColumnsBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputListDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputListDialogEventHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputListDialogView.xaml.cs">
       <DependentUpon>OutputListDialogView.xaml</DependentUpon>
     </Compile>
@@ -82,6 +84,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\SheetWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\OperationResultMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\UnitsWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\ViewportWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesRequestHandler.cs" />

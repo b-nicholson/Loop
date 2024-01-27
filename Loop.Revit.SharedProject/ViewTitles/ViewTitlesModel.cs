@@ -16,14 +16,15 @@ namespace Loop.Revit.ViewTitles
     {
 
         public UIApplication UiApp { get; }
+        public UIDocument UiDoc { get; }
         public Document Doc { get; }
-
         public View ActiveView { get; }
 
         public ViewTitlesModel(UIApplication uiApp)
         {
             UiApp = uiApp;
-            Doc = uiApp.ActiveUIDocument.Document;
+            UiDoc = UiApp.ActiveUIDocument;
+            Doc = UiDoc.Document;
             ActiveView = Doc.ActiveView;
         }
 

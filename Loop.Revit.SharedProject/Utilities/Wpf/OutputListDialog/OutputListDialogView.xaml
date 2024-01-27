@@ -38,7 +38,16 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate x:Key="ButtonColumnTemplate">
+                <Button Command="{Binding DataContext.Command, RelativeSource={RelativeSource AncestorType={x:Type DataGridCell}}}"
+                        CommandParameter="{Binding DataContext.CommandParameter, RelativeSource={RelativeSource AncestorType={x:Type DataGridCell}}}">
+                    <materialDesign:PackIcon Kind="{Binding DataContext.Content, RelativeSource={RelativeSource AncestorType={x:Type DataGridCell}}}" />
+                </Button>
+            </DataTemplate>
         </ResourceDictionary>
+
+
 
     </Window.Resources>
 

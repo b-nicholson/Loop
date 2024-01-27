@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -14,17 +15,17 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
-using System.Windows.Media;
+using System.Windows.Controls;
 using Loop.Revit.Utilities.Units;
 using Loop.Revit.Utilities.UserSettings;
+using Loop.Revit.Utilities.Wpf;
+using Loop.Revit.Utilities.Wpf.DataGridUtils;
 using Loop.Revit.Utilities.Wpf.WindowServices;
 using MaterialDesignThemes.Wpf;
 using Loop.Revit.Utilities.Wpf.SmallDialog;
 using Loop.Revit.ViewTitles.Helpers;
-using Autodesk.Revit.UI;
 using Loop.Revit.Utilities.Wpf.OutputListDialog;
-using System.Windows.Markup;
+using System.Windows.Controls.Primitives;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -405,30 +406,39 @@ namespace Loop.Revit.ViewTitles
 
         private void OnTest()
         {
-
             var testSheets = _model.CollectSheets().OrderBy(o => o.SheetNumber).ToList();
-            //OutputListDialog.Create(testSheets, modeless: true);
+            var ids = testSheets.SelectMany(sheet => sheet.ViewportIds).ToList();
 
-            var view = new OutputListDialogView();
-            var modeless = true;
+            var viewports = new FilteredElementCollector(_model.Doc, ids)
+                .OfCategory(BuiltInCategory.OST_Viewports)
+                .Cast<Viewport>();
 
-            var viewModel = new OutputListDialogViewModel(
-                windowService: new WindowService(view)
-            );
-            var observableData = new ObservableCollection<object>(testSheets);
-            var dataView = CollectionViewSource.GetDefaultView(observableData);
+            var testlist = new List<ViewportWrapper>();
 
+            var rdm = new Random();
 
-            viewModel.DataGridElements = dataView;
-            view.DataContext = viewModel;
-            view.ShowInTaskbar = true;
-            //if (owner != null)
-            //{
-            //    view.Owner = owner;
-            //}
-            //TODO check if modal/modeless is useful. Not sure if usable in modeless.
-            if (modeless) view.Show();
-            //else view.ShowDialog();
+            foreach (var vp in viewports)
+            {
+                testlist.Add(new ViewportWrapper(vp));
+
+            }
+            
+            var columns = new ObservableCollection<DataGridColumnModel>();
+            columns.Add(new DataGridButtonColumnModel
+            {
+                Header = "Stuff",
+                Content = PackIconKind.Search,
+                CommandParameterPath = "Id",
+                Width = new DataGridLength(1, DataGridLengthUnitType.Auto)
+                // Set other properties as needed
+            });
+            columns.Add(new DataGridColumnModel { Header = "Sheet Number", BindingPath = "SheetNumber", Width = new DataGridLength(1, DataGridLengthUnitType.Auto) });
+            columns.Add(new DataGridColumnModel { Header = "Sheet Name", BindingPath = "SheetName", Width = new DataGridLength(100, DataGridLengthUnitType.Auto) });
+            columns.Add(new DataGridColumnModel { Header = "View Name", BindingPath = "ViewName", Width = new DataGridLength(100, DataGridLengthUnitType.Auto) });
+            columns.Add(new DataGridColumnModel { Header = "Title On Sheet", BindingPath = "TitleOnSheet", Width = new DataGridLength(100, DataGridLengthUnitType.Star) });
+            OutputListDialog.Create(testlist, columns, modeless: true, uiDoc:_model.UiDoc);
+
+    
         }
 
         private void OnNonEditableViewports(NonEditableViewportsMessage obj)

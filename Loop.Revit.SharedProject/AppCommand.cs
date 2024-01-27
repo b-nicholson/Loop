@@ -8,6 +8,7 @@ using Loop.Revit.SecondButton;
 using Loop.Revit.Settings;
 using Loop.Revit.ThirdButton;
 using Loop.Revit.Utilities.UserSettings;
+using Loop.Revit.Utilities.Wpf.OutputListDialog;
 using Loop.Revit.ViewTitles;
 
 
@@ -20,6 +21,9 @@ namespace Loop.Revit
 
         public static ViewTitlesRequestHandler ViewTitlesHandler { get; set; }
         public static ExternalEvent ViewTitlesEvent { get; set; }
+
+        public static OutputListDialogEventHandler OutputListDialogHandler { get; set; }
+        public static ExternalEvent OutputListDialogEvent { get; set; }
 
         public static UserSetting CurrentSetting { get; set; }
 
@@ -62,6 +66,9 @@ namespace Loop.Revit
 
             ViewTitlesHandler = new ViewTitlesRequestHandler();
             ViewTitlesEvent = ExternalEvent.Create(ViewTitlesHandler);
+
+            OutputListDialogHandler = new OutputListDialogEventHandler();
+            OutputListDialogEvent = ExternalEvent.Create(OutputListDialogHandler);
 
            var settingsResult = UserSettingsManager.LoadSettings();
            var settings = new UserSetting();
