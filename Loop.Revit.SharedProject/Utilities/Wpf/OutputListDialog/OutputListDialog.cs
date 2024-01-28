@@ -12,11 +12,12 @@ namespace Loop.Revit.Utilities.Wpf.OutputListDialog
 {
     public class OutputListDialog
     {
-        public static void Create(IEnumerable<object> data, ObservableCollection<DataGridColumnModel> columns, UIDocument uiDoc = null, bool modeless = false, Window owner = null, ITheme theme = null)
+        public static void Create(IEnumerable<object> data, ObservableCollection<DataGridColumnModel> columns, string title, UIDocument uiDoc = null, bool modeless = false, Window owner = null, ITheme theme = null)
         {
             var view = new OutputListDialogView();
 
             var viewModel = new OutputListDialogViewModel(
+                title: title,
                 windowService: new WindowService(view),
                 columns: columns,
                 theme: theme

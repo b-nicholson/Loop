@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 
@@ -43,6 +44,9 @@ namespace Loop.Revit.Utilities.Wpf.OutputListDialog
             try
             {
                 uiDoc.ShowElements(elementId);
+                var coll = new Collection<ElementId>();
+                coll.Add(elementId);
+                uiDoc.Selection.SetElementIds(coll);
             }
             catch
             {

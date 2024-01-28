@@ -14,15 +14,18 @@ namespace Loop.Revit.ViewTitles.Helpers
         public string ViewName { get; set; }
         public string TitleOnSheet { get; set; }
 
+        public string Owner { get; set; }
+
         public ElementId Id { get; set; }
 
-        public ViewportWrapper(Viewport viewport)
+        public ViewportWrapper(Viewport viewport, string owner)
         {
             Id = viewport.Id;
             SheetName = viewport.get_Parameter(BuiltInParameter.VIEWPORT_SHEET_NAME).AsString();
             SheetNumber = viewport.get_Parameter(BuiltInParameter.VIEWPORT_SHEET_NUMBER).AsString();
             ViewName = viewport.get_Parameter(BuiltInParameter.VIEW_NAME).AsString();
             TitleOnSheet = viewport.get_Parameter(BuiltInParameter.VIEW_DESCRIPTION).AsString();
-            }
+            Owner = owner;
+        }
     }
 }

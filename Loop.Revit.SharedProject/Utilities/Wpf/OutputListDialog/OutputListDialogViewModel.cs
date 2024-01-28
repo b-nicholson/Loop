@@ -27,9 +27,11 @@ namespace Loop.Revit.Utilities.Wpf.OutputListDialog
 
         public UIDocument uiDoc { get; set; }
 
-        public OutputListDialogViewModel(IWindowService windowService, ObservableCollection<DataGridColumnModel> columns, ITheme theme = null)
-        {
+        public string Title { get; set; }
 
+        public OutputListDialogViewModel(IWindowService windowService, ObservableCollection<DataGridColumnModel> columns, string title, ITheme theme = null)
+        {
+            Title = title;
             _windowService = windowService;
             IsDarkMode = GlobalSettings.Settings.IsDarkModeTheme;
             ButtonCommand = new RelayCommand<object>(OnButtonCommand);

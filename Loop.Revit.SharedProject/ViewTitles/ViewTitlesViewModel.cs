@@ -419,24 +419,33 @@ namespace Loop.Revit.ViewTitles
 
             foreach (var vp in viewports)
             {
-                testlist.Add(new ViewportWrapper(vp));
+                testlist.Add(new ViewportWrapper(vp, ""));
 
             }
             
             var columns = new ObservableCollection<DataGridColumnModel>();
             columns.Add(new DataGridButtonColumnModel
             {
-                Header = "Stuff",
+                Header = "Find\nView",
                 Content = PackIconKind.Search,
                 CommandParameterPath = "Id",
                 Width = new DataGridLength(1, DataGridLengthUnitType.Auto)
                 // Set other properties as needed
             });
-            columns.Add(new DataGridColumnModel { Header = "Sheet Number", BindingPath = "SheetNumber", Width = new DataGridLength(1, DataGridLengthUnitType.Auto) });
-            columns.Add(new DataGridColumnModel { Header = "Sheet Name", BindingPath = "SheetName", Width = new DataGridLength(100, DataGridLengthUnitType.Auto) });
-            columns.Add(new DataGridColumnModel { Header = "View Name", BindingPath = "ViewName", Width = new DataGridLength(100, DataGridLengthUnitType.Auto) });
-            columns.Add(new DataGridColumnModel { Header = "Title On Sheet", BindingPath = "TitleOnSheet", Width = new DataGridLength(100, DataGridLengthUnitType.Star) });
-            OutputListDialog.Create(testlist, columns, modeless: true, uiDoc:_model.UiDoc);
+            columns.Add(new DataGridColumnModel { Header = "Owner", BindingPath = "Owner", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.SizeToCells) });
+            columns.Add(new DataGridColumnModel { Header = "Sheet Number",
+                BindingPath = "SheetNumber", 
+                BindingMode = BindingMode.OneWay,
+                HeaderTextAlignment = TextAlignment.Center, 
+                Width = new DataGridLength(1, DataGridLengthUnitType.SizeToHeader) });
+           
+            columns.Add(new DataGridColumnModel { Header = "Sheet Name", BindingPath = "SheetName", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.SizeToCells) });
+            columns.Add(new DataGridColumnModel { Header = "View Name", BindingPath = "ViewName", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.Auto) });
+            columns.Add(new DataGridColumnModel { Header = "Title On Sheet", BindingPath = "TitleOnSheet", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.Star) });
+       
+
+            var title = "Viewports Unable To Be Edited:";
+            OutputListDialog.Create(testlist, columns, title: title, modeless: true, uiDoc:_model.UiDoc);
 
     
         }

@@ -116,12 +116,15 @@ namespace Loop.Revit.ViewTitles
                 .Cast<Viewport>();
             var viewportCount = viewports.Count();
             int viewportProcessingProgress = 0;
-            
-            var t = new Transaction(doc, "Change Viewport Label Line Length");
-            t.Start();
-         
-      
-                WeakReferenceMessenger.Default.Register<ViewTitlesRequestHandler, CancelMessage>(this, (r, m) => r.OnCancel(m));
+
+            var tg = new TransactionGroup(doc, "test");
+            tg.Start();
+
+            //var t = new Transaction(doc, "Change Viewport Label Line Length");
+            //t.Start();
+
+            WeakReferenceMessenger.Default.Unregister<CancelMessage>(this);
+            WeakReferenceMessenger.Default.Register<ViewTitlesRequestHandler, CancelMessage>(this, (r, m) => r.OnCancel(m));
       
             
 
@@ -134,7 +137,8 @@ namespace Loop.Revit.ViewTitles
             {
                 if (Cancel)
                 {
-                    t.RollBack();
+                    tg.RollBack();
+                    //t.RollBack();
                     result.Success = true;
                     result.Message = "Successfully Cancelled";
 
@@ -146,6 +150,9 @@ namespace Loop.Revit.ViewTitles
                     WeakReferenceMessenger.Default.Unregister<CancelMessage>(this);
                     break;
                 }
+
+                var t = new Transaction(doc, "Change Viewport Label Line Length");
+                t.Start();
 
                 var editableResult = WorkSharingCheckoutStatus.Check(doc, vp);
                 if (editableResult.IsEditableByUser == false)
@@ -187,14 +194,18 @@ namespace Loop.Revit.ViewTitles
                     vp.LabelLineLength = length;
                     if (rotation != ViewportRotation.None)
                         vp.Rotation = rotation;
+                    
                 }
+                t.Commit();
                 viewportProcessingProgress++;
 
                 WeakReferenceMessenger.Default.Send(new ProgressResultsMessage(viewportProcessingProgress,
                     viewportCount));
             }
 
-            t.Commit();
+            tg.Assimilate();
+
+            //t.Commit();
 
             if (nonEditableViewports.Count > 0)
             {

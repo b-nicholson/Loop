@@ -39,12 +39,6 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate x:Key="ButtonColumnTemplate">
-                <Button Command="{Binding DataContext.Command, RelativeSource={RelativeSource AncestorType={x:Type DataGridCell}}}"
-                        CommandParameter="{Binding DataContext.CommandParameter, RelativeSource={RelativeSource AncestorType={x:Type DataGridCell}}}">
-                    <materialDesign:PackIcon Kind="{Binding DataContext.Content, RelativeSource={RelativeSource AncestorType={x:Type DataGridCell}}}" />
-                </Button>
-            </DataTemplate>
         </ResourceDictionary>
 
 
@@ -72,7 +66,7 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <TextBlock Margin=" 0 0 0 20"
-                               Text="I am a Teapot"
+                               Text="{Binding Title}"
                                Style="{StaticResource MaterialDesignHeadline5TextBlock}" />
                     <StackPanel Grid.Column="1"
                                 Orientation="Horizontal"
@@ -98,6 +92,8 @@
             <DataGrid Grid.Row="1"
                       ItemsSource="{Binding DataGridElements, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       dataGridUtils:DataGridColumnsBinding.BindableColumns="{Binding Columns}"
+                      Style="{StaticResource MaterialDesignDataGrid}"
+                      ColumnHeaderStyle="{StaticResource MaterialDesignDataGridColumnHeader}"
                       AutoGenerateColumns="False"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Hidden"

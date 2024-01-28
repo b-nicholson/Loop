@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using Autodesk.Internal.InfoCenter;
 using MaterialDesignThemes.Wpf;
 using DataGridTextColumn = System.Windows.Controls.DataGridTextColumn;
 
@@ -99,12 +98,25 @@ namespace Loop.Revit.Utilities.Wpf.DataGridUtils
                 }
                 else
                 {
-                    // Handle other column types as before
+                    // Handle other column types
+                    var binding = new Binding(columnModel.BindingPath);
+                    binding.Mode = columnModel.BindingMode;
+                    
+                    FrameworkElementFactory textBlockFactory = new FrameworkElementFactory(typeof(TextBlock));
+                    textBlockFactory.SetValue(TextBlock.TextAlignmentProperty, columnModel.HeaderTextAlignment);
+                    textBlockFactory.SetValue(TextBlock.TextWrappingProperty, TextWrapping.WrapWithOverflow);
+                    textBlockFactory.SetValue(TextBlock.TextProperty, columnModel.Header);
+
+                    DataTemplate headerTemplate = new DataTemplate();
+                    headerTemplate.VisualTree = textBlockFactory;
+
+
+
                     var textColumn = new DataGridTextColumn
                     {
-                        Header = columnModel.Header,
-                        Binding = new Binding(columnModel.BindingPath),
-                        Width = columnModel.Width
+                        Binding = binding,
+                        Width = columnModel.Width,
+                        HeaderTemplate = headerTemplate
                     };
                     dataGrid.Columns.Add(textColumn);
                 }
