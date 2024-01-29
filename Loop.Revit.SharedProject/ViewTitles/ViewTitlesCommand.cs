@@ -40,23 +40,10 @@ namespace Loop.Revit.ViewTitles
                     
 
                     v.DataContext = vm;
-                 
-
-                    var unused = new WindowInteropHelper(v)
-                    {
-                        Owner = Process.GetCurrentProcess().MainWindowHandle
-                    };
                     v.Closed += (s, e) => Dispatcher.CurrentDispatcher.InvokeShutdown();
 
                     v.Show();
                     Dispatcher.Run();
-
-
-
-
-
-
-
                 });
 
                 _uiThread.SetApartmentState(ApartmentState.STA);

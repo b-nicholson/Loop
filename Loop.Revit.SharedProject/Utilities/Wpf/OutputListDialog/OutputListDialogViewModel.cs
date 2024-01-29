@@ -5,12 +5,9 @@ using Loop.Revit.Utilities.Wpf.WindowServices;
 using MaterialDesignThemes.Wpf;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows.Controls;
 using Autodesk.Revit.UI;
 using CommunityToolkit.Mvvm.Input;
 using Loop.Revit.Utilities.Wpf.DataGridUtils;
-using Autodesk.Revit.DB;
-using System.Windows.Controls.Primitives;
 
 namespace Loop.Revit.Utilities.Wpf.OutputListDialog
 {

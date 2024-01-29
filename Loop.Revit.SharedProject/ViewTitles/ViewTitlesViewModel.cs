@@ -14,7 +14,6 @@ using Visibility = System.Windows.Visibility;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using Loop.Revit.Utilities.Units;
 using Loop.Revit.Utilities.UserSettings;
@@ -39,7 +38,7 @@ namespace Loop.Revit.ViewTitles
 
 
         #region Command Properties
-        public AsyncRelayCommand<Window> Run { get; set; }
+        public RelayCommand<Window> Run { get; set; }
         public RelayCommand<Window> CopyText { get; set; }
         public RelayCommand<Window> SaveUnits { get; set; }
         public RelayCommand Cancel { get; set; }
@@ -57,6 +56,7 @@ namespace Loop.Revit.ViewTitles
             {
                 SetProperty(ref _currentProgress, value);
                 CheckProgressBarVisibility();
+
             }
         }
 
@@ -384,7 +384,7 @@ namespace Loop.Revit.ViewTitles
             #endregion
 
             //TODO check if async actually does anything
-            Run = new AsyncRelayCommand<Window>(OnRun);
+            Run = new RelayCommand<Window>(OnRun);
             CopyText = new RelayCommand<Window>(OnCopyText);
             SaveUnits = new RelayCommand<Window>(OnSaveSettings);
             Cancel = new RelayCommand(OnCancel);
@@ -445,9 +445,15 @@ namespace Loop.Revit.ViewTitles
        
 
             var title = "Viewports Unable To Be Edited:";
-            OutputListDialog.Create(testlist, columns, title: title, modeless: true, uiDoc:_model.UiDoc);
+      
+            var message = new OutputDialogListMessage(data: testlist, columns: columns, title: title, modeless: true,
+                uiDoc: _model.UiDoc);
 
-    
+            //I made a few ways to launch this dialog, using this method that initiates from externalevents makes the window independent of the other one, so it can be left open independently.
+            AppCommand.OutputListDialogHandler.Arg1 = message;
+            AppCommand.OutputListDialogHandler.Request = Utilities.Wpf.OutputListDialog.RequestId.Create;
+            AppCommand.OutputListDialogEvent.Raise();
+            
         }
 
         private void OnNonEditableViewports(NonEditableViewportsMessage obj)
@@ -546,14 +552,14 @@ namespace Loop.Revit.ViewTitles
             else return sheetInfo != null && isFound;
         }
 
-        private async Task OnRun(Window win)
+        private void OnRun(Window win)
         {
             var selected = Sheets.Where(x => x.IsSelected).ToList();
             if (selected.Count == 0)
             {
                 return;
-            }
-            await Task.Run(() => _model.ChangeTitleLength(selected));
+            } 
+            _model.ChangeTitleLength(selected);
         }
 
         private void OnCopyText(Window win)

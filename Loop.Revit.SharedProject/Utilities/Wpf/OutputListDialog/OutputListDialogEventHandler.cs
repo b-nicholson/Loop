@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Loop.Revit.Utilities.Wpf.SmallDialog;
 
 
 namespace Loop.Revit.Utilities.Wpf.OutputListDialog
@@ -9,7 +10,8 @@ namespace Loop.Revit.Utilities.Wpf.OutputListDialog
     public enum RequestId
     {
         None,
-        FindElements
+        FindElements,
+        Create
     }
     public class OutputListDialogEventHandler: IExternalEventHandler
     {
@@ -26,6 +28,9 @@ namespace Loop.Revit.Utilities.Wpf.OutputListDialog
                         return;
                     case RequestId.FindElements:
                         FindElements(app);
+                        break;
+                    case RequestId.Create:
+                        OpenWindow();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -52,6 +57,19 @@ namespace Loop.Revit.Utilities.Wpf.OutputListDialog
             {
                 //pass
             }
+        }
+
+        public void OpenWindow()
+        {
+            if (!(Arg1 is OutputDialogListMessage message))
+            {
+                var blah = SmallDialog.SmallDialog.Create(title: "Error!",
+                    message: "Wrong Argument assigned to the OutputDialogList",
+                    button1: new SdButton("OK", SmallDialogResults.Yes)
+                    );
+                return;
+            }
+            OutputListDialog.Create(message);
         }
 
         public string GetName()

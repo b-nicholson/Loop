@@ -2,6 +2,7 @@
 using System.Linq;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
+using CommunityToolkit.Mvvm.Messaging;
 using Loop.Revit.FavouriteViews;
 using Loop.Revit.FirstButton;
 using Loop.Revit.SecondButton;
@@ -10,6 +11,7 @@ using Loop.Revit.ThirdButton;
 using Loop.Revit.Utilities.UserSettings;
 using Loop.Revit.Utilities.Wpf.OutputListDialog;
 using Loop.Revit.ViewTitles;
+using Loop.Revit.ViewTitles.Helpers;
 
 
 namespace Loop.Revit
@@ -57,8 +59,7 @@ namespace Loop.Revit
             SettingsCommand.CreateButton(ribbonPanel);
 
             DockablePanelUtilsFv.RegisterDockablePanel(app);
-
-
+            
             app.ControlledApplication.DocumentChanged += OnDocumentChanged;
 
             ThirdButtonHandler =new ThirdButtonRequestHandler();

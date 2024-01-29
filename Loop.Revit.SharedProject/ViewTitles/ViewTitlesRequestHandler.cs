@@ -117,11 +117,11 @@ namespace Loop.Revit.ViewTitles
             var viewportCount = viewports.Count();
             int viewportProcessingProgress = 0;
 
-            var tg = new TransactionGroup(doc, "test");
-            tg.Start();
+            //var tg = new TransactionGroup(doc, "test");
+            //tg.Start();
 
-            //var t = new Transaction(doc, "Change Viewport Label Line Length");
-            //t.Start();
+            var t = new Transaction(doc, "Change Viewport Label Line Length");
+            t.Start();
 
             WeakReferenceMessenger.Default.Unregister<CancelMessage>(this);
             WeakReferenceMessenger.Default.Register<ViewTitlesRequestHandler, CancelMessage>(this, (r, m) => r.OnCancel(m));
@@ -137,8 +137,8 @@ namespace Loop.Revit.ViewTitles
             {
                 if (Cancel)
                 {
-                    tg.RollBack();
-                    //t.RollBack();
+                    //tg.RollBack();
+                    t.RollBack();
                     result.Success = true;
                     result.Message = "Successfully Cancelled";
 
@@ -151,8 +151,8 @@ namespace Loop.Revit.ViewTitles
                     break;
                 }
 
-                var t = new Transaction(doc, "Change Viewport Label Line Length");
-                t.Start();
+                //var t = new Transaction(doc, "Change Viewport Label Line Length");
+                //t.Start();
 
                 var editableResult = WorkSharingCheckoutStatus.Check(doc, vp);
                 if (editableResult.IsEditableByUser == false)
@@ -196,16 +196,16 @@ namespace Loop.Revit.ViewTitles
                         vp.Rotation = rotation;
                     
                 }
-                t.Commit();
+                //t.Commit();
                 viewportProcessingProgress++;
 
                 WeakReferenceMessenger.Default.Send(new ProgressResultsMessage(viewportProcessingProgress,
                     viewportCount));
             }
 
-            tg.Assimilate();
+            //tg.Assimilate();
 
-            //t.Commit();
+            t.Commit();
 
             if (nonEditableViewports.Count > 0)
             {
@@ -215,7 +215,7 @@ namespace Loop.Revit.ViewTitles
             result.Success = true;
             result.Message = "✅ Successfully Changed " + 
                              (viewportProcessingProgress-nonEditableViewports.Count).ToString() + 
-                             "/ " +
+                             "/" +
                              viewportProcessingProgress.ToString() +
                              " Viewports";
             WeakReferenceMessenger.Default.Send(new OperationResultMessage(result));
