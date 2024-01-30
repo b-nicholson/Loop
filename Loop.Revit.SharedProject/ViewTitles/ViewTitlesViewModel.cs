@@ -442,7 +442,7 @@ namespace Loop.Revit.ViewTitles
             columns.Add(new DataGridColumnModel { Header = "Sheet Name", BindingPath = "SheetName", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.SizeToCells) });
             columns.Add(new DataGridColumnModel { Header = "View Name", BindingPath = "ViewName", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.Auto) });
             columns.Add(new DataGridColumnModel { Header = "Title On Sheet", BindingPath = "TitleOnSheet", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.Star) });
-       
+            columns.Add(new DataGridCheckBoxColumnModel { Header = "Test", BindingPath = "TestThings", BindingMode = BindingMode.TwoWay, Width = new DataGridLength(100, DataGridLengthUnitType.Star) });
 
             var title = "Viewports Unable To Be Edited:";
       

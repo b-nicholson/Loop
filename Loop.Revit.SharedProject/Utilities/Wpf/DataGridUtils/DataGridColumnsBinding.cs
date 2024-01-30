@@ -96,6 +96,38 @@ namespace Loop.Revit.Utilities.Wpf.DataGridUtils
                     dataGrid.Columns.Add(templateColumn);
 
                 }
+
+                else if (columnModel is DataGridCheckBoxColumnModel checkBoxColumnModel)
+                {
+                    var checkBoxColumn = new DataGridCheckBoxColumn
+                    {
+                        Header = checkBoxColumnModel.Header,
+                        Width = checkBoxColumnModel.Width
+                    };
+
+                    // Use the inherited BindingPath and BindingMode properties
+                    var binding = new Binding(checkBoxColumnModel.BindingPath)
+                    {
+                        Mode = checkBoxColumnModel.BindingMode
+                    };
+                    checkBoxColumn.Binding = binding;
+
+                    //TODO Optional: Setting command for checkbox change
+                    //if (checkBoxColumnModel.CheckedChangedCommand != null)
+                    //{
+                    //    //TODO Add logic for CheckedChangedCommand
+                    //}
+
+                    // Optional: Apply custom style if any
+                    //if (checkBoxColumnModel.CheckBoxStyle != null)
+                    //{
+                    //    checkBoxColumn.ElementStyle = checkBoxColumnModel.CheckBoxStyle;
+                    //    checkBoxColumn.EditingElementStyle = checkBoxColumnModel.CheckBoxStyle;
+                    //}
+
+                    dataGrid.Columns.Add(checkBoxColumn);
+                }
+
                 else
                 {
                     // Handle other column types

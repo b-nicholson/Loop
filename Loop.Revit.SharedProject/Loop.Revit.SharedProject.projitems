@@ -57,6 +57,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Converters\BrushToHexConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Converters\ColorToBrushConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridButtonColumnModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridCheckboxColumnModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridColumnModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridColumnsBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputDialogListMessage.cs" />

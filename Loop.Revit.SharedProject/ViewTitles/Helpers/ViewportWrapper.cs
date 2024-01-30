@@ -18,6 +18,8 @@ namespace Loop.Revit.ViewTitles.Helpers
 
         public ElementId Id { get; set; }
 
+        public bool TestThings { get; set; }
+
         public ViewportWrapper(Viewport viewport, string owner)
         {
             Id = viewport.Id;
