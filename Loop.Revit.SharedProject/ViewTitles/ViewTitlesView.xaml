@@ -456,7 +456,7 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" /
                        
                        Content="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>-->
 
-            <Grid Grid.Row="9">
+            <Grid Grid.Row="9" Margin="0 20 0 0 ">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
@@ -468,11 +468,12 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" /
                             Command="{Binding Cancel, Mode=OneWay}"
                             Style="{StaticResource MaterialDesignOutlinedButton}" />
                     <ProgressBar Grid.Column="1" IsIndeterminate="True"
-                                 Visibility="{Binding ProgressVisibility, UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="10 0 10 0"
+                             Visibility="{Binding ProgressVisibility, UpdateSourceTrigger=PropertyChanged}"
                              Style="{StaticResource MaterialDesignCircularProgressBar}"
                                  Value="35" />
                 <ProgressBar Grid.Column="2"
-                             Margin="10 0 0 0"
+                            
                              Maximum="{Binding MaxProgressValue}"
                              Value="{Binding CurrentProgress}"
                              Visibility="{Binding ProgressVisibility, UpdateSourceTrigger=PropertyChanged}" />
