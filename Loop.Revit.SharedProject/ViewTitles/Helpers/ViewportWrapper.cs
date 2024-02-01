@@ -13,12 +13,8 @@ namespace Loop.Revit.ViewTitles.Helpers
         public string SheetName { get; set; }
         public string ViewName { get; set; }
         public string TitleOnSheet { get; set; }
-
         public string Owner { get; set; }
-
         public ElementId Id { get; set; }
-
-        public bool TestThings { get; set; }
 
         public ViewportWrapper(Viewport viewport, string owner)
         {

@@ -7,9 +7,9 @@ namespace Loop.Revit.ViewTitles.Helpers
 {
     public class NonEditableViewportsMessage
     {
-        public List<Viewport> Viewports { get; set; }
+        public List<ViewportWrapper> Viewports { get; set; }
 
-        public NonEditableViewportsMessage(List<Viewport> viewports)
+        public NonEditableViewportsMessage(List<ViewportWrapper> viewports)
         {
             Viewports = viewports;
         }

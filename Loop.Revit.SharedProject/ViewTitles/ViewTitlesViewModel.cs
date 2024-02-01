@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -24,7 +23,6 @@ using MaterialDesignThemes.Wpf;
 using Loop.Revit.Utilities.Wpf.SmallDialog;
 using Loop.Revit.ViewTitles.Helpers;
 using Loop.Revit.Utilities.Wpf.OutputListDialog;
-using System.Windows.Controls.Primitives;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -35,14 +33,12 @@ namespace Loop.Revit.ViewTitles
         private readonly ViewTitlesModel _model;
 
         public SnackbarMessageQueue MessageQueue { get; } = new SnackbarMessageQueue();
-
-
+        
         #region Command Properties
         public RelayCommand<Window> Run { get; set; }
         public RelayCommand<Window> CopyText { get; set; }
         public RelayCommand<Window> SaveUnits { get; set; }
         public RelayCommand Cancel { get; set; }
-        public RelayCommand Test { get; set; }
         public RelayCommand Close { get; set; }
         #endregion
 
@@ -56,7 +52,6 @@ namespace Loop.Revit.ViewTitles
             {
                 SetProperty(ref _currentProgress, value);
                 CheckProgressBarVisibility();
-
             }
         }
 
@@ -156,9 +151,6 @@ namespace Loop.Revit.ViewTitles
                 SelectAllChecked = null; // Indeterminate state
         }
         #endregion
-
-
-
 
         // Search Stuff
         private string _textToFilter;
@@ -289,6 +281,8 @@ namespace Loop.Revit.ViewTitles
 
         public bool CanRun => !HasErrors;
 
+        public bool CanSave => !_errorsViewModel.HasError(nameof(InputUnit));
+
         #endregion
 
         #region Sheet Parameters
@@ -388,10 +382,8 @@ namespace Loop.Revit.ViewTitles
             CopyText = new RelayCommand<Window>(OnCopyText);
             SaveUnits = new RelayCommand<Window>(OnSaveSettings);
             Cancel = new RelayCommand(OnCancel);
-            Test = new RelayCommand(OnTest);
             Close = new RelayCommand(OnClose);
             
-
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, ProgressResultsMessage>(this, (r, m) => r.OnProgressUpdate(m));
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, OperationResultMessage>(this, (r, m) => r.OnOperationResult(m));
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, NonEditableViewportsMessage>(this, (r, m) => r.OnNonEditableViewports(m));
@@ -403,26 +395,9 @@ namespace Loop.Revit.ViewTitles
         {
             _windowService.CloseWindow();
         }
-
-        private void OnTest()
+        
+        private void OnNonEditableViewports(NonEditableViewportsMessage obj)
         {
-            var testSheets = _model.CollectSheets().OrderBy(o => o.SheetNumber).ToList();
-            var ids = testSheets.SelectMany(sheet => sheet.ViewportIds).ToList();
-
-            var viewports = new FilteredElementCollector(_model.Doc, ids)
-                .OfCategory(BuiltInCategory.OST_Viewports)
-                .Cast<Viewport>();
-
-            var testlist = new List<ViewportWrapper>();
-
-            var rdm = new Random();
-
-            foreach (var vp in viewports)
-            {
-                testlist.Add(new ViewportWrapper(vp, ""));
-
-            }
-            
             var columns = new ObservableCollection<DataGridColumnModel>();
             columns.Add(new DataGridButtonColumnModel
             {
@@ -430,35 +405,30 @@ namespace Loop.Revit.ViewTitles
                 Content = PackIconKind.Search,
                 CommandParameterPath = "Id",
                 Width = new DataGridLength(1, DataGridLengthUnitType.Auto)
-                // Set other properties as needed
             });
             columns.Add(new DataGridColumnModel { Header = "Owner", BindingPath = "Owner", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.SizeToCells) });
-            columns.Add(new DataGridColumnModel { Header = "Sheet Number",
-                BindingPath = "SheetNumber", 
+            columns.Add(new DataGridColumnModel
+            {
+                Header = "Sheet Number",
+                BindingPath = "SheetNumber",
                 BindingMode = BindingMode.OneWay,
-                HeaderTextAlignment = TextAlignment.Center, 
-                Width = new DataGridLength(1, DataGridLengthUnitType.SizeToHeader) });
-           
+                HeaderTextAlignment = TextAlignment.Center,
+                Width = new DataGridLength(1, DataGridLengthUnitType.SizeToHeader)
+            });
+
             columns.Add(new DataGridColumnModel { Header = "Sheet Name", BindingPath = "SheetName", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.SizeToCells) });
             columns.Add(new DataGridColumnModel { Header = "View Name", BindingPath = "ViewName", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.Auto) });
             columns.Add(new DataGridColumnModel { Header = "Title On Sheet", BindingPath = "TitleOnSheet", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.Star) });
-            columns.Add(new DataGridCheckBoxColumnModel { Header = "Test", BindingPath = "TestThings", BindingMode = BindingMode.TwoWay, Width = new DataGridLength(100, DataGridLengthUnitType.Star) });
 
             var title = "Viewports Unable To Be Edited:";
-      
-            var message = new OutputDialogListMessage(data: testlist, columns: columns, title: title, modeless: true,
+
+            var message = new OutputDialogListMessage(data: obj.Viewports, columns: columns, title: title, modeless: true,
                 uiDoc: _model.UiDoc);
 
-            //I made a few ways to launch this dialog, using this method that initiates from externalevents makes the window independent of the other one, so it can be left open independently.
+            //I made a few ways to launch this dialog, using this method that initiates from external events makes the window independent of the other one, so it can be left open independently.
             AppCommand.OutputListDialogHandler.Arg1 = message;
             AppCommand.OutputListDialogHandler.Request = Utilities.Wpf.OutputListDialog.RequestId.Create;
             AppCommand.OutputListDialogEvent.Raise();
-            
-        }
-
-        private void OnNonEditableViewports(NonEditableViewportsMessage obj)
-        {
-
         }
 
         private void OnCancel()
@@ -585,6 +555,7 @@ namespace Loop.Revit.ViewTitles
         {
             ErrorsChanged?.Invoke(this, e);
             OnPropertyChanged(nameof(CanRun));
+            OnPropertyChanged(nameof(CanSave));
         }
         #endregion
 
@@ -603,12 +574,10 @@ namespace Loop.Revit.ViewTitles
                     _errorsViewModel.AddError(nameof(InputUnit), errorMessages);
                 }
 
+
                 LengthInternalUnits = validationNumber;
 
-
                 ConvertUnit(validationNumber);
-
-
             }
         }
 

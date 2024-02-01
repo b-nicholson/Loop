@@ -109,7 +109,6 @@ namespace Loop.Revit.ViewTitles
 
             var ids = selected.SelectMany(sheet => sheet.ViewportIds).ToList();
 
-
             var doc = app.ActiveUIDocument.Document;
             var viewports = new FilteredElementCollector(doc, ids)
                 .OfCategory(BuiltInCategory.OST_Viewports)
@@ -117,21 +116,16 @@ namespace Loop.Revit.ViewTitles
             var viewportCount = viewports.Count();
             int viewportProcessingProgress = 0;
 
-            //var tg = new TransactionGroup(doc, "test");
-            //tg.Start();
-
             var t = new Transaction(doc, "Change Viewport Label Line Length");
             t.Start();
 
             WeakReferenceMessenger.Default.Unregister<CancelMessage>(this);
             WeakReferenceMessenger.Default.Register<ViewTitlesRequestHandler, CancelMessage>(this, (r, m) => r.OnCancel(m));
       
-            
-
             WeakReferenceMessenger.Default.Send(new ProgressResultsMessage(viewportProcessingProgress,
                 viewportCount));
 
-            var nonEditableViewports = new List<Viewport>();
+            var nonEditableViewports = new List<ViewportWrapper>();
 
             foreach (var vp in viewports)
             {
@@ -151,13 +145,10 @@ namespace Loop.Revit.ViewTitles
                     break;
                 }
 
-                //var t = new Transaction(doc, "Change Viewport Label Line Length");
-                //t.Start();
-
                 var editableResult = WorkSharingCheckoutStatus.Check(doc, vp);
                 if (editableResult.IsEditableByUser == false)
                 {
-                    nonEditableViewports.Add(vp);
+                    nonEditableViewports.Add(new ViewportWrapper(vp, editableResult.Owner));
                     continue;
                 }
 
@@ -196,15 +187,11 @@ namespace Loop.Revit.ViewTitles
                         vp.Rotation = rotation;
                     
                 }
-                //t.Commit();
                 viewportProcessingProgress++;
 
                 WeakReferenceMessenger.Default.Send(new ProgressResultsMessage(viewportProcessingProgress,
                     viewportCount));
             }
-
-            //tg.Assimilate();
-
             t.Commit();
 
             if (nonEditableViewports.Count > 0)
@@ -221,8 +208,6 @@ namespace Loop.Revit.ViewTitles
             WeakReferenceMessenger.Default.Send(new OperationResultMessage(result));
             WeakReferenceMessenger.Default.Unregister<CancelMessage>(this);
         }
-
-
 
         public string GetName()
         {

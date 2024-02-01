@@ -45,5 +45,11 @@ namespace Loop.Revit.Utilities
             return result;
         }
 
+        public bool HasError(string propertyName)
+        {
+            var result = GetErrors(propertyName);
+
+            return result != null;
+        }
     }
 }
