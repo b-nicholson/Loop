@@ -9,6 +9,7 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Loop.Revit.Utilities;
+using Loop.Revit.Utilities.Wpf.WindowServices;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -33,29 +34,16 @@ namespace Loop.Revit.ViewTitles
                         new DispatcherSynchronizationContext(Dispatcher.CurrentDispatcher));
 
 
+                    var v = new ViewTitlesView();
 
+                    var vm = new ViewTitlesViewModel(m, new WindowService(v));
+                    
 
-                    var vm = new ViewTitlesViewModel(m);
-                    var v = new ViewTitlesView
-                    {
-                        DataContext = vm
-                    };
-
-                    var unused = new WindowInteropHelper(v)
-                    {
-                        Owner = Process.GetCurrentProcess().MainWindowHandle
-                    };
+                    v.DataContext = vm;
                     v.Closed += (s, e) => Dispatcher.CurrentDispatcher.InvokeShutdown();
 
                     v.Show();
                     Dispatcher.Run();
-
-
-
-
-
-
-
                 });
 
                 _uiThread.SetApartmentState(ApartmentState.STA);

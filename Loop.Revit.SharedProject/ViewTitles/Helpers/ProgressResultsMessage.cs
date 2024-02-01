@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.RightsManagement;
 using System.Text;
 
-namespace Loop.Revit.ViewTitles
+namespace Loop.Revit.ViewTitles.Helpers
 {
     public class ProgressResultsMessage
     {

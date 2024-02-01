@@ -41,17 +41,40 @@ namespace Loop.Revit.Utilities.Wpf
             colorAdjust.Contrast = Contrast.Medium;
             colorAdjust.Colors = ColorSelection.All;
 
+            
+            var backgroundColour = Colors.White;
+            var backgroundColourDark = Color.FromRgb(59, 68, 83);
+
             mat.BaseTheme = BaseTheme.Light;
             if (isDarkMode != null && (bool)isDarkMode)
             {
                 mat.BaseTheme = BaseTheme.Dark;
+                backgroundColour = backgroundColourDark;
             }
 
             mat.PrimaryColor = Color.FromRgb(56,66,189);
             mat.SecondaryColor = Color.FromRgb(156, 166, 89);
             mat.ColorAdjustment = colorAdjust;
-           
 
+
+            var brush = window.FindResource("MaterialDesignPaper") as SolidColorBrush;
+            if (brush != null)
+            {
+                if (brush.IsFrozen)
+                {
+                    // Clone the brush to make a modifiable copy
+                    brush = brush.Clone();
+                    // Now modify the clone
+                    brush.Color = backgroundColour;
+                    // Replace the resource with the modifiable clone
+                    window.Resources["MaterialDesignPaper"] = brush;
+                }
+                else
+                {
+                    // Modify the brush directly
+                    brush.Color = backgroundColour;
+                }
+            }
 
             var resourceDictionaries = window.Resources.MergedDictionaries;
 

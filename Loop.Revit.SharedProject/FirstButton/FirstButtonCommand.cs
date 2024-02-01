@@ -25,17 +25,11 @@ namespace Loop.Revit.FirstButton
                 var uiApp = commandData.Application;
                 var doc = uiApp.ActiveUIDocument.Document;
 
-                var units = doc.GetUnits();
+                var uiDoc = uiApp.ActiveUIDocument;
 
-                var formatOpts = units.GetFormatOptions(SpecTypeId.Length);
 
-                var accuracy = formatOpts.Accuracy;
-
-                var stuff2 = new List<double> { 1, 0.5, 0.25, 0.125, 0.0625, 0.03125, 0.015625, 0.0078125, 0.00390625 };
-                var stuff3 = new List<double> { 1.0 / 12.0, 0.5 / 12.0, 0.25 / 12.0, 0.125 / 12.0, 0.0625 / 12.0, 0.03125 / 12.0, 0.015625 / 12.0, 0.0078125 / 12.0, 0.00390625 / 12.0 };
-
-                var closest = stuff3.OrderBy(item => Math.Abs(accuracy - item)).First();
-
+                var id = new ElementId(213165);
+                uiDoc.ShowElements(id);
 
 
 

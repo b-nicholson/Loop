@@ -5,13 +5,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:converters="clr-namespace:Loop.Revit.Utilities.Wpf.Converters"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Medium"
         TextElement.FontSize="14"
         Width="600"
         FontFamily="{materialDesign:MaterialDesignFont}"
-        xmlns:local="clr-namespace:Loop.Revit.Utilities.Wpf"
-        local:WpfThemeProperties.ToggleTheme="{Binding IsDarkMode}"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
@@ -21,37 +20,43 @@
         MinHeight="585">
     <!--Allows resize grips-->
     <WindowChrome.WindowChrome>
-        <WindowChrome GlassFrameThickness="0" CornerRadius="0" CaptionHeight="0"/>
+        <WindowChrome GlassFrameThickness="0"
+                      CornerRadius="0"
+                      CaptionHeight="0" />
     </WindowChrome.WindowChrome>
 
 
     <Window.Resources>
-        <!--<ResourceDictionary Source="../Resources/Styles/ElementStyles.xaml"/>-->
-
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-
-                <!--<ResourceDictionary Source="pack://application:,,,/Loop.Revit;component/Utilities/LoopThemeColours.xaml" />
                 <materialDesign:CustomColorTheme BaseTheme="Light"
-                                                 PrimaryColor="{StaticResource LoopPrimary}"
-                                                 SecondaryColor="{StaticResource LoopSecondary}"
-                                                 ColorAdjustment="{materialDesign:ColorAdjustment DesiredContrastRatio=4.5, Colors=All, Contrast=Medium}" />-->
-
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.DeepPurple.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
-
+                                                 PrimaryColor="Green"
+                                                 SecondaryColor="Orange"
+                                                 ColorAdjustment="{materialDesign:ColorAdjustment DesiredContrastRatio=4.5, Colors=All, Contrast=Low}" />
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
 
-                <ResourceDictionary>
+
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.CheckBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ListBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.RadioButton.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBlock.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml" />
+                <!--<ResourceDictionary>
                     <BitmapImage x:Key="ExampleImageFallback"
                                  UriSource="/Resources/example.png" />
-                </ResourceDictionary>
+                </ResourceDictionary>-->
+
 
             </ResourceDictionary.MergedDictionaries>
+            <converters:ColorToBrushConverter x:Key="ColorToBrushConverter" />
+            <converters:BrushToHexConverter x:Key="BrushToHexConverter" />
         </ResourceDictionary>
+
 
         <!--<Style x:Key="DefaultRowStyle" TargetType="{x:Type DataGridRow}">
             <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
@@ -61,66 +66,54 @@
     </Window.Resources>
 
 
-    <Border Background="{DynamicResource MaterialDesignPaper}" CornerRadius="10" BorderThickness="1" BorderBrush="DimGray">
+    <Border Background="{DynamicResource MaterialDesignPaper}"
+            CornerRadius="10"
+            BorderThickness="1"
+            BorderBrush="DimGray">
 
-        <Grid Margin="20 10 20 20 " >
+        <Grid Margin="20 10 20 20 ">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
             </Grid.ColumnDefinitions>
-            <materialDesign:ColorZone Grid.Row =" 0"  MouseLeftButtonDown="Window_MouseLeftButtonDown" Cursor="Hand">
+            <materialDesign:ColorZone Grid.Row=" 0"
+                                      MouseLeftButtonDown="Window_MouseLeftButtonDown"
+                                      Cursor="Hand">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <TextBlock
-                    Margin=" 0 0 0 20"
-                    Text="Adjust View Title Line Length"
-                    Style="{StaticResource MaterialDesignHeadline5TextBlock}"
-                />
-                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right">
-                        <ToggleButton Width="45" VerticalContentAlignment="Center"
-                                  IsChecked="{Binding IsDarkMode, Mode=OneWay}" 
-                                  Command="{Binding ToggleThemeCommand}"
-                                  Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                                  ToolTip="Toggle Dark/Light Theme" HorizontalAlignment="Right" VerticalAlignment="Top">
-                            <materialDesign:PackIcon
-                            Kind="WhiteBalanceSunny"
-                        >
-
-                            </materialDesign:PackIcon>
-                            <materialDesign:ToggleButtonAssist.OnContent>
-                                <materialDesign:PackIcon
-                                Kind="WeatherNight" />
-                            </materialDesign:ToggleButtonAssist.OnContent>
-                        </ToggleButton>
-                        <Button
-                            Click="MinimizeButton_Click"
-                            VerticalContentAlignment="Center"
-                        Content="{materialDesign:PackIcon WindowMinimize}"
-                        Style="{StaticResource MaterialDesignFlatDarkButton}"/>
-                        <Button 
-                            Click="MaximizeRestoreButton_Click"
-                            VerticalContentAlignment="Center"
-                        Content="{materialDesign:PackIcon WindowMaximize}"
-                        Style="{StaticResource MaterialDesignFlatDarkButton}"/>
-                        <Button 
-                            Click="CloseButton_Click"
-                            VerticalContentAlignment="Center"
-                            Content="{materialDesign:PackIcon WindowClose}"
-                            Style="{StaticResource MaterialDesignFlatDarkButton}"/>
+                    <TextBlock Margin=" 0 0 0 20"
+                               Text="Adjust View Title Line Length"
+                               Style="{StaticResource MaterialDesignHeadline5TextBlock}" />
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Right">
+                        <Button Click="MinimizeButton_Click"
+                                VerticalContentAlignment="Center"
+                                Content="{materialDesign:PackIcon WindowMinimize}"
+                                Style="{StaticResource MaterialDesignFlatButton}" />
+                        <Button Click="MaximizeRestoreButton_Click"
+                                VerticalContentAlignment="Center"
+                                Content="{materialDesign:PackIcon WindowMaximize}"
+                                Style="{StaticResource MaterialDesignFlatButton}" />
+                        <Button Command="{Binding Close}"
+                                VerticalContentAlignment="Center"
+                                Content="{materialDesign:PackIcon WindowClose}"
+                                Style="{StaticResource MaterialDesignFlatButton}" />
                     </StackPanel>
 
                 </Grid>
@@ -128,44 +121,92 @@
 
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
 
                 <TextBlock Grid.Column="0"
                            Margin="0 30 10 0 "
-                    Text="This tool automatically sizes the viewport title line on sheets to match each title's bounding box. You may provide an additional distance to extend the line beyond, as demonstrated by the blue dimension."
-                           TextWrapping="Wrap"
-                           />
-                <Viewbox Grid.Column="1" Width="Auto" Height="100" Stretch="Uniform">
-                    <Canvas Width="442.500" Height="181.339">
+                           Text="This tool automatically sizes the viewport title line on sheets to match each title's bounding box. You may provide an additional distance to extend the line beyond, as demonstrated by the dimension."
+                           TextWrapping="Wrap" />
+                <Viewbox Grid.Column="1"
+                         Width="Auto"
+                         Height="100"
+                         Stretch="Uniform">
+                    <Canvas Width="442.500"
+                            Height="181.339">
                         <Canvas>
                             <!-- Layer 1/<Ellipse> -->
-                            <Path StrokeThickness="4.0" Stroke="{DynamicResource MaterialDesignBody}" StrokeMiterLimit="1.0" Data="F1 M 4.000,120.500 C 4.000,90.400 28.400,66.000 58.500,66.000 C 88.600,66.000 113.000,90.400 113.000,120.500 C 113.000,150.600 88.600,175.000 58.500,175.000 C 28.400,175.000 4.000,150.600 4.000,120.500 Z"/>
+                            <Path StrokeThickness="4.0"
+                                  Stroke="{DynamicResource MaterialDesignBody}"
+                                  StrokeMiterLimit="1.0"
+                                  Data="F1 M 4.000,120.500 C 4.000,90.400 28.400,66.000 58.500,66.000 C 88.600,66.000 113.000,90.400 113.000,120.500 C 113.000,150.600 88.600,175.000 58.500,175.000 C 28.400,175.000 4.000,150.600 4.000,120.500 Z" />
                             <!-- Layer 1/<Line> -->
-                            <Path StrokeThickness="3.0" Stroke="{DynamicResource MaterialDesignBody}" StrokeMiterLimit="1.0" Data="F1 M 113.000,120.000 L 411.000,120.000"/>
+                            <Path StrokeThickness="3.0"
+                                  Stroke="{DynamicResource MaterialDesignBody}"
+                                  StrokeMiterLimit="1.0"
+                                  Data="F1 M 113.000,120.000 L 411.000,120.000" />
                             <!-- Layer 1/<Ellipse> -->
-                            <Path StrokeThickness="3.0" Stroke="{DynamicResource MaterialDesignBody}" StrokeMiterLimit="1.0" Fill="{DynamicResource PrimaryHueMidBrush}" Data="F1 M 411.500,119.750 C 411.500,115.470 414.970,112.000 419.250,112.000 C 423.530,112.000 427.000,115.470 427.000,119.750 C 427.000,124.030 423.530,127.500 419.250,127.500 C 414.970,127.500 411.500,124.030 411.500,119.750 Z"/>
+                            <Path StrokeThickness="3.0"
+                                  Stroke="{DynamicResource MaterialDesignBody}"
+                                  StrokeMiterLimit="1.0"
+                                  Fill="{DynamicResource PrimaryHueMidBrush}"
+                                  Data="F1 M 411.500,119.750 C 411.500,115.470 414.970,112.000 419.250,112.000 C 423.530,112.000 427.000,115.470 427.000,119.750 C 427.000,124.030 423.530,127.500 419.250,127.500 C 414.970,127.500 411.500,124.030 411.500,119.750 Z" />
                             <!-- Layer 1/View Name -->
-                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Canvas.Left="141.000" Canvas.Top="57.492" FontSize="48.87" FontFamily="Arial">V</TextBlock>
-                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Canvas.Left="172.715" Canvas.Top="57.492" FontSize="48.87" FontFamily="Arial">iew Name</TextBlock>
+                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}"
+                                       Canvas.Left="141.000"
+                                       Canvas.Top="57.492"
+                                       FontSize="48.87"
+                                       FontFamily="Arial">V</TextBlock>
+                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}"
+                                       Canvas.Left="172.715"
+                                       Canvas.Top="57.492"
+                                       FontSize="48.87"
+                                       FontFamily="Arial">iew Name</TextBlock>
                             <!-- Layer 1/1:100 -->
-                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Canvas.Left="145.382" Canvas.Top="118.528" FontSize="48.87" FontFamily="Arial">1:100</TextBlock>
+                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}"
+                                       Canvas.Left="145.382"
+                                       Canvas.Top="118.528"
+                                       FontSize="48.87"
+                                       FontFamily="Arial">1:100</TextBlock>
                             <!-- Layer 1/<Rectangle> -->
-                            <Path StrokeThickness="2.0" Stroke="{DynamicResource PrimaryHueMidBrush}" StrokeMiterLimit="1.0" StrokeDashArray="6.00" Data="F1 M 389.000,177.000 L 1.000,177.000 L 1.000,63.000 L 389.000,63.000 L 389.000,177.000 Z"/>
+                            <Path StrokeThickness="2.0"
+                                  Stroke="{DynamicResource PrimaryHueMidBrush}"
+                                  StrokeMiterLimit="1.0"
+                                  StrokeDashArray="6.00"
+                                  Data="F1 M 389.000,177.000 L 1.000,177.000 L 1.000,63.000 L 389.000,63.000 L 389.000,177.000 Z" />
                             <!-- Layer 1/1 -->
-                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}" Canvas.Left="42.022" Canvas.Top="87.795" FontSize="48.87" FontFamily="Arial">1</TextBlock>
+                            <TextBlock Foreground="{DynamicResource MaterialDesignBody}"
+                                       Canvas.Left="42.022"
+                                       Canvas.Top="87.795"
+                                       FontSize="48.87"
+                                       FontFamily="Arial">1</TextBlock>
                             <!-- Layer 1/<Line> -->
-                            <Path StrokeThickness="2.0" Stroke="{DynamicResource PrimaryHueMidBrush}" StrokeMiterLimit="1.0" Data="F1 M 420.000,100.000 L 420.000,0.000"/>
+                            <Path StrokeThickness="2.0"
+                                  Stroke="{DynamicResource PrimaryHueMidBrush}"
+                                  StrokeMiterLimit="1.0"
+                                  Data="F1 M 420.000,100.000 L 420.000,0.000" />
                             <!-- Layer 1/<Line> -->
-                            <Path StrokeThickness="2.0" Stroke="{DynamicResource PrimaryHueMidBrush}" StrokeMiterLimit="1.0" Data="F1 M 388.500,56.500 L 388.500,3.500"/>
+                            <Path StrokeThickness="2.0"
+                                  Stroke="{DynamicResource PrimaryHueMidBrush}"
+                                  StrokeMiterLimit="1.0"
+                                  Data="F1 M 388.500,56.500 L 388.500,3.500" />
                             <!-- Layer 1/<Line> -->
-                            <Path StrokeThickness="3.0" Stroke="{DynamicResource PrimaryHueMidBrush}" StrokeMiterLimit="1.0" Data="F1 M 369.500,18.500 L 442.500,18.500"/>
+                            <Path StrokeThickness="3.0"
+                                  Stroke="{DynamicResource PrimaryHueMidBrush}"
+                                  StrokeMiterLimit="1.0"
+                                  Data="F1 M 369.500,18.500 L 442.500,18.500" />
                             <!-- Layer 1/<Line> -->
-                            <Path StrokeThickness="5.0" Stroke="{DynamicResource PrimaryHueMidBrush}" StrokeMiterLimit="1.0" Data="F1 M 404.500,33.500 L 434.500,3.500"/>
+                            <Path StrokeThickness="5.0"
+                                  Stroke="{DynamicResource PrimaryHueMidBrush}"
+                                  StrokeMiterLimit="1.0"
+                                  Data="F1 M 404.500,33.500 L 434.500,3.500" />
                             <!-- Layer 1/<Line> -->
-                            <Path StrokeThickness="5.0" Stroke="{DynamicResource PrimaryHueMidBrush}" StrokeMiterLimit="1.0" Data="F1 M 373.500,33.500 L 403.500,3.500"/>
+                            <Path StrokeThickness="5.0"
+                                  Stroke="{DynamicResource PrimaryHueMidBrush}"
+                                  StrokeMiterLimit="1.0"
+                                  Data="F1 M 373.500,33.500 L 403.500,3.500" />
                         </Canvas>
                     </Canvas>
                 </Viewbox>
@@ -175,100 +216,117 @@
                        Source="{Binding ImageExample, FallbackValue={StaticResource ExampleImageFallback}}" HorizontalAlignment="Left" VerticalAlignment="Top" />-->
             </Grid>
 
-            <Grid Grid.Row="2" Margin="0,40,0,0">
+            <Grid Grid.Row="2"
+                  Margin="0,40,0,0">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition/>
-                    <RowDefinition/>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition Height="*" />
+                    <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                  
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
-                Text="Extension Distance:" VerticalAlignment="Center" TextWrapping="WrapWithOverflow"/>
-                <DockPanel Grid.Column="0" Grid.Row="1">
+                <TextBlock Grid.Column="0"
+                           Grid.Row="0"
+                           Grid.ColumnSpan="2"
+                           Text="Extension Distance:"
+                           VerticalAlignment="Center"
+                           TextWrapping="WrapWithOverflow" />
+                <DockPanel Grid.Column="0"
+                           Grid.Row="1">
                     <Button DockPanel.Dock="Right"
-                     Margin="0 0 20 0"
-                     ToolTip="Copy calculated value to input field. Not required, it can be left as formula if you prefer the results to not be rounded."
-                     Command="{Binding CopyText, Mode=OneWay}"
-                     Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                     Visibility="{Binding InputIsCalculation, UpdateSourceTrigger=PropertyChanged}">
-                        <materialDesign:PackIcon Kind="ArrowLeftBold"/>
+                            Margin="0 0 20 0"
+                            ToolTip="Copy calculated value to input field. Not required, it can be left as formula if you prefer the results to not be rounded."
+                            Command="{Binding CopyText, Mode=OneWay}"
+                            Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                            Visibility="{Binding InputIsCalculation, UpdateSourceTrigger=PropertyChanged}">
+                        <materialDesign:PackIcon Kind="ArrowLeftBold" />
                     </Button>
-                    <TextBox
-
-                 DockPanel.Dock="Right"
-                 materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
-                 BorderThickness="0"
-                 Margin="20,0,20,0"
-
-
-                 IsEnabled="False"
-                      IsReadOnly="True"
-                      VerticalContentAlignment="Center"
-                      Text="{Binding CalculatedUnit, UpdateSourceTrigger=PropertyChanged}"
-                 Visibility="{Binding InputIsCalculation, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBox DockPanel.Dock="Right"
+                             materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                             BorderThickness="0"
+                             Margin="20,0,20,0"
+                             IsEnabled="False"
+                             IsReadOnly="True"
+                             VerticalContentAlignment="Center"
+                             Text="{Binding CalculatedUnit, UpdateSourceTrigger=PropertyChanged}"
+                             Visibility="{Binding InputIsCalculation, UpdateSourceTrigger=PropertyChanged}" />
                     <TextBox DockPanel.Dock="Left"
-                      x:Name="inputUnits"
-                      materialDesign:ValidationAssist.Suppress="True"
-                      ToolTip="Dimension noted in image above"
-                      Text="{Binding InputUnit, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"
-                      VerticalContentAlignment="Center"
-             />
+                             x:Name="inputUnits"
+                             materialDesign:ValidationAssist.Suppress="True"
+                             ToolTip="Dimension noted in image above"
+                             Text="{Binding InputUnit, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"
+                             VerticalContentAlignment="Center" />
 
                 </DockPanel>
-                <Grid Grid.Column="1" Grid.Row="1">
+                <Grid Grid.Column="1"
+                      Grid.Row="1">
                     <ItemsControl ItemsSource="{Binding ComboBoxUnits}"
-                       DisplayMemberPath="Name" Height="0" Margin="15,0"/>
-                    <ComboBox
-                   VerticalAlignment="Center"
-                   Height="40"
-                   ItemsSource="{Binding ComboBoxUnits, UpdateSourceTrigger=PropertyChanged}"
-                   DisplayMemberPath="Name"
-                   SelectedItem="{Binding SelectedUnit}"
-                   VerticalContentAlignment="Center"
-         />
+                                  DisplayMemberPath="Name"
+                                  Height="0"
+                                  Margin="15,0" />
+                    <ComboBox VerticalAlignment="Center"
+                              Height="40"
+                              ItemsSource="{Binding ComboBoxUnits, UpdateSourceTrigger=PropertyChanged}"
+                              DisplayMemberPath="Name"
+                              SelectedItem="{Binding SelectedUnit}"
+                              VerticalContentAlignment="Center" />
 
                 </Grid>
-               
-                <Button Grid.Column="2" Grid.Row="1" Grid.RowSpan="4" VerticalAlignment="Center" VerticalContentAlignment="Center" Margin="30 0 0 0"
-                 Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                 ToolTip="Save extension distance into the model"
-                 Command="{Binding SaveUnits, Mode=OneWay}"
-                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
+
+                <Button Grid.Column="2"
+                        Grid.Row="1"
+                        Grid.RowSpan="4"
+                        VerticalAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Margin="30 0 0 0"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                        ToolTip="Save extension distance into the model"
+                        Command="{Binding SaveUnits, Mode=OneWay}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}}">
 
 
 
                     <materialDesign:PackIcon Kind="ContentSave"
-                                             Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"/>
+                                             Foreground="{DynamicResource PrimaryHueMidForegroundBrush}" />
                 </Button>
 
             </Grid>
-            <Label Foreground="#B00020" Grid.Row="3" Grid.Column="0">
+            <Label Foreground="#B00020"
+                   Grid.Row="3"
+                   Grid.Column="0">
                 <Label.Content>
-                    <Binding Path="(Validation.Errors)/ErrorContent" Source="{x:Reference inputUnits}" TargetNullValue=""/>
+                    <Binding Path="(Validation.Errors)/ErrorContent"
+                             Source="{x:Reference inputUnits}"
+                             TargetNullValue="" />
                 </Label.Content>
             </Label>
             <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="Display Unit Rounding:" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="0 0 10 0"/>
-                <Grid Grid.Column="1" HorizontalAlignment="Left">
+                <TextBlock Grid.Column="0"
+                           Text="Display Unit Rounding:"
+                           VerticalAlignment="Center"
+                           TextWrapping="WrapWithOverflow"
+                           Margin="0 0 10 0" />
+                <Grid Grid.Column="1"
+                      HorizontalAlignment="Left">
                     <ItemsControl ItemsSource="{Binding AccuracyOptions}"
-                                  DisplayMemberPath="Name" Height="0" Margin="15,0"/>
-                    <ComboBox
-                        HorizontalAlignment="Left"
-                        ItemsSource="{Binding AccuracyOptions, UpdateSourceTrigger=PropertyChanged}" Height="40" 
-                        SelectedItem="{Binding Accuracy}"
-                        DisplayMemberPath="Name"
-                    />
+                                  DisplayMemberPath="Name"
+                                  Height="0"
+                                  Margin="15,0" />
+                    <ComboBox HorizontalAlignment="Left"
+                              ItemsSource="{Binding AccuracyOptions, UpdateSourceTrigger=PropertyChanged}"
+                              Height="40"
+                              SelectedItem="{Binding Accuracy}"
+                              DisplayMemberPath="Name" />
                 </Grid>
 
 
@@ -276,141 +334,155 @@
 
 
 
-            <materialDesign:ColorZone Grid.Row="5" Margin="0 35 0 0"
-                                          Padding="8 4 8 4"
-                                          Width="450"
-                                          HorizontalAlignment="Right"
-                                          materialDesign:ElevationAssist.Elevation="Dp2"
-                                          CornerRadius="2"
-                                          Mode="Standard"
-                                         >
+            <materialDesign:ColorZone Grid.Row="5"
+                                      Margin="0 35 0 0"
+                                      Padding="8 4 8 4"
+                                      Width="450"
+                                      HorizontalAlignment="Right"
+                                      materialDesign:ElevationAssist.Elevation="Dp2"
+                                      CornerRadius="2"
+                                      Mode="Standard">
                 <StackPanel Orientation="Horizontal">
 
                     <ToggleButton Width="45"
-                    Margin="0 0 20 0"
-                    
-                    IsChecked="{Binding ShowCheckedItemsOnly}"
-                              Style="{StaticResource MaterialDesignSwitchToggleButton}"
-                              ToolTip="Show Selected Sheets Only"
-                                  >
-                        
-                        <materialDesign:PackIcon
-                        Kind="CheckboxMarkedOutline"
-                        >
+                                  Margin="0 0 20 0"
+                                  IsChecked="{Binding ShowCheckedItemsOnly}"
+                                  Style="{StaticResource MaterialDesignSwitchToggleButton}"
+                                  ToolTip="Show Selected Sheets Only">
+
+                        <materialDesign:PackIcon Kind="CheckboxMarkedOutline">
 
                         </materialDesign:PackIcon>
                         <materialDesign:ToggleButtonAssist.OnContent>
-                            <materialDesign:PackIcon
-                            Kind="CheckboxMarked" />
+                            <materialDesign:PackIcon Kind="CheckboxMarked" />
                         </materialDesign:ToggleButtonAssist.OnContent>
                     </ToggleButton>
 
 
                     <materialDesign:PackIcon Kind="Search"
-                                                 VerticalAlignment="Center" />
+                                             VerticalAlignment="Center" />
                     <TextBox MinWidth="200"
-                                 Margin="8 0 0 0"
-                                 Text="{Binding TextToFilter, UpdateSourceTrigger=PropertyChanged}"
-                                 materialDesign:HintAssist.Hint="Search..."
-                                 materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
-                                 BorderThickness="0" />
+                             Margin="8 0 0 0"
+                             Text="{Binding TextToFilter, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="Search..."
+                             materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                             BorderThickness="0" />
                     <Grid HorizontalAlignment="Left">
-                        <ItemsControl ItemsSource="{Binding SheetParameters}" DisplayMemberPath="Name" Height="0" Margin="15,0" Padding="0,0,10,0"/>
-                        <ComboBox x:Name="things"
-                              ToolTip="Sheet parameter to search"
-                                      ItemsSource="{Binding SheetParameters}"
+                        <ItemsControl ItemsSource="{Binding SheetParameters}"
                                       DisplayMemberPath="Name"
-                                      SelectedItem="{Binding SelectedPropertyWrapper, Mode=TwoWay}"
-                                      IsSynchronizedWithCurrentItem="True"
-                                      SelectedIndex="0"
-                                      VerticalContentAlignment="Center"
-                                      Width="Auto" />
+                                      Height="0"
+                                      Margin="15,0"
+                                      Padding="0,0,10,0" />
+                        <ComboBox x:Name="things"
+                                  ToolTip="Sheet parameter to search"
+                                  ItemsSource="{Binding SheetParameters}"
+                                  DisplayMemberPath="Name"
+                                  SelectedItem="{Binding SelectedPropertyWrapper, Mode=TwoWay}"
+                                  IsSynchronizedWithCurrentItem="True"
+                                  SelectedIndex="0"
+                                  VerticalContentAlignment="Center"
+                                  Width="Auto" />
                     </Grid>
                 </StackPanel>
 
             </materialDesign:ColorZone>
 
             <DataGrid Grid.Row="6"
-                    
-                    ItemsSource="{Binding SheetView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-      AutoGenerateColumns="False"
-      VerticalScrollBarVisibility="Auto"
-      HorizontalScrollBarVisibility="Hidden"
-      CanUserAddRows="False"
-      CanUserResizeColumns="True"
-      CanUserSortColumns="True"
-      IsReadOnly="False"
-      SelectionMode="Extended"
-      Margin="10"
-     >
+                      ItemsSource="{Binding SheetView, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      AutoGenerateColumns="False"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Hidden"
+                      CanUserAddRows="False"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="True"
+                      IsReadOnly="False"
+                      SelectionMode="Extended"
+                      Margin="10">
 
                 <DataGrid.Columns>
                     <DataGridCheckBoxColumn MinWidth="50"
-                            Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                                            Binding="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                         <DataGridCheckBoxColumn.Header>
                             <CheckBox IsChecked="{Binding Path=DataContext.SelectAllChecked, 
-RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}"/>
+RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" />
                         </DataGridCheckBoxColumn.Header>
 
                         <DataGridCheckBoxColumn.HeaderStyle>
                             <Style TargetType="{x:Type DataGridColumnHeader}"
-                   BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
+                                   BasedOn="{StaticResource MaterialDesignDataGridColumnHeader}">
                                 <Setter Property="HorizontalContentAlignment"
-                        Value="Center" />
+                                        Value="Center" />
                             </Style>
                         </DataGridCheckBoxColumn.HeaderStyle>
                     </DataGridCheckBoxColumn>
                     <DataGridTextColumn Header="Sheet Number"
-                        Binding="{Binding SheetNumber, Mode=OneWay}"
-                        Width="100"
-                        IsReadOnly="True"
-                        MinWidth="80">
+                                        Binding="{Binding SheetNumber, Mode=OneWay}"
+                                        Width="100"
+                                        IsReadOnly="True"
+                                        MinWidth="80">
                         <DataGridTextColumn.HeaderTemplate>
                             <DataTemplate>
                                 <TextBlock TextWrapping="Wrap"
-                           TextAlignment="Center"
-                           Text="Sheet Number" />
+                                           TextAlignment="Center"
+                                           Text="Sheet Number" />
                             </DataTemplate>
                         </DataGridTextColumn.HeaderTemplate>
                     </DataGridTextColumn>
 
 
                     <DataGridTextColumn Header="Sheet Name"
-                        Binding="{Binding SheetName, Mode=OneWay}"
-                        Width="*"
-                        IsReadOnly="True"
-                        MinWidth="120" />
+                                        Binding="{Binding SheetName, Mode=OneWay}"
+                                        Width="*"
+                                        IsReadOnly="True"
+                                        MinWidth="120" />
 
                 </DataGrid.Columns>
             </DataGrid>
 
 
 
-            <Button Grid.Row="7" 
-                        Margin="0,20,0,0"
-                        DockPanel.Dock="Bottom"
-                        Content="Adjust Title Lines"
-                        IsDefault="True"
-                        IsEnabled="{Binding CanRun}"
-                        Command="{Binding Run, Mode=OneWay}"
-                        CommandParameter="{Binding ElementName=Win}" />
+            <Button Grid.Row="7"
+                    Margin="0,20,0,0"
+                    DockPanel.Dock="Bottom"
+                    Content="Adjust Title Lines"
+                    IsDefault="True"
+                    IsEnabled="{Binding CanRun}"
+                    Command="{Binding Run, Mode=OneWay}"
+                    CommandParameter="{Binding ElementName=Win}" />
 
             <!--TODO: Delete the label below-->
             <!--<Label Grid.Row="7" 
                        
                        Content="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>-->
 
+            <Grid Grid.Row="9">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid Width="100">
+                    <Button Margin="2,0"
+                            materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                            materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
+                            materialDesign:ButtonProgressAssist.Value="-1"
+                            Content="Cancel"
+                            Visibility="{Binding ProgressVisibility, UpdateSourceTrigger=PropertyChanged}"
+                            Command="{Binding Cancel, Mode=OneWay}"
+                            Style="{StaticResource MaterialDesignOutlinedButton}" />
+                </Grid>
+                <ProgressBar Grid.Column="1"
+                             Margin="10 0 0 0"
+                             Maximum="{Binding MaxProgressValue}"
+                             Value="{Binding CurrentProgress}"
+                             Visibility="{Binding ProgressVisibility, UpdateSourceTrigger=PropertyChanged}" />
+            </Grid>
+
+            <Button Grid.Row="10"
+                    Command="{Binding Test}" />
 
 
-            <ProgressBar 
-                Margin="0 20 0 0"
-                
-                Grid.Row="9" Maximum="{Binding MaxProgressValue, UpdateSourceTrigger=PropertyChanged}" Value="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged}" Visibility="{Binding ProgressVisibility, UpdateSourceTrigger=PropertyChanged}"/>
-
-
-
-
-
+            <materialDesign:Snackbar Grid.Row="10"
+                                     MessageQueue="{Binding MessageQueue}" />
 
         </Grid>
     </Border>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -13,22 +14,36 @@ using Visibility = System.Windows.Visibility;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using System.Threading.Tasks;
+using System.Windows.Controls;
 using Loop.Revit.Utilities.Units;
+using Loop.Revit.Utilities.UserSettings;
+using Loop.Revit.Utilities.Wpf;
+using Loop.Revit.Utilities.Wpf.DataGridUtils;
+using Loop.Revit.Utilities.Wpf.WindowServices;
+using MaterialDesignThemes.Wpf;
 using Loop.Revit.Utilities.Wpf.SmallDialog;
+using Loop.Revit.ViewTitles.Helpers;
+using Loop.Revit.Utilities.Wpf.OutputListDialog;
+using System.Windows.Controls.Primitives;
 
 namespace Loop.Revit.ViewTitles
 {
     public class ViewTitlesViewModel : ObservableObject, INotifyDataErrorInfo
     {
+        private readonly IWindowService _windowService;
         private readonly ErrorsViewModel _errorsViewModel;
         private readonly ViewTitlesModel _model;
 
+        public SnackbarMessageQueue MessageQueue { get; } = new SnackbarMessageQueue();
+
+
         #region Command Properties
-        public AsyncRelayCommand<Window> Run { get; set; }
+        public RelayCommand<Window> Run { get; set; }
         public RelayCommand<Window> CopyText { get; set; }
         public RelayCommand<Window> SaveUnits { get; set; }
-        public RelayCommand ToggleThemeCommand { get; }
+        public RelayCommand Cancel { get; set; }
+        public RelayCommand Test { get; set; }
+        public RelayCommand Close { get; set; }
         #endregion
 
         #region Progress Bar Properties
@@ -41,6 +56,7 @@ namespace Loop.Revit.ViewTitles
             {
                 SetProperty(ref _currentProgress, value);
                 CheckProgressBarVisibility();
+
             }
         }
 
@@ -59,15 +75,6 @@ namespace Loop.Revit.ViewTitles
         }
         #endregion
 
-        #region Theme Properties
-
-        private bool _isDarkMode;
-        public bool IsDarkMode
-        {
-            get => _isDarkMode;
-            set => SetProperty(ref _isDarkMode, value);
-        }
-        #endregion
 
         #region DataGrid Properties
         //Data to bind to DataGrid
@@ -312,9 +319,10 @@ namespace Loop.Revit.ViewTitles
         }
         #endregion
 
-        public ViewTitlesViewModel(ViewTitlesModel model)
+        public ViewTitlesViewModel(ViewTitlesModel model, IWindowService windowService)
         {
             _model = model;
+            _windowService = windowService;
 
             _errorsViewModel = new ErrorsViewModel();
             _errorsViewModel.ErrorsChanged += ErrorsViewModel_ErrorsChanged;
@@ -376,19 +384,129 @@ namespace Loop.Revit.ViewTitles
             #endregion
 
             //TODO check if async actually does anything
-            Run = new AsyncRelayCommand<Window>(OnRun);
+            Run = new RelayCommand<Window>(OnRun);
             CopyText = new RelayCommand<Window>(OnCopyText);
             SaveUnits = new RelayCommand<Window>(OnSaveSettings);
-            ToggleThemeCommand = new RelayCommand(() => IsDarkMode = !IsDarkMode);
+            Cancel = new RelayCommand(OnCancel);
+            Test = new RelayCommand(OnTest);
+            Close = new RelayCommand(OnClose);
+            
 
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, ProgressResultsMessage>(this, (r, m) => r.OnProgressUpdate(m));
+            WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, OperationResultMessage>(this, (r, m) => r.OnOperationResult(m));
+            WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, NonEditableViewportsMessage>(this, (r, m) => r.OnNonEditableViewports(m));
+
+            LoadSettings();
+        }
+
+        private void OnClose()
+        {
+            _windowService.CloseWindow();
+        }
+
+        private void OnTest()
+        {
+            var testSheets = _model.CollectSheets().OrderBy(o => o.SheetNumber).ToList();
+            var ids = testSheets.SelectMany(sheet => sheet.ViewportIds).ToList();
+
+            var viewports = new FilteredElementCollector(_model.Doc, ids)
+                .OfCategory(BuiltInCategory.OST_Viewports)
+                .Cast<Viewport>();
+
+            var testlist = new List<ViewportWrapper>();
+
+            var rdm = new Random();
+
+            foreach (var vp in viewports)
+            {
+                testlist.Add(new ViewportWrapper(vp, ""));
+
+            }
+            
+            var columns = new ObservableCollection<DataGridColumnModel>();
+            columns.Add(new DataGridButtonColumnModel
+            {
+                Header = "Find\nView",
+                Content = PackIconKind.Search,
+                CommandParameterPath = "Id",
+                Width = new DataGridLength(1, DataGridLengthUnitType.Auto)
+                // Set other properties as needed
+            });
+            columns.Add(new DataGridColumnModel { Header = "Owner", BindingPath = "Owner", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.SizeToCells) });
+            columns.Add(new DataGridColumnModel { Header = "Sheet Number",
+                BindingPath = "SheetNumber", 
+                BindingMode = BindingMode.OneWay,
+                HeaderTextAlignment = TextAlignment.Center, 
+                Width = new DataGridLength(1, DataGridLengthUnitType.SizeToHeader) });
+           
+            columns.Add(new DataGridColumnModel { Header = "Sheet Name", BindingPath = "SheetName", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.SizeToCells) });
+            columns.Add(new DataGridColumnModel { Header = "View Name", BindingPath = "ViewName", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.Auto) });
+            columns.Add(new DataGridColumnModel { Header = "Title On Sheet", BindingPath = "TitleOnSheet", BindingMode = BindingMode.OneWay, Width = new DataGridLength(100, DataGridLengthUnitType.Star) });
+            columns.Add(new DataGridCheckBoxColumnModel { Header = "Test", BindingPath = "TestThings", BindingMode = BindingMode.TwoWay, Width = new DataGridLength(100, DataGridLengthUnitType.Star) });
+
+            var title = "Viewports Unable To Be Edited:";
+      
+            var message = new OutputDialogListMessage(data: testlist, columns: columns, title: title, modeless: true,
+                uiDoc: _model.UiDoc);
+
+            //I made a few ways to launch this dialog, using this method that initiates from externalevents makes the window independent of the other one, so it can be left open independently.
+            AppCommand.OutputListDialogHandler.Arg1 = message;
+            AppCommand.OutputListDialogHandler.Request = Utilities.Wpf.OutputListDialog.RequestId.Create;
+            AppCommand.OutputListDialogEvent.Raise();
+            
+        }
+
+        private void OnNonEditableViewports(NonEditableViewportsMessage obj)
+        {
+
+        }
+
+        private void OnCancel()
+        {
+            WeakReferenceMessenger.Default.Send(new CancelMessage(true));
+        }
+
+        private void LoadSettings()
+        {
+            var darkmode = GlobalSettings.Settings.IsDarkModeTheme;
+            _windowService.ToggleDarkMode(darkmode);
+            var colour = GlobalSettings.Settings.PrimaryThemeColor;
+            var theme = _windowService.GetMaterialDesignTheme();
+            theme.SetPrimaryColor(colour);
+            _windowService.SetMaterialDesignTheme(theme);
+        }
+
+        private void OnOperationResult(OperationResultMessage obj)
+        {
+
+            //TODO: Change the success method to adapt to the OperationResultMessage
+            if (obj.Result.Success == true)
+            {
+                switch (obj.Result.OperationType)
+                {
+                    case nameof(ViewTitlesRequestHandler.CreateDataStorage):
+                        MessageQueue.Enqueue(content: "✅ Settings Saved");
+                        MessageQueue.Enqueue(content: "Remember to Save/Sync to keep changes");
+                        break;
+                    case nameof(ViewTitlesRequestHandler.AdjustViewTitles):
+                        MessageQueue.Enqueue(content: obj.Result.Message);
+                        break;
+                }
+            }
+            else
+            {
+                MessageQueue.Enqueue("❎ Settings Not Saved",
+                    actionContent: "Show",
+                    actionHandler: new Action<string>(SnackBarErrorAction),
+                    actionArgument: obj.Result.Message);
+            }
+          
         }
 
         private void OnProgressUpdate(ProgressResultsMessage obj)
         {
             CurrentProgress = obj.CurrentSheetProgress;
             MaxProgressValue = obj.TotalSheetCount;
-
         }
 
         private void SetAccuracy()
@@ -434,14 +552,14 @@ namespace Loop.Revit.ViewTitles
             else return sheetInfo != null && isFound;
         }
 
-        private async Task OnRun(Window win)
+        private void OnRun(Window win)
         {
             var selected = Sheets.Where(x => x.IsSelected).ToList();
             if (selected.Count == 0)
             {
                 return;
-            }
-            await Task.Run(() => _model.ChangeTitleLength(selected));
+            } 
+            _model.ChangeTitleLength(selected);
         }
 
         private void OnCopyText(Window win)
@@ -453,12 +571,6 @@ namespace Loop.Revit.ViewTitles
         private void OnSaveSettings(Window win)
         {
             _model.CreateDataStorage(LengthInternalUnits);
-            SmallDialog.Create("Success!",
-                "Settings have been added inside your active document. Remember to save/sync to keep your changes. This will be accessible by all users.",
-                button1Content: "Ok",
-                darkMode: IsDarkMode,
-                owner: win
-            );
         }
 
         #region INotifyErrorInfo
@@ -518,6 +630,20 @@ namespace Loop.Revit.ViewTitles
             {
                 ProgressVisibility = Visibility.Collapsed;
             }
+        }
+
+        private void SnackBarErrorAction(string message)
+        {
+            var win = _windowService.GetWindow();
+            var theme = _windowService.GetMaterialDesignTheme();
+            SmallDialog.Create(
+                title: "Error!",
+                message: message,
+                button1: new SdButton("OK", SmallDialogResults.Yes),
+                theme: theme,
+                owner: win
+            );
+
         }
 
     }

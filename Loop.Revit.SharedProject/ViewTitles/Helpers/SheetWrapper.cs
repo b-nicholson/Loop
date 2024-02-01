@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace Loop.Revit.ViewTitles
+namespace Loop.Revit.ViewTitles.Helpers
 {
     public class SheetWrapper : INotifyPropertyChanged
     {

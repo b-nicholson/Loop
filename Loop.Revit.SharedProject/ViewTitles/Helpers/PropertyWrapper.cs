@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace Loop.Revit.ViewTitles
+namespace Loop.Revit.ViewTitles.Helpers
 {
     public class PropertyWrapper : INotifyPropertyChanged
     {

@@ -39,28 +39,54 @@
       <DependentUpon>ThirdButtonView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonActions\CheckoutResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\CommonActions\WorkSharingCheckoutStatus.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\DialogUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ErrorsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ExtensibleStorage\ExtensibleStorageHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ImageUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Json\JsonColorConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\OperationResult.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\AccuracyWrapper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\NewTestUnits.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\UnitCleanup.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfRevitUnitValidator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfUnit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\UserSettings\GlobalSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\UserSettings\UserSetting.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\UserSettings\UserSettingsManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\ColorScheme.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Converters\BrushToHexConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Converters\ColorToBrushConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridButtonColumnModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridCheckboxColumnModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridColumnModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridColumnsBinding.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputDialogListMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputListDialog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputListDialogEventHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputListDialogView.xaml.cs">
+      <DependentUpon>OutputListDialogView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputListDialogViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\PaletteHelperExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SdButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogResults.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogView.xaml.cs">
       <DependentUpon>SmallDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ProgressResultsMessage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\PropertyWrapper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\SheetWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\CustomColorThemeForMaterialDesign.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\IWindowService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\WindowService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\CancelMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\NonEditableViewportsMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\ProgressResultsMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\PropertyWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\SheetWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\OperationResultMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\UnitsWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\ViewportWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\ViewTitlesRequestHandler.cs" />
@@ -79,6 +105,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Resources\Styles\Test.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Resources\Styles\ElementStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -92,6 +122,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputListDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -112,9 +146,6 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\viewTitles\example.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <Content Include="$(MSBuildThisFileDirectory)ViewTitles\example.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\32x32\viewTitles.png" />
@@ -150,5 +181,8 @@
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="$(MSBuildThisFileDirectory)Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Directory.Build.props" />
   </ItemGroup>
 </Project>

@@ -2,12 +2,16 @@
 using System.Linq;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
+using CommunityToolkit.Mvvm.Messaging;
 using Loop.Revit.FavouriteViews;
 using Loop.Revit.FirstButton;
 using Loop.Revit.SecondButton;
 using Loop.Revit.Settings;
 using Loop.Revit.ThirdButton;
+using Loop.Revit.Utilities.UserSettings;
+using Loop.Revit.Utilities.Wpf.OutputListDialog;
 using Loop.Revit.ViewTitles;
+using Loop.Revit.ViewTitles.Helpers;
 
 
 namespace Loop.Revit
@@ -20,6 +24,11 @@ namespace Loop.Revit
         public static ViewTitlesRequestHandler ViewTitlesHandler { get; set; }
         public static ExternalEvent ViewTitlesEvent { get; set; }
 
+        public static OutputListDialogEventHandler OutputListDialogHandler { get; set; }
+        public static ExternalEvent OutputListDialogEvent { get; set; }
+
+        public static UserSetting CurrentSetting { get; set; }
+
         public Result OnStartup(UIControlledApplication app)
         {
             string tabName = "Loop";
@@ -31,7 +40,7 @@ namespace Loop.Revit
             {
                 //ignored
             }
-
+            
             string panelName = "Group 1";
 
             var ribbonPanel = app.GetRibbonPanels(tabName).FirstOrDefault(x => x.Name == panelName) ??
@@ -50,8 +59,7 @@ namespace Loop.Revit
             SettingsCommand.CreateButton(ribbonPanel);
 
             DockablePanelUtilsFv.RegisterDockablePanel(app);
-
-
+            
             app.ControlledApplication.DocumentChanged += OnDocumentChanged;
 
             ThirdButtonHandler =new ThirdButtonRequestHandler();
@@ -59,6 +67,17 @@ namespace Loop.Revit
 
             ViewTitlesHandler = new ViewTitlesRequestHandler();
             ViewTitlesEvent = ExternalEvent.Create(ViewTitlesHandler);
+
+            OutputListDialogHandler = new OutputListDialogEventHandler();
+            OutputListDialogEvent = ExternalEvent.Create(OutputListDialogHandler);
+
+           var settingsResult = UserSettingsManager.LoadSettings();
+           var settings = new UserSetting();
+           if (settingsResult.Success == true)
+           {
+               settings = settingsResult.ReturnObject;
+           }
+           GlobalSettings.Settings = settings;
 
             return Result.Succeeded;
         }

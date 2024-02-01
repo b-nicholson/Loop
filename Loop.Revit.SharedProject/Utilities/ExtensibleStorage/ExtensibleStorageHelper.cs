@@ -44,6 +44,11 @@ namespace Loop.Revit.Utilities.ExtensibleStorage
             DataStorage storageItem = null;
             foreach (var element in existingDataStorage)
             {
+                var schemaGuids = element.GetEntitySchemaGuids();
+                if (schemaGuids.Count == 0)
+                {
+                    continue;
+                }
                 if (element.GetEntitySchemaGuids()[0] != guid) continue;
                 element.DeleteEntity(schema);
                 storageItem = element;
@@ -64,42 +69,55 @@ namespace Loop.Revit.Utilities.ExtensibleStorage
 
             return storageItem;
         }
-
-        //playing with overload methods
-        //public static DataStorage CreateDataStorage(Document Doc, Schema schema, Guid guid, List<(string parameterName, dynamic parameterData)> parameters, ForgeTypeId unitTypeId = null)
-        //{
-        //   var tim = CreateDataStorage(Doc, schema, guid, "Jim", parameters);
-        //   return tim;
-        //}
-
-        public static List<dynamic> LoadDataStorage(Document Doc, Guid guid, List<string> paramNames, ForgeTypeId unitTypeId = null)
+        
+        public static OperationResult LoadDataStorage(Document Doc, Guid guid, List<string> paramNames, ForgeTypeId unitTypeId = null)
         {
-            var existingDataStorage = new FilteredElementCollector(Doc).OfClass(typeof(DataStorage)).Cast<DataStorage>();
-            DataStorage storageItem = null;
-            Schema schema = null;
-            foreach (var element in existingDataStorage)
-            {
-                if (element.GetEntitySchemaGuids()[0] != guid) continue;
-                schema = Schema.Lookup(guid);
-                storageItem = element;
-                break;
-            }
-
             var paramValues = new List<dynamic>();
-            if (schema != null)
+            var result = new OperationResult();
+            try
             {
-                var entity = storageItem.GetEntity(schema);
-                foreach (var name in paramNames)
+                var existingDataStorage = new FilteredElementCollector(Doc).OfClass(typeof(DataStorage)).Cast<DataStorage>();
+                DataStorage storageItem = null;
+                Schema schema = null;
+                foreach (var element in existingDataStorage)
                 {
-                    double? val = null;
-                    if (unitTypeId != null) val = entity.Get<double>(name, unitTypeId);
-                    else val = entity.Get<double>(name);
-                 
-                    paramValues.Add(val);
+                    var schemaGuids= element.GetEntitySchemaGuids();
+                    if (schemaGuids.Count == 0)
+                    {
+                        continue;
+                    }
+                    if (element.GetEntitySchemaGuids()[0] != guid) continue;
+                    schema = Schema.Lookup(guid);
+                    storageItem = element;
+                    break;
                 }
-            }
 
-            return paramValues;
+
+                if (schema != null)
+                {
+                    var entity = storageItem.GetEntity(schema);
+                    foreach (var name in paramNames)
+                    {
+                        double? val = null;
+                        if (unitTypeId != null) val = entity.Get<double>(name, unitTypeId);
+                        else val = entity.Get<double>(name);
+
+                        paramValues.Add(val);
+                    }
+                }
+                result.Success = true;
+                result.Message = "Loaded " + paramValues.Count.ToString() + "DataStorage Elements";
+                result.ReturnObject = paramValues;
+            }
+            catch (Exception e)
+            {
+                result.Message = e.Message;
+                result.Exception = e;
+                result.TraceBackMessage = e.StackTrace;
+            }
+        
+
+            return result;
         }
 
 

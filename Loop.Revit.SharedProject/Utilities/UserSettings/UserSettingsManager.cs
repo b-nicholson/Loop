@@ -1,77 +1,141 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using System.Text.Json;
+using Autodesk.Revit.DB;
+using Loop.Revit.Utilities.Json;
+
 
 namespace Loop.Revit.Utilities.UserSettings
 {
     public class UserSettingsManager
     {
-        private static string _defaultFilePath { get; set; }
+        private static string DefaultFilePath { get; set; }
 
         // Save settings to a JSON file
-        public static void SaveSettings(UserSetting settings, string filePath = null)
+        public static OperationResult SaveSettings(UserSetting settings, string filePath = null)
         {
+            var results = new OperationResult();
+
             if (filePath == null)
             {
                 SetDefaultFilePath();
-                filePath = _defaultFilePath;
+                filePath = DefaultFilePath;
             }
 
             var options = new JsonSerializerOptions
             {
-                WriteIndented = true
+                Converters = { new JsonColorConverter() }
             };
+            try
+            {
+                string jsonString = JsonSerializer.Serialize(settings, options);
+                File.WriteAllText(filePath, jsonString);
+                GlobalSettings.Settings = settings;
+                results.Success = true;
+            }
+            catch (Exception e)
+            {
+                results.Exception = e;
+                results.Message = e.Message;
+                results.TraceBackMessage = e.StackTrace;
+            }
 
-            string jsonString = JsonSerializer.Serialize(settings, options);
-            File.WriteAllText(filePath, jsonString);
+            return results;
         }
 
+
         // Load settings from a JSON file
-        public static UserSetting LoadSettings(string filePath = null)
+        public static OperationResult LoadSettings(string filePath = null)
         {
+            var results = new OperationResult();
+
             if (filePath == null)
             {
                 SetDefaultFilePath();
-                filePath = _defaultFilePath;
+                filePath = DefaultFilePath;
             }
             if (!File.Exists(filePath))
             {
                 var newSetting = new UserSetting();
                 SaveSettings(newSetting, filePath);
-                return newSetting; // Return new instance with default settings if file does not exist
+
+                results.Success = true;
+                results.Message = "Settings Successfully Created";
+                results.ReturnObject = newSetting;
+
+                return results; // Return new instance with default settings if file does not exist
             }
 
-            string jsonString = File.ReadAllText(filePath);
-            return JsonSerializer.Deserialize<UserSetting>(jsonString);
+            var options = new JsonSerializerOptions
+            {
+                Converters = { new JsonColorConverter() }
+            };
+            try
+            {
+                string jsonString = File.ReadAllText(filePath);
+                var setting = JsonSerializer.Deserialize<UserSetting>(jsonString, options);
+
+                results.Success = true;
+                results.Message = "Settings Successfully Loaded";
+                results.ReturnObject = setting;
+
+            }
+            catch (Exception e)
+            {
+                results.Exception = e;
+                results.Message = e.Message;
+                results.TraceBackMessage = e.StackTrace;
+            }
+            
+            return results;
         }
 
-        public static void ExportSettings(UserSetting settings, string exportFilePath)
+        public static OperationResult ExportSettings(UserSetting settings, string exportFilePath)
         {
-            SaveSettings(settings, exportFilePath);
+            var saveResult = SaveSettings(settings, exportFilePath);
+            return saveResult;
         }
 
         // Import settings from a specified file path
-        public static UserSetting ImportSettings(string importFilePath)
+        public static OperationResult ImportSettings(string importFilePath)
         {
-            return LoadSettings(importFilePath);
+            var setting = LoadSettings(importFilePath);
+            return setting;
         }
-        public static void DeleteSettings(string filePath = null)
+        public static OperationResult DeleteSettings(string filePath = null)
         {
+            var results = new OperationResult();
+
             if (filePath == null)
             {
                 SetDefaultFilePath();
-                filePath = _defaultFilePath;
+                filePath = DefaultFilePath;
             }
             // Check if the file exists before trying to delete
             if (File.Exists(filePath))
             {
-                File.Delete(filePath);
+                try
+                {
+                    File.Delete(filePath);
+                    results.Success = true;
+                    results.Message = "Settings Successfully Deleted";
+                }
+                catch (Exception e)
+                {
+                    results.Exception = e;
+                    results.Message = e.Message;
+                    results.TraceBackMessage = e.StackTrace;
+                }
             }
+
+            return results;
         }
 
         private static void SetDefaultFilePath()
         {
-            _defaultFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Settings.json";
+            DefaultFilePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + @"\Settings.json";
        
         }
     }
