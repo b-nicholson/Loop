@@ -85,8 +85,6 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-            </Grid.ColumnDefinitions>
             <materialDesign:ColorZone Grid.Row=" 0"
                                       MouseLeftButtonDown="Window_MouseLeftButtonDown"
                                       Cursor="Hand">

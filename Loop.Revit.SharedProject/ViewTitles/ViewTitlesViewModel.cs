@@ -23,6 +23,7 @@ using MaterialDesignThemes.Wpf;
 using Loop.Revit.Utilities.Wpf.SmallDialog;
 using Loop.Revit.ViewTitles.Helpers;
 using Loop.Revit.Utilities.Wpf.OutputListDialog;
+using System.Collections.Generic;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -134,13 +135,15 @@ namespace Loop.Revit.ViewTitles
         {
             if (selectAll == null) return;
 
-            foreach (var item in Sheets)
+        
+
+            foreach (var item in SheetView)
             {
-                item.IsSelected = selectAll == true;
+                var sheet = (SheetWrapper)item;
+                sheet.IsSelected = selectAll == true;
             }
         }
-
-
+        
         public void UpdateSelectAllChecked()
         {
             if (Sheets.All(item => item.IsSelected))
@@ -491,6 +494,7 @@ namespace Loop.Revit.ViewTitles
             }
 
         }
+
 
         private bool FilterByName(object obj)
         {

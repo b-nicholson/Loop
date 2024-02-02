@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
+using Application = System.Windows.Application;
 
 
 namespace Loop.Revit.ViewTitles
@@ -20,7 +21,7 @@ namespace Loop.Revit.ViewTitles
             InitializeComponent();
             System.Diagnostics.Debug.WriteLine("Current Directory: " + System.IO.Directory.GetCurrentDirectory());
         }
-
+        
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
