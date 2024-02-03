@@ -18,7 +18,7 @@ namespace Loop.Revit.ViewTitles
         public UIApplication UiApp { get; }
         public UIDocument UiDoc { get; }
         public Document Doc { get; }
-        public View ActiveView { get; }
+        public View ActiveView { get; set; }
 
         public ViewTitlesModel(UIApplication uiApp)
         {
@@ -123,6 +123,12 @@ namespace Loop.Revit.ViewTitles
 
                 }
             }
+        }
+
+        public void RefreshActiveView()
+        {
+            AppCommand.ViewTitlesHandler.Request = RequestId.GetActiveView;
+            AppCommand.ViewTitlesEvent.Raise();
         }
 
         public void ChangeTitleLength(List<SheetWrapper> selected)

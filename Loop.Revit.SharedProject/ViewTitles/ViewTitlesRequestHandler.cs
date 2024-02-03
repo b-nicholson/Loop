@@ -16,7 +16,8 @@ namespace Loop.Revit.ViewTitles
         None,
         AdjustViewTitleLengths,
         CreateSchema,
-        LoadSchema
+        LoadSchema,
+        GetActiveView
     }
     public class ViewTitlesRequestHandler : IExternalEventHandler
     {
@@ -43,6 +44,9 @@ namespace Loop.Revit.ViewTitles
                     case RequestId.CreateSchema:
                         CreateDataStorage(app);
                         break;
+                    case RequestId.GetActiveView:
+                        RefreshActiveView(app);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -51,6 +55,12 @@ namespace Loop.Revit.ViewTitles
             {
                 // ignore
             }
+        }
+
+        public void RefreshActiveView(UIApplication app)
+        {
+           var view = app.ActiveUIDocument.ActiveView;
+           WeakReferenceMessenger.Default.Send(new ActiveViewMessage(view));
         }
 
         public void CreateDataStorage(UIApplication app)

@@ -84,6 +84,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <materialDesign:ColorZone Grid.Row=" 0"
                                       MouseLeftButtonDown="Window_MouseLeftButtonDown"
@@ -343,6 +344,12 @@
                                       Mode="Standard">
                 <StackPanel Orientation="Horizontal">
 
+                    <Button Style="{StaticResource MaterialDesignIconButton}"
+                            Command="{Binding CheckActiveView}"
+                            ToolTip="Reload Sheets">
+                        <materialDesign:PackIcon Kind="EyeCheck" />
+                    </Button>
+
                     <Button
                             Style="{StaticResource MaterialDesignIconButton}"
                             Command="{Binding ReloadSheets}"
@@ -446,9 +453,17 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" /
                 </DataGrid.Columns>
             </DataGrid>
 
+            <StackPanel Grid.Row="7"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal" Margin="0 0 0 0">
+                <TextBlock Text="Number of Selected Sheets:" 
+                           />
+                <TextBlock Text="{Binding SelectedSheetCount, FallbackValue=0}"
+                           Margin="10 0 10 0"/>
+            </StackPanel>
 
 
-            <Button Grid.Row="7"
+            <Button Grid.Row="8"
                     Margin="0,20,0,0"
                     DockPanel.Dock="Bottom"
                     Content="Adjust Title Lines"
@@ -461,6 +476,7 @@ RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" /
             <!--<Label Grid.Row="7" 
                        
                        Content="{Binding CurrentProgress, UpdateSourceTrigger=PropertyChanged, FallbackValue= 0.00}"/>-->
+           
 
             <Grid Grid.Row="9" Margin="0 20 0 0 ">
                 <Grid.ColumnDefinitions>

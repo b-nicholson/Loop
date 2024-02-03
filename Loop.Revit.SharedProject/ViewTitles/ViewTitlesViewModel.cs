@@ -23,7 +23,6 @@ using MaterialDesignThemes.Wpf;
 using Loop.Revit.Utilities.Wpf.SmallDialog;
 using Loop.Revit.ViewTitles.Helpers;
 using Loop.Revit.Utilities.Wpf.OutputListDialog;
-using System.Collections.Generic;
 
 namespace Loop.Revit.ViewTitles
 {
@@ -41,8 +40,8 @@ namespace Loop.Revit.ViewTitles
         public RelayCommand<Window> SaveUnits { get; set; }
         public RelayCommand Cancel { get; set; }
         public RelayCommand Close { get; set; }
-
         public RelayCommand ReloadSheets { get; set; }
+        public RelayCommand CheckActiveView { get; set; }
         #endregion
 
         #region Progress Bar Properties
@@ -329,6 +328,8 @@ namespace Loop.Revit.ViewTitles
             #region Datagrid stuff
             Sheets = new ObservableCollection<SheetWrapper>(_model.CollectSheets().OrderBy(o => o.SheetNumber).ToList());
 
+            
+
             //TODO move to a method inside model
             var activeView = _model.ActiveView;
             if (activeView.ViewType == ViewType.DrawingSheet)
@@ -388,20 +389,57 @@ namespace Loop.Revit.ViewTitles
             Cancel = new RelayCommand(OnCancel);
             Close = new RelayCommand(OnClose);
             ReloadSheets = new RelayCommand(OnLoadSheets);
+            CheckActiveView = new RelayCommand(OnCheckActiveView);
 
 
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, ProgressResultsMessage>(this, (r, m) => r.OnProgressUpdate(m));
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, OperationResultMessage>(this, (r, m) => r.OnOperationResult(m));
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, NonEditableViewportsMessage>(this, (r, m) => r.OnNonEditableViewports(m));
+            WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, ActiveViewMessage>(this, (r, m) => r.OnReloadedView(m));
 
             LoadSettings();
         }
 
+        private void OnCheckActiveView()
+        {
+            _model.RefreshActiveView();
+        }
+
+        private void OnReloadedView(ActiveViewMessage obj)
+        {
+            var activeView = obj.ActiveView;
+            if (activeView.ViewType == ViewType.DrawingSheet)
+            {
+                foreach (var sheet in Sheets)
+                {
+                    var id = sheet.Id;
+                    if (id == activeView.Id)
+                    {
+                        sheet.IsSelected = true;
+                        break;
+                    }
+                }
+                ShowCheckedItemsOnly = true;
+         
+                SheetView.Refresh();
+            }
+        }
+
         private void OnLoadSheets()
         {
-            Sheets = new ObservableCollection<SheetWrapper>(_model.CollectSheets().OrderBy(o => o.SheetNumber).ToList());
-            SheetView = CollectionViewSource.GetDefaultView(Sheets);
-            SheetView.Filter = FilterByName;
+            var newSheets = _model.CollectSheets().OrderBy(o => o.SheetNumber).ToList();
+            Sheets.Clear();
+
+            foreach (var sheet in newSheets)
+            {
+                Sheets.Add(sheet);
+            }
+            //Sheets = new ObservableCollection<SheetWrapper>(_model.CollectSheets().OrderBy(o => o.SheetNumber).ToList());
+
+            
+            SheetView.Refresh();
+            //SheetView = CollectionViewSource.GetDefaultView(Sheets);
+            //SheetView.Filter = FilterByName;
         }
 
         private void OnClose()

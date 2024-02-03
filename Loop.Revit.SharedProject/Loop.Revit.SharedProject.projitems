@@ -83,6 +83,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\CustomColorThemeForMaterialDesign.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\IWindowService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\WindowService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\ActiveViewMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\CancelMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\NonEditableViewportsMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\ProgressResultsMessage.cs" />
