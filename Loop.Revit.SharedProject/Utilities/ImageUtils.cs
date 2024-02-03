@@ -16,11 +16,9 @@ namespace Loop.Revit.Utilities
             {
                 var resourceName = a.GetManifestResourceNames().FirstOrDefault(x => x.Contains(name));
                 var stream = a.GetManifestResourceStream(resourceName);
-
                 img.BeginInit();
                 img.StreamSource = stream;
                 img.EndInit();
-
             }
             catch (Exception)
             {

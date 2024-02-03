@@ -19,9 +19,11 @@ namespace Loop.Revit.Settings
 
         #region Theme Actions
 
-        public void ChangeTheme()
+        public void ChangeTheme(bool isDarkMode)
         {
-            //TODO implement storage logic
+            AppCommand.SettingsRequestHandler.IsDarkMode = isDarkMode;
+            AppCommand.SettingsEvent.Raise();
+
         }
         
 

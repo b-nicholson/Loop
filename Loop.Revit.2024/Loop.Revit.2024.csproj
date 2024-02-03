@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;Revit2024</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -164,7 +164,7 @@
 
 “C:\Program Files (x86)\Windows Kits\8.1\bin\x86\signtool.exe” sign /f “C:\Users\Blake\source\repos\loopSPC.pfx” /t http://timestamp.comodoca.com/authenticode /p “Cornmeal-Straining-Motivator5” “$(TargetPath)”
 
-if not exist "C:\Users\Blake\AppData\Roaming\Autodesk\Revit\Addins\2022\Loop" mkdir "C:\Users\Blake\AppData\Roaming\Autodesk\Revit\Addins\2024\Loop"
+if not exist "C:\Users\Blake\AppData\Roaming\Autodesk\Revit\Addins\2024\Loop" mkdir "C:\Users\Blake\AppData\Roaming\Autodesk\Revit\Addins\2024\Loop"
 
 xcopy /Q/Y "$(TargetDir)*.dll" "C:\Users\Blake\AppData\Roaming\Autodesk\Revit\Addins\2024\Loop"
 xcopy /Q/Y "$(TargetDir)Loop.addin" "C:\Users\Blake\AppData\Roaming\Autodesk\Revit\Addins\2024"</PostBuildEvent>

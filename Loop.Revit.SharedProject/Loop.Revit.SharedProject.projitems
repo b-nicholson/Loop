@@ -26,6 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)SecondButton\SpatialObjectWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings\SettingsCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings\SettingsModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Settings\SettingsRequestHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Settings\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
@@ -47,6 +48,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ImageUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Json\JsonColorConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\OperationResult.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\RevitUi\ChangeRibbonButtons.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\RevitUi\CustomRibbonButton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\RevitUi\RibbonButtonRecord.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\AccuracyWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\UnitCleanup.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\WpfUnit.cs" />
@@ -99,6 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\32x32\firstButton.png" />
+    <Resource Include="$(MSBuildThisFileDirectory)Resources\32x32\test.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelPage.xaml">

@@ -41,6 +41,8 @@ namespace Loop.Revit.ViewTitles
         public RelayCommand<Window> SaveUnits { get; set; }
         public RelayCommand Cancel { get; set; }
         public RelayCommand Close { get; set; }
+
+        public RelayCommand ReloadSheets { get; set; }
         #endregion
 
         #region Progress Bar Properties
@@ -380,18 +382,26 @@ namespace Loop.Revit.ViewTitles
             SelectedPropertyWrapper = propertyWrappers[0];
             #endregion
 
-            //TODO check if async actually does anything
             Run = new RelayCommand<Window>(OnRun);
             CopyText = new RelayCommand<Window>(OnCopyText);
             SaveUnits = new RelayCommand<Window>(OnSaveSettings);
             Cancel = new RelayCommand(OnCancel);
             Close = new RelayCommand(OnClose);
-            
+            ReloadSheets = new RelayCommand(OnLoadSheets);
+
+
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, ProgressResultsMessage>(this, (r, m) => r.OnProgressUpdate(m));
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, OperationResultMessage>(this, (r, m) => r.OnOperationResult(m));
             WeakReferenceMessenger.Default.Register<ViewTitlesViewModel, NonEditableViewportsMessage>(this, (r, m) => r.OnNonEditableViewports(m));
 
             LoadSettings();
+        }
+
+        private void OnLoadSheets()
+        {
+            Sheets = new ObservableCollection<SheetWrapper>(_model.CollectSheets().OrderBy(o => o.SheetNumber).ToList());
+            SheetView = CollectionViewSource.GetDefaultView(Sheets);
+            SheetView.Filter = FilterByName;
         }
 
         private void OnClose()

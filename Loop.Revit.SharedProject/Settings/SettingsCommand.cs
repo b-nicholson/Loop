@@ -9,6 +9,7 @@ using Autodesk.Revit.DB;
 using Loop.Revit.Utilities;
 using Loop.Revit.Utilities.Wpf.WindowServices;
 using System.Windows.Threading;
+using Loop.Revit.Utilities.RevitUi;
 
 namespace Loop.Revit.Settings
 {
@@ -62,16 +63,19 @@ namespace Loop.Revit.Settings
         public static void CreateButton(RibbonPanel panel)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            panel.AddItem(new PushButtonData(
-                MethodBase.GetCurrentMethod()?.DeclaringType?.Name + "CAA92DF0-54FC-464C-8C88-0E43FA6727C9", //any loaded button cannot be named the same, add GUID for safety
+            var buttonData = new PushButtonData(
+                MethodBase.GetCurrentMethod()?.DeclaringType?.Name + "CAA92DF0-54CC-464C-8C78-0E43FA6727C8", //any loaded button cannot be named the same, add GUID for safety
                 "Settings",
                 assembly.Location,
                 MethodBase.GetCurrentMethod()?.DeclaringType?.FullName
-            )
-            {
-                ToolTip = "Button Things",
-                LargeImage = ImageUtils.LoadImage(assembly, "_32x32.firstButton.png")
-            });
+            );
+
+            var customButtonData = new CustomRibbonButton(buttonData, "_32x32.viewTitles.png", "_32x32.firstButton.png");
+            RibbonButtonRecord.CustomButtons.Add(customButtonData);
+
+            var newButton = (Autodesk.Revit.UI.RibbonButton)panel.AddItem(buttonData);
+            newButton.LargeImage = customButtonData.LightBitmapImage;
+            newButton.ToolTip = "Modify Plugin Settings";
         }
     }
 }

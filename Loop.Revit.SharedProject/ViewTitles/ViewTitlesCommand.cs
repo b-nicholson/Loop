@@ -9,6 +9,7 @@ using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Loop.Revit.Utilities;
+using Loop.Revit.Utilities.RevitUi;
 using Loop.Revit.Utilities.Wpf.WindowServices;
 
 namespace Loop.Revit.ViewTitles
@@ -63,16 +64,19 @@ namespace Loop.Revit.ViewTitles
         public static void CreateButton(RibbonPanel panel)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            panel.AddItem(new PushButtonData(
+            var buttonData = new PushButtonData(
                 MethodBase.GetCurrentMethod()?.DeclaringType?.Name + "CAA92DF0-54CC-464C-8C78-0E43FA6727C8", //any loaded button cannot be named the same, add GUID for safety
                 "View Titles",
                 assembly.Location,
                 MethodBase.GetCurrentMethod()?.DeclaringType?.FullName
-            )
-            {
-                ToolTip = "Adjust Viewport Title Line Lengths",
-                LargeImage = ImageUtils.LoadImage(assembly, "_32x32.viewTitles.png")
-            });
+            );
+
+            var customButtonData = new CustomRibbonButton(buttonData, "_32x32.viewTitles.png", "_32x32.firstButton.png");
+            RibbonButtonRecord.CustomButtons.Add(customButtonData);
+
+            var newButton = (Autodesk.Revit.UI.RibbonButton)panel.AddItem(buttonData);
+            newButton.LargeImage = customButtonData.LightBitmapImage;
+            newButton.ToolTip = "Adjust Viewport Title Line Lengths";
         }
     }
 }

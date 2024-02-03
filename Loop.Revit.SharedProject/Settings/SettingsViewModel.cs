@@ -97,7 +97,6 @@ namespace Loop.Revit.Settings
 
 
             CloseCommand = new RelayCommand(CloseWindow);
-            ChangeTheme = new RelayCommand(OnChangeTheme);
             ToggleThemeCommand = new RelayCommand(ToggleDarkMode);
             ImportSettings = new RelayCommand(OnImportSettings);
             ExportSettings = new RelayCommand(OnExportSettings);
@@ -119,6 +118,9 @@ namespace Loop.Revit.Settings
             TemporarySettings.IsDarkModeTheme = IsDarkMode;
             _windowService.ToggleDarkMode(IsDarkMode);
 
+            #if Revit2024
+                Model.ChangeTheme(IsDarkMode);
+            #endif
         }
 
         private void ChangePrimaryColour(Color color)
@@ -329,11 +331,6 @@ namespace Loop.Revit.Settings
                 owner: win
             );
 
-        }
-
-        private void OnChangeTheme()
-        {
-            Model.ChangeTheme();
         }
     }
 }
