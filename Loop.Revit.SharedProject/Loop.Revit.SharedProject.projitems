@@ -17,6 +17,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelUtilsFv.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\FavouriteViewsCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\IconMapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\ViewIcon.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\ViewActivatedMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\ViewWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FirstButton\FirstButtonCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SecondButton\SecondButtonCommand.cs" />
@@ -104,9 +107,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\32x32\firstButton.png" />
-    <Resource Include="$(MSBuildThisFileDirectory)Resources\32x32\test.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelPage.xaml">
@@ -192,5 +192,41 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Directory.Build.props" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\3D_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\3D_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\AreaPlan_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\AreaPlan_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Callout_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Callout_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\ColumnSchedule_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\ColumnSchedule_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Drafting_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Drafting_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Elevation_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Elevation_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\FloorPlan_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\FloorPlan_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Legend_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Legend_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\RCP_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\RCP_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Render_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Render_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Schedule_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Schedule_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Section_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Section_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Sheet_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Sheet_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\StructuralPlan_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\StructuralPlan_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Report_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Report_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\PanelSchedule_light.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\PanelSchedule_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Walkthrough_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Walkthrough_light.ico" />
   </ItemGroup>
 </Project>

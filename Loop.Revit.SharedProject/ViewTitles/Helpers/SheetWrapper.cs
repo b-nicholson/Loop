@@ -9,9 +9,7 @@ namespace Loop.Revit.ViewTitles.Helpers
         public string SheetNumber   { get; set; }
         public string SheetName { get; set; }
         public ElementId Id { get; set; }
-
         public ICollection<ElementId> ViewportIds { get; set; }
-
         private bool _isSelected;
 
 
@@ -24,7 +22,6 @@ namespace Loop.Revit.ViewTitles.Helpers
                 {
                     _isSelected = value;
                     OnPropertyChanged(nameof(IsSelected));
-
                 }
             }
         }
@@ -36,8 +33,6 @@ namespace Loop.Revit.ViewTitles.Helpers
             Id = sheet.Id;
             ViewportIds = sheet.GetAllViewports();
         }
-
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 

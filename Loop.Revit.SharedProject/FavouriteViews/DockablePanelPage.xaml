@@ -22,7 +22,8 @@
             Content="Things"/>
         <Button Grid.Row="0" Width="75" Height="20" HorizontalAlignment="Right" Content="Load" Command="{Binding LoadViews}"/>
 
-        <ListView Grid.Row="1">
+        <ListView Grid.Row="1"
+                  ItemsSource="{Binding Views}">
             <ListView.Resources>
                 <Style TargetType="GridViewColumnHeader">
                     <Setter Property="Visibility" Value="Visible"/>

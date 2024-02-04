@@ -3,22 +3,50 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
 using System.Xml.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Loop.Revit.FavouriteViews.Helpers;
 
 namespace Loop.Revit.FavouriteViews
 {
-    public class ViewWrapper : INotifyPropertyChanged
+    public class ViewWrapper : ObservableObject
     {
         public string ViewType { get; set; }
         public string ViewName { get; set; }
         public bool IsFavourite { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
+        private bool _isDarkMode;
+        public bool IsDarkMode
+        {
+            get => _isDarkMode;
+            set
+            {
+                SetProperty(ref _isDarkMode, value);
+                UpdateIcons();
+            }
+        }
+        private BitmapImage _image;
+        public BitmapImage Image
+        {
+            get => _image;
+            set => SetProperty(ref _image, value);
+        }
+        private ViewIcon _icon;
+        public ViewIcon Icon
+        {
+            get => _icon;
+            set => SetProperty(ref _icon, value);
+        }
         public ViewWrapper(View view)
         {
             ViewName = view.Name;
             ViewType = view.ViewType.ToString();
+        }
+
+        private void UpdateIcons()
+        {
+            Image = IsDarkMode ? Icon.LightBitmapImage : Icon.DarkBitmapImage;
         }
     }
 }
