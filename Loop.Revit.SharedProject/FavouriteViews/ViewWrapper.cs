@@ -38,15 +38,17 @@ namespace Loop.Revit.FavouriteViews
             get => _icon;
             set => SetProperty(ref _icon, value);
         }
-        public ViewWrapper(View view)
+        public ViewWrapper(View view, ViewIcon icon)
         {
             ViewName = view.Name;
             ViewType = view.ViewType.ToString();
+            Icon = icon;
+            UpdateIcons();
         }
 
         private void UpdateIcons()
         {
-            Image = IsDarkMode ? Icon.LightBitmapImage : Icon.DarkBitmapImage;
+            Image = IsDarkMode ? Icon.DarkBitmapImage : Icon.LightBitmapImage;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Loop.Revit.FavouriteViews.Helpers
         public static ViewIcon GetIcon(View view)
         {
             var viewType = view.ViewType;
-            var directory = "_AdskIcons.";
+            var directory = "AdskIcons.";
             var lightPath = "";
             var darkPath = "";
 
@@ -64,6 +64,10 @@ namespace Loop.Revit.FavouriteViews.Helpers
                 case ViewType.Section:
                     lightPath = "Section_light.ico";
                     darkPath = "Section_dark.ico";
+                    break;
+                case ViewType.Schedule:
+                    lightPath = "Schedule_light.ico";
+                    darkPath = "Schedule_dark.ico";
                     break;
                 case ViewType.ThreeD:
                     lightPath = "3D_light.ico";

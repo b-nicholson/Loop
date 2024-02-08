@@ -54,7 +54,7 @@ namespace Loop.Revit.FirstButton
             );
 
             var customButtonData =
-                new CustomRibbonButton(buttonData, "_32x32.firstButton.png", "_32x32.viewTitles.png");
+                new CustomRibbonButton(buttonData, "AdskIcons.AreaPlan_light.ico", "_32x32.viewTitles.png");
             RibbonButtonRecord.CustomButtons.Add(customButtonData);
 
             var hi = RibbonButtonRecord.CustomButtons;

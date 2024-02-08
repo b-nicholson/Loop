@@ -4,10 +4,31 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400"
-    Background="White">
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:dataGridUtils="clr-namespace:Loop.Revit.Utilities.Wpf.DataGridUtils"
+    TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+    TextElement.FontWeight="Medium"
+    TextElement.FontSize="14"
+    FontFamily="{materialDesign:MaterialDesignFont}"
+      Background="{DynamicResource MaterialDesignPaper}"
+    Width="400"
+    Height="600">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <materialDesign:CustomColorTheme BaseTheme="Light"
+                                                 PrimaryColor="#FF25C5C5"
+                                                 SecondaryColor="DarkGreen" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary>
+                    <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+                </ResourceDictionary>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </Page.Resources>
 
 
     <Grid>
@@ -20,24 +41,62 @@
             Margin="10,0,0,0"
             VerticalAlignment="Center"
             Content="Things"/>
-        <Button Grid.Row="0" Width="75" Height="20" HorizontalAlignment="Right" Content="Load" Command="{Binding LoadViews}"/>
+        <Button Grid.Row="0"
+                Width="75"
+                HorizontalAlignment="Right"
+                Content="Load"
+                Command="{Binding LoadViews}"
+                Style="{StaticResource MaterialDesignFlatButton}" />
 
-        <ListView Grid.Row="1"
-                  ItemsSource="{Binding Views}">
-            <ListView.Resources>
-                <Style TargetType="GridViewColumnHeader">
-                    <Setter Property="Visibility" Value="Visible"/>
-                    <!--<Setter Property="Visibility" Value="{x:Null}"/>-->
-                </Style>
-            </ListView.Resources>
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Type" Width="50" DisplayMemberBinding="{Binding ViewType}"/>
-                    <GridViewColumn Header="Name" Width="200" DisplayMemberBinding="{Binding ViewName}"/>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Views, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  AutoGenerateColumns="False"
+                  VerticalScrollBarVisibility="Auto"
+                  HorizontalScrollBarVisibility="Hidden"
+                  CanUserAddRows="False"
+                  CanUserResizeColumns="True"
+                  CanUserSortColumns="True"
+                  IsReadOnly="False"
+                  SelectionMode="Extended"
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Image Column"
+                                        Width="100"
+                                        IsReadOnly="True">
+                    <DataGridTemplateColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       Text="View Type" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.HeaderTemplate>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Image, Mode=OneWay}"
+                                   Width="16"
+                                   Height="16" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
+                <DataGridTextColumn Header="Sheet Number"
+                                    Binding="{Binding ViewName, Mode=OneWay}"
+                                    Width="100"
+                                    IsReadOnly="True"
+                                    MinWidth="80">
+                    <DataGridTextColumn.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       Text="View Name" />
+                        </DataTemplate>
+                    </DataGridTextColumn.HeaderTemplate>
+                </DataGridTextColumn>
+
+            </DataGrid.Columns>
+
+        </DataGrid>
 
     </Grid>
 </Page>

@@ -18,11 +18,12 @@ namespace Loop.Revit.FavouriteViews
 
         public ObservableCollection<ViewWrapper> CollectViews()
         {
-            var spatialObjects = new FilteredElementCollector(Doc).OfClass(typeof(View))
-                .WhereElementIsNotElementType().Cast<View>()
-                .Select(x => new ViewWrapper(x));
+            //var spatialObjects = new FilteredElementCollector(Doc).OfClass(typeof(View))
+            //    .WhereElementIsNotElementType().Cast<View>()
+            //    .Select(x => new ViewWrapper(x));
 
-            return new ObservableCollection<ViewWrapper>(spatialObjects);
+            //return new ObservableCollection<ViewWrapper>(spatialObjects);
+            return new ObservableCollection<ViewWrapper>();
         }
 
 

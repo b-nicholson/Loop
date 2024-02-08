@@ -37,7 +37,7 @@ namespace Loop.Revit.FavouriteViews
         {
             var view = message.NewView;
             var icon = IconMapper.GetIcon(view);
-            var wrapper = new ViewWrapper(message.NewView);
+            var wrapper = new ViewWrapper(message.NewView, icon);
             Views.Add(wrapper);
 
         }
