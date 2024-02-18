@@ -33,6 +33,8 @@ namespace Loop.Revit
         public static ExternalEvent ViewTitlesEvent { get; set; }
         public static SettingsRequestHandler SettingsRequestHandler { get; set; }
         public static ExternalEvent SettingsEvent { get; set; }
+        public static FavouriteViewsEventHandler FavouriteViewsHandler { get; set; }
+        public static ExternalEvent FavouriteViewsEvent { get; set; }
         public static OutputListDialogEventHandler OutputListDialogHandler { get; set; }
         public static ExternalEvent OutputListDialogEvent { get; set; }
         private static List<RibbonPanel> CustomPanels { get; set; } = new List<RibbonPanel>();
@@ -83,6 +85,9 @@ namespace Loop.Revit
             SettingsRequestHandler = new SettingsRequestHandler();
             SettingsEvent = ExternalEvent.Create(SettingsRequestHandler);
 
+            FavouriteViewsHandler = new FavouriteViewsEventHandler();
+            FavouriteViewsEvent = ExternalEvent.Create(FavouriteViewsHandler);
+
 
             OutputListDialogHandler = new OutputListDialogEventHandler();
             OutputListDialogEvent = ExternalEvent.Create(OutputListDialogHandler);
@@ -105,7 +110,7 @@ namespace Loop.Revit
         private void OnViewActivated(object sender, ViewActivatedEventArgs e)
         {
             //Favourite Views, send view for processing
-            WeakReferenceMessenger.Default.Send(new ViewActivatedMessage(e.CurrentActiveView));
+            WeakReferenceMessenger.Default.Send(new ViewActivatedMessage(e.CurrentActiveView, e.Document));
 
         }
 

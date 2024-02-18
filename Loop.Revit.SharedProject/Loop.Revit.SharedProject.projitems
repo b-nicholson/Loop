@@ -17,7 +17,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelUtilsFv.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\FavouriteViewsCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\FavouriteViewsEventHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\IconMapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\OpenViewMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\ViewIcon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\ViewActivatedMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\ViewWrapper.cs" />

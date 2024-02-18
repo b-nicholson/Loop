@@ -6,9 +6,12 @@ namespace Loop.Revit.FavouriteViews.Helpers
     {
         public View NewView { get; set; }
 
-        public ViewActivatedMessage(View newView)
+        public Document Doc { get; set; }
+
+        public ViewActivatedMessage(View newView, Document doc)
         {
             NewView = newView;
+            Doc = doc;
         }
     }
 }

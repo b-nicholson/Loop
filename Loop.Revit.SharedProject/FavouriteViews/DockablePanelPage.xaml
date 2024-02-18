@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:dataGridUtils="clr-namespace:Loop.Revit.Utilities.Wpf.DataGridUtils"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
     TextElement.FontWeight="Medium"
     TextElement.FontSize="14"
@@ -59,7 +60,15 @@
                   CanUserSortColumns="True"
                   IsReadOnly="False"
                   SelectionMode="Extended"
+                  SelectionUnit="FullRow"
+                  materialDesign:DataGridAssist.SelectedCellBorderBrush="Transparent"
                   Margin="10">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding RowDoubleClickCommand}" 
+                                           CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Image Column"
                                         Width="100"

@@ -13,6 +13,10 @@ namespace Loop.Revit.FavouriteViews
 {
     public class ViewWrapper : ObservableObject
     {
+        public ElementId ElementId { get; set; }
+
+        public Document Document { get; set; }
+
         public string ViewType { get; set; }
         public string ViewName { get; set; }
         public bool IsFavourite { get; set; }
@@ -38,8 +42,10 @@ namespace Loop.Revit.FavouriteViews
             get => _icon;
             set => SetProperty(ref _icon, value);
         }
-        public ViewWrapper(View view, ViewIcon icon)
+        public ViewWrapper(Document doc, View view, ViewIcon icon)
         {
+            Document = doc;
+            ElementId = view.Id;
             ViewName = view.Name;
             ViewType = view.ViewType.ToString();
             Icon = icon;
