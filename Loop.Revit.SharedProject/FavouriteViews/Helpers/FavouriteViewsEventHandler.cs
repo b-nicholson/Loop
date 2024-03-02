@@ -13,7 +13,6 @@ namespace Loop.Revit.FavouriteViews.Helpers
     public class FavouriteViewsEventHandler : IExternalEventHandler
     {
         public RequestId Request { get; set; }
-
         public object Arg1 { get; set; }
 
         public void Execute(UIApplication app)
@@ -40,12 +39,9 @@ namespace Loop.Revit.FavouriteViews.Helpers
         public void ActivateView(UIApplication app)
         {
             var uiDoc = app.ActiveUIDocument;
-            
             var viewWrapper = (ViewWrapper)Arg1;
             var view = (View)uiDoc.Document.GetElement(viewWrapper.ElementId);
-            
             uiDoc.RequestViewChange(view);
-
         }
 
         public string GetName()

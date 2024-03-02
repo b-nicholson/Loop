@@ -42,6 +42,7 @@
             Margin="10,0,0,0"
             VerticalAlignment="Center"
             Content="Things"/>
+        <ToggleButton IsChecked="{Binding DoNotShowDuplicateViews}"/>
         <Button Grid.Row="0"
                 Width="75"
                 HorizontalAlignment="Right"
@@ -51,13 +52,13 @@
 
         
         <DataGrid Grid.Row="1"
-                  ItemsSource="{Binding Views, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  ItemsSource="{Binding VisibleCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   AutoGenerateColumns="False"
                   VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Hidden"
                   CanUserAddRows="False"
                   CanUserResizeColumns="True"
-                  CanUserSortColumns="True"
+                  CanUserSortColumns="False"
                   IsReadOnly="False"
                   SelectionMode="Extended"
                   SelectionUnit="FullRow"
