@@ -12,7 +12,13 @@ namespace Loop.Revit.FavouriteViews
         public Document Document { get; set; }
         public string ViewType { get; set; }
         public string ViewName { get; set; }
+        public string SheetName { get; set; }
+        public string SheetNumber { get; set; }
+        public string ViewportNumber { get; set; }
+        public string DetailReference { get; set; } = "";
+        public string DisplaySheetNumber { get; set; }
         public bool IsFavourite { get; set; }
+
         private bool _isDarkMode;
         public bool IsDarkMode
         {
@@ -37,11 +43,35 @@ namespace Loop.Revit.FavouriteViews
         }
         public ViewWrapper(Document doc, View view, ViewIcon icon)
         {
+            var viewType = view.ViewType;
+
             Document = doc;
             ElementId = view.Id;
             ViewName = view.Name;
-            ViewType = view.ViewType.ToString();
+            SheetName = view.get_Parameter(BuiltInParameter.VIEWPORT_SHEET_NAME).AsString();
+            SheetNumber = view.get_Parameter(BuiltInParameter.VIEWPORT_SHEET_NUMBER).AsString();
+            ViewportNumber = view.get_Parameter(BuiltInParameter.VIEWPORT_DETAIL_NUMBER).AsString();
+            ViewType = viewType.ToString();
             Icon = icon;
+
+            if (ViewportNumber !=  null)
+            {
+                DetailReference = ViewportNumber + "/" + SheetNumber;
+            }
+
+            if (DetailReference != null)
+            {
+                DisplaySheetNumber = DetailReference;
+            }
+
+            if (viewType == Autodesk.Revit.DB.ViewType.DrawingSheet)
+            {
+                SheetNumber = view.get_Parameter(BuiltInParameter.SHEET_NUMBER).AsString();
+                DisplaySheetNumber = SheetNumber;
+            }
+
+            
+            
             UpdateIcons();
         }
 

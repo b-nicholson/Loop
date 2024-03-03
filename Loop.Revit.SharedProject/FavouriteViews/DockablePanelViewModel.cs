@@ -15,7 +15,6 @@ namespace Loop.Revit.FavouriteViews
     {
         public DockablePanelModel Model { get; set; }
         public RelayCommand LoadViews { get; set; }
-
         public RelayCommand<ViewWrapper> RowDoubleClickCommand { get; set; }
 
         private ICollectionView _visibleCollection;
@@ -65,7 +64,7 @@ namespace Loop.Revit.FavouriteViews
             var viewIsUnique = seenUniqueViews.Add(wrapper);
 
            
-            if (!viewIsUnique)
+            if (!viewIsUnique && DoNotShowDuplicateViews)
             {
                 //View is not unique, remove old instances
                 var newList = _simplifiedViews.Distinct().ToList();
@@ -73,7 +72,6 @@ namespace Loop.Revit.FavouriteViews
                 VisibleCollection = CollectionViewSource.GetDefaultView(_simplifiedViews);
             }
             
-            //_masterViews.Add(wrapper);
         }
 
         private bool FilterViews(object obj)

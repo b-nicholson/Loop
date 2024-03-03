@@ -34,7 +34,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="45"/>
+            <ColumnDefinition Width="60"/>
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -44,26 +44,26 @@
 
         <Image Source="{Binding Image, Mode=OneWay}"
                Grid.RowSpan ="2"
-               Width="25"
-               Height="25"
-               Margin="10 0 10 0"/>
+               Width="20"
+               Height="20"
+               Margin="0 0 10 0"/>
         <TextBlock Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2"
                Text="{Binding ViewName, Mode=OneWay, FallbackValue= View Title}"
                MinWidth="80"
-               FontSize="11" />
+               FontSize="12" />
         <TextBlock Grid.Column="1"
                    Grid.Row="1"
-                   Text="{Binding SheetNumber, Mode=OneWay, FallbackValue= 22/A99999}"
+                   Text="{Binding DisplaySheetNumber, Mode=OneWay, FallbackValue= 22/A99999}"
                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
                    FontWeight="Light"
-                   FontSize="8"
+                   FontSize="11"
                    MinWidth="80" />
         <TextBlock Grid.Column="2"
                    Grid.Row="1"
-                   Text="{Binding SheetTitle, Mode=OneWay, FallbackValue= Sheet Title}"
+                   Text="{Binding SheetName, Mode=OneWay, FallbackValue= Sheet Title}"
                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
                    FontWeight="Light"
-                   FontSize="8"
+                   FontSize="11"
                    MinWidth="80" />
 
 
