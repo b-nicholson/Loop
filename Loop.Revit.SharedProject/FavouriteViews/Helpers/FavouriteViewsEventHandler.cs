@@ -4,12 +4,6 @@ using Autodesk.Revit.DB;
 
 namespace Loop.Revit.FavouriteViews.Helpers
 {
-    public enum RequestId
-    {
-        None,
-        ActivateView
-    }
-
     public class FavouriteViewsEventHandler : IExternalEventHandler
     {
         public RequestId Request { get; set; }

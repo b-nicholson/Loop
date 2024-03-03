@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -71,13 +70,8 @@ namespace Loop.Revit.FavouriteViews
                 //View is not unique, remove old instances
                 var newList = _simplifiedViews.Distinct().ToList();
                 _simplifiedViews = new ObservableCollection<ViewWrapper>(newList);
-                VisibleCollection.Refresh();
-
+                VisibleCollection = CollectionViewSource.GetDefaultView(_simplifiedViews);
             }
-     
-
-            
-
             
             //_masterViews.Add(wrapper);
         }
@@ -102,8 +96,11 @@ namespace Loop.Revit.FavouriteViews
 
         private void OnLoadViews()
         {
-            seenUniqueViews.Clear();
-            _masterViews.Clear();
+            //seenUniqueViews.Clear();
+            //_masterViews.Clear();
+            //_simplifiedViews.Clear();
+
+            VisibleCollection = CollectionViewSource.GetDefaultView(_masterViews);
 
             //TODO add event handler since we need the event to provide the document context
         }

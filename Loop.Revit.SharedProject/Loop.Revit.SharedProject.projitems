@@ -20,8 +20,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\FavouriteViewsEventHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\IconMapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\OpenViewMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\RequestId.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\ViewIcon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\ViewActivatedMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\ViewControl.xaml.cs">
+      <DependentUpon>ViewControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\ViewWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FirstButton\FirstButtonCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SecondButton\SecondButtonCommand.cs" />
@@ -113,6 +117,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)FavouriteViews\ViewControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
