@@ -34,8 +34,25 @@ namespace Loop.Revit.FavouriteViews.Helpers
         {
             var uiDoc = app.ActiveUIDocument;
             var viewWrapper = (ViewWrapper)Arg1;
-            var view = (View)uiDoc.Document.GetElement(viewWrapper.ElementId);
-            uiDoc.RequestViewChange(view);
+            var doc = viewWrapper.Document;
+            var newUiDoc = new UIDocument(doc);
+
+            var view = (View)newUiDoc.Document.GetElement(viewWrapper.ElementId);
+
+            if (!Equals(uiDoc, newUiDoc))
+            {
+                //Select an element, and use that to force the active ui application to switch. Can't request a view change if its not the ActiveUiDoc.
+                //No native method to switch em.
+                var singleElem = new FilteredElementCollector(doc, viewWrapper.ElementId).WhereElementIsNotElementType().FirstElementId();
+                newUiDoc.ShowElements(singleElem);
+                newUiDoc.RefreshActiveView();
+
+                newUiDoc.RequestViewChange(view);
+            }
+            else
+            {
+                newUiDoc.RequestViewChange(view);
+            }
         }
 
         public string GetName()

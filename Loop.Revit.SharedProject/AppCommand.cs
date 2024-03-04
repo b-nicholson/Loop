@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
+using System.Windows.Media;
+using Autodesk.Revit.ApplicationServices;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
@@ -15,6 +18,7 @@ using Loop.Revit.Settings;
 using Loop.Revit.ThirdButton;
 using Loop.Revit.Utilities.RevitUi;
 using Loop.Revit.Utilities.UserSettings;
+using Loop.Revit.Utilities.Wpf.DocManager;
 using Loop.Revit.Utilities.Wpf.OutputListDialog;
 using Loop.Revit.ViewTitles;
 using Loop.Revit.ViewTitles.Helpers;
@@ -99,6 +103,11 @@ namespace Loop.Revit
                 settings = settingsResult.ReturnObject;
             }
             GlobalSettings.Settings = settings;
+
+
+            app.ControlledApplication.DocumentOpened += OnDocumentOpened;
+
+
         #if Revit2024
             app.ThemeChanged += OnThemeChanged;
             ChangeIcons();
@@ -106,6 +115,33 @@ namespace Loop.Revit
 
             return Result.Succeeded;
         }
+
+        private void OnDocumentOpened(object sender, DocumentOpenedEventArgs e)
+        {
+            var app = (Application)sender;
+            var newDoc = e.Document;
+
+            //Converting this to LINQ and using a straight IndexOf to match the docs did not reliably return correct results.
+            var newList = new List<Document>();
+            foreach (var doc in app.Documents)
+            {
+                newList.Add((Document)doc);
+            }
+            
+            var docIndex = 0;
+            foreach (var doc in newList)
+            {
+                if (!Equals(doc, newDoc)) continue;
+                docIndex = newList.IndexOf(doc);
+                break;
+            }
+
+            var colour = GlobalSettings.Settings.DocumentColors[docIndex];
+
+            var wrapper = new DocumentWrapper(e.Document, colour);
+            ActiveDocumentList.Docs.Add(wrapper);
+        }
+
 
         private void OnViewActivated(object sender, ViewActivatedEventArgs e)
         {

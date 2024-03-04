@@ -1,20 +1,19 @@
-﻿<Page
-    x:Class="Loop.Revit.FavouriteViews.DockablePanelPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-    xmlns:dataGridUtils="clr-namespace:Loop.Revit.Utilities.Wpf.DataGridUtils"
-    xmlns:views="clr-namespace:Loop.Revit.FavouriteViews"
-    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
-    TextElement.FontWeight="Medium"
-    TextElement.FontSize="14"
-    FontFamily="{materialDesign:MaterialDesignFont}"
+﻿<Page x:Class="Loop.Revit.FavouriteViews.DockablePanelPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:dataGridUtils="clr-namespace:Loop.Revit.Utilities.Wpf.DataGridUtils"
+      xmlns:views="clr-namespace:Loop.Revit.FavouriteViews"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+      TextElement.FontWeight="Medium"
+      TextElement.FontSize="14"
+      FontFamily="{materialDesign:MaterialDesignFont}"
       Background="{DynamicResource MaterialDesignPaper}"
-    Width="400"
-    Height="600">
+      Width="400"
+      Height="600">
     <Page.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -35,92 +34,69 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Label 
-            Padding="0"
-            Margin="10,0,0,0"
-            VerticalAlignment="Center"
-            Content="Things"/>
-        <ToggleButton IsChecked="{Binding DoNotShowDuplicateViews}"/>
+        <Label Padding="0"
+               Margin="10,0,0,0"
+               VerticalAlignment="Center"
+               Content="Things" />
+        <ToggleButton IsChecked="{Binding DoNotShowDuplicateViews}" />
         <Button Grid.Row="0"
                 Width="75"
                 HorizontalAlignment="Right"
                 Content="Load"
                 Command="{Binding LoadViews}"
                 Style="{StaticResource MaterialDesignFlatButton}" />
-
         
-        <!--<DataGrid Grid.Row="1"
-                  ItemsSource="{Binding VisibleCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                  AutoGenerateColumns="False"
-                  VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Hidden"
-                  CanUserAddRows="False"
-                  CanUserResizeColumns="True"
-                  CanUserSortColumns="False"
-                  IsReadOnly="False"
-                  SelectionMode="Extended"
-                  SelectionUnit="FullRow"
-                  materialDesign:DataGridAssist.SelectedCellBorderBrush="Transparent"
-                  Margin="10">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDoubleClick">
-                    <i:InvokeCommandAction Command="{Binding RowDoubleClickCommand}" 
-                                           CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Image Column"
-                                        Width="100"
-                                        IsReadOnly="True">
-                    <DataGridTemplateColumn.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock TextWrapping="Wrap"
-                                       TextAlignment="Center"
-                                       Text="View Type" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.HeaderTemplate>
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image Source="{Binding Image, Mode=OneWay}"
-                                   Width="16"
-                                   Height="16" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+        <DataGrid Grid.Row="1"
+                      ItemsSource="{Binding VisibleCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      AutoGenerateColumns="False"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Hidden"
+                      CanUserAddRows="False"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="False"
+                      IsReadOnly="False"
+                      SelectionMode="Extended"
+                      SelectionUnit="FullRow"
+                      materialDesign:DataGridAssist.SelectedCellBorderBrush="Transparent"
+                      Margin="10"
+                      HeadersVisibility="None">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding RowDoubleClickCommand}"
+                                               CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
 
-                <DataGridTextColumn Header="Sheet Number"
-                                    Binding="{Binding ViewName, Mode=OneWay}"
-                                    Width="100"
-                                    IsReadOnly="True"
-                                    MinWidth="80">
-                    <DataGridTextColumn.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock TextWrapping="Wrap"
-                                       TextAlignment="Center"
-                                       Text="View Name" />
-                        </DataTemplate>
-                    </DataGridTextColumn.HeaderTemplate>
-                </DataGridTextColumn>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Save"
+                              Icon="{materialDesign:PackIcon Kind=ContentSave}" />
+                    <MenuItem Header="Save As.." />
+                    <MenuItem Header="Exit"
+                              Icon="{materialDesign:PackIcon Kind=ExitToApp}"
+                              InputGestureText="Ctrl+E" />
 
-            </DataGrid.Columns>
-        </DataGrid>-->
-        <ItemsControl Grid.Row="1"
-                  ItemsSource="{Binding VisibleCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                  Margin="10">
-            <i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDoubleClick">
-                    <i:InvokeCommandAction Command="{Binding RowDoubleClickCommand}"
-                                           CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type views:ViewControl}">
-                    <views:ViewControl/>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-</ItemsControl>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <views:ViewControl/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+
+
+            </DataGrid>
+
+
+
+       
     </Grid>
 </Page>

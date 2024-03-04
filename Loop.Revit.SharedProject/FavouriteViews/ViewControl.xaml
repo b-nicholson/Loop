@@ -6,14 +6,15 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+    xmlns:converters="clr-namespace:Loop.Revit.Utilities.Wpf.Converters"
+             mc:Ignorable="d"
     d:DesignWidth="400"
     TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
     TextElement.FontWeight="Medium"
     TextElement.FontSize="14"
     FontFamily="{materialDesign:MaterialDesignFont}"
-    Background="{DynamicResource MaterialDesignPaper}"
-             Height="Auto">
+             Height="Auto"
+    Background="{Binding DocumentColour}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,8 +28,10 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <converters:ColorToBrushConverter x:Key="ColorToBrushConverter" />
 
         </ResourceDictionary>
+
     </UserControl.Resources>
 
     <Grid>
@@ -65,6 +68,14 @@
                    FontWeight="Light"
                    FontSize="11"
                    MinWidth="80" />
+        <Rectangle Grid.Row="1"
+                   Grid.ColumnSpan="3"
+                   Height="2"
+                   VerticalAlignment="Bottom">
+            <Rectangle.Fill>
+                <SolidColorBrush Color="{Binding DocumentColour}"/>
+            </Rectangle.Fill>
+        </Rectangle>
 
 
 

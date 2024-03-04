@@ -1,8 +1,10 @@
 ﻿using System;
-using Autodesk.Revit.DB;
 using System.Windows.Media.Imaging;
+using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Loop.Revit.FavouriteViews.Helpers;
+using Loop.Revit.Utilities.Wpf.DocManager;
+using Color = System.Windows.Media.Color;
 
 namespace Loop.Revit.FavouriteViews
 {
@@ -17,6 +19,7 @@ namespace Loop.Revit.FavouriteViews
         public string ViewportNumber { get; set; }
         public string DetailReference { get; set; } = "";
         public string DisplaySheetNumber { get; set; }
+        public Color DocumentColour { get; set;}
         public bool IsFavourite { get; set; }
 
         private bool _isDarkMode;
@@ -70,8 +73,19 @@ namespace Loop.Revit.FavouriteViews
                 DisplaySheetNumber = SheetNumber;
             }
 
-            
-            
+            var docWrappers = ActiveDocumentList.Docs;
+            foreach (var wrapper in docWrappers)
+            {
+                if (Equals(wrapper.Doc, doc))
+                {
+                    DocumentColour = wrapper.Color;
+                    break;
+                }
+            }
+
+
+
+
             UpdateIcons();
         }
 
@@ -92,9 +106,18 @@ namespace Loop.Revit.FavouriteViews
         {
             unchecked // Overflow is fine, just wrap
             {
+                //TODO This method is hella unstable if the document is closed or if the view is deleted
                 int hash = 17;
-                hash = hash * 23 + ElementId.GetHashCode();
-                hash = hash * 23 + Document.GetHashCode();
+                try
+                {
+                    hash = hash * 23 + ElementId.GetHashCode();
+                    hash = hash * 23 + Document.GetHashCode();
+                }
+                catch (Exception e)
+                {
+                  //do nothing
+                }
+               
                 return hash;
             }
         }
