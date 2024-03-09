@@ -116,6 +116,7 @@ namespace Loop.Revit
             return Result.Succeeded;
         }
 
+
         private void OnDocumentOpened(object sender, DocumentOpenedEventArgs e)
         {
             var app = (Application)sender;
@@ -131,9 +132,12 @@ namespace Loop.Revit
             var docIndex = 0;
             foreach (var doc in newList)
             {
-                if (!Equals(doc, newDoc)) continue;
-                docIndex = newList.IndexOf(doc);
-                break;
+                //Inverting the if statement to reduce nesting also did weird things where it wasn't fully reliable
+                if (Equals(doc, newDoc))
+                {
+                    docIndex = newList.IndexOf(doc);
+                    break;
+                }
             }
 
             var colour = GlobalSettings.Settings.DocumentColors[docIndex];
