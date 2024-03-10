@@ -54,6 +54,14 @@ namespace Loop.Revit.FavouriteViews
         private void OnActivatedView(ViewActivatedMessage message)
         {
             var view = message.NewView;
+            
+            //Skip the temp view created by the document switching method
+            if (view.Name.Contains(FavouriteViewsEventHandler.Prefix))
+            {
+                return;
+            }
+
+
             var doc = message.Doc;
             var icon = IconMapper.GetIcon(view);
             var wrapper = new ViewWrapper(doc, view, icon);
