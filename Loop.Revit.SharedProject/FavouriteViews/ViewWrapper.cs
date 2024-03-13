@@ -22,6 +22,8 @@ namespace Loop.Revit.FavouriteViews
         public Color DocumentColour { get; set;}
         public bool IsFavourite { get; set; }
 
+        public bool IsOpen { get; set; }
+
         private bool _isDarkMode;
         public bool IsDarkMode
         {

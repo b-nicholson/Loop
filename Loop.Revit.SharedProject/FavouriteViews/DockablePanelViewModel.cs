@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Loop.Revit.FavouriteViews.Helpers;
+using Loop.Revit.Utilities.Wpf.DocManager;
 
 namespace Loop.Revit.FavouriteViews
 {
@@ -65,6 +66,15 @@ namespace Loop.Revit.FavouriteViews
             var doc = message.Doc;
             var icon = IconMapper.GetIcon(view);
             var wrapper = new ViewWrapper(doc, view, icon);
+
+            foreach (var docWrapper in ActiveDocumentList.Docs)
+            {
+                if (Equals(docWrapper.Doc, doc))
+                {
+                    docWrapper.RecentViews.Insert(0, wrapper);
+                }
+                
+            }
 
             _masterViews.Insert(0, wrapper);
             _simplifiedViews.Insert(0, wrapper);

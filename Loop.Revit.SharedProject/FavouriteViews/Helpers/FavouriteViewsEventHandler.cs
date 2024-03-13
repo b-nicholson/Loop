@@ -12,7 +12,7 @@ namespace Loop.Revit.FavouriteViews.Helpers
         public RequestId Request { get; set; }
         public object Arg1 { get; set; }
 
-        public static string Prefix = "TempView";
+        public static string Prefix = "LoopTempDocSwitch";
 
         public void Execute(UIApplication app)
         {
@@ -44,7 +44,7 @@ namespace Loop.Revit.FavouriteViews.Helpers
 
             var view = (View)newUiDoc.Document.GetElement(viewWrapper.ElementId);
 
-            //We have an override method for doc equals, but not uiDoc
+            //We have a method for doc equals, but not uiDoc
             if (!Equals(uiDoc.Document, newUiDoc.Document))
             {
                 //Event handler to deal with the no good view warning
@@ -106,13 +106,12 @@ namespace Loop.Revit.FavouriteViews.Helpers
         {
             switch (args)
             {
-                // (Konrad) Dismiss Unresolved References pop-up.
+                // Dismiss no open view pop-up. We pick a view dependent element so it is fast to find
                 case TaskDialogShowingEventArgs args2:
-                    if (args2.DialogId == "TaskDialog_Unresolved_References")
-                        args2.OverrideResult(1002);
                     if (args2.Message ==
                         "There is no open view that shows any of the highlighted elements.  Searching through the closed views to find a good view could take a long time.  Continue?")
                     {
+                        //This is from the windows forms dialog result enum. Direct cast to save a reference
                         args2.OverrideResult(1);
                     }
                     break;

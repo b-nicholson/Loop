@@ -119,46 +119,9 @@ namespace Loop.Revit
 
         private void OnDocumentOpened(object sender, DocumentOpenedEventArgs e)
         {
-            var app = (Application)sender;
-            var newDoc = e.Document;
-
-            ////Converting this to LINQ and using a straight IndexOf to match the docs did not reliably return correct results.
-            //var newList = new List<Document>();
-            //foreach (var doc in app.Documents)
-            //{
-            //    newList.Add((Document)doc);
-            //}
-            
-            //var docIndex = 0;
-            //foreach (var doc in newList)
-            //{
-            //    //Inverting the if statement to reduce nesting also did weird things where it wasn't fully reliable
-            //    if (Equals(doc, newDoc))
-            //    {
-            //        docIndex = newList.IndexOf(doc);
-            //        break;
-            //    }
-            //}
-
             var alreadyLoadedDocs = ActiveDocumentList.Docs;
-
-
             var docIndex = alreadyLoadedDocs.Count;
-
-            ////in theory useless, leaving just in case it somehow is possible to open the same doc twice.
-            //foreach (var wrapper in alreadyLoadedDocs)
-            //{
-            //    var exDoc = wrapper.Doc;
-            //    if (Equals(exDoc, newDoc))
-            //    {
-            //        docIndex = alreadyLoadedDocs.IndexOf(wrapper);
-            //        break;
-            //    }
-            //}
-
-
             var colour = GlobalSettings.Settings.DocumentColors[docIndex];
-
             var newWrapper = new DocumentWrapper(e.Document, colour);
             ActiveDocumentList.Docs.Add(newWrapper);
         }

@@ -50,6 +50,7 @@
                 Style="{StaticResource MaterialDesignFlatButton}" />
         
         <DataGrid Grid.Row="1"
+                  Visibility="Collapsed"
                       ItemsSource="{Binding VisibleCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       AutoGenerateColumns="False"
                       VerticalScrollBarVisibility="Auto"
@@ -95,8 +96,22 @@
 
             </DataGrid>
 
+        <TreeView Grid.Row ="1"
+                  ItemsSource="{Binding VisibleCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type views:ViewWrapper}"
+                                          ItemsSource="{Binding SubItems}">
+                    <!-- Replace YourNamespace and YourUserControl with the actual names -->
+                    <views:ViewControl />
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
 
 
-       
+        </TreeView>
+
+
+
+
     </Grid>
 </Page>

@@ -1,22 +1,24 @@
 ﻿using Autodesk.Revit.DB;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
+using Loop.Revit.FavouriteViews;
 using Color = System.Windows.Media.Color;
 
 namespace Loop.Revit.Utilities.Wpf.DocManager
 {
-    public class DocumentWrapper
+    public class DocumentWrapper : ObservableObject
     {
         public Document Doc { get; set; }
 
         public Color Color { get; set; }
 
+        public List<ViewWrapper> RecentViews { get; set; }
+
         public DocumentWrapper(Document doc, Color color)
         {
             Doc = doc;
             Color = color;
+            RecentViews = new List<ViewWrapper>();
         }
     }
 }
