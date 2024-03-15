@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Input;
 using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -16,7 +17,7 @@ namespace Loop.Revit.FavouriteViews
     {
         public DockablePanelModel Model { get; set; }
         public RelayCommand LoadViews { get; set; }
-        public RelayCommand<ViewWrapper> RowDoubleClickCommand { get; set; }
+        public RelayCommand<object> RowDoubleClickCommand { get; set; }
 
         private ICollectionView _visibleCollection;
         public ICollectionView VisibleCollection
@@ -28,6 +29,18 @@ namespace Loop.Revit.FavouriteViews
 
         private ObservableCollection<ViewWrapper> _masterViews = new ObservableCollection<ViewWrapper>();
         private ObservableCollection<ViewWrapper> _simplifiedViews = new ObservableCollection<ViewWrapper>();
+        private ObservableCollection<DocumentWrapper> _documentWrappers = new ObservableCollection<DocumentWrapper>();
+
+        private object _selectedTreeItem;
+        public object SelectedTreeItem
+        {
+            get => _selectedTreeItem;
+            set => SetProperty(ref _selectedTreeItem, value);
+        }
+
+        public RelayCommand<object> TreeItemCommand { get; set; }
+
+        public ICommand SelectionChangedCommand { get; }
 
         public bool DoNotShowDuplicateViews { get; set; }
         private HashSet<ViewWrapper> seenUniqueViews;
@@ -35,9 +48,11 @@ namespace Loop.Revit.FavouriteViews
         public DockablePanelViewModel()
         {
             LoadViews = new RelayCommand(OnLoadViews);
-            RowDoubleClickCommand = new RelayCommand<ViewWrapper>(OnRowDoubleClick);
+            RowDoubleClickCommand = new RelayCommand<object>(OnRowDoubleClick);
+
+            SelectionChangedCommand = new RelayCommand<object>(OnTreeItemClick);
             
-            VisibleCollection = CollectionViewSource.GetDefaultView(_simplifiedViews);
+            VisibleCollection = CollectionViewSource.GetDefaultView(_documentWrappers);
             
             //VisibleCollection.Filter = FilterViews;
             seenUniqueViews = new HashSet<ViewWrapper>();
@@ -45,11 +60,29 @@ namespace Loop.Revit.FavouriteViews
             WeakReferenceMessenger.Default.Register<DockablePanelViewModel, ViewActivatedMessage>(this, (r, m) => r.OnActivatedView(m));
         }
 
-        private void OnRowDoubleClick(ViewWrapper parameter)
+        private void OnTreeItemClick(object para)
         {
-            AppCommand.FavouriteViewsHandler.Arg1 = parameter;
-            AppCommand.FavouriteViewsHandler.Request = RequestId.ActivateView;
-            AppCommand.FavouriteViewsEvent.Raise();
+            var wut = para;
+
+        }
+
+        private void OnRowDoubleClick(object parameter)
+        {
+            var wtf = SelectedTreeItem;
+
+            var clickedItem = (ViewWrapper)parameter;
+            if (clickedItem != null)
+            {
+                if (clickedItem.ElementId != null)
+                {
+                    AppCommand.FavouriteViewsHandler.Arg1 = parameter;
+                    AppCommand.FavouriteViewsHandler.Request = RequestId.ActivateView;
+                    AppCommand.FavouriteViewsEvent.Raise();
+
+                }
+            }
+
+        
         }
 
         private void OnActivatedView(ViewActivatedMessage message)
@@ -76,6 +109,10 @@ namespace Loop.Revit.FavouriteViews
                 
             }
 
+          
+            _documentWrappers = new ObservableCollection<DocumentWrapper>(ActiveDocumentList.Docs);
+            VisibleCollection = CollectionViewSource.GetDefaultView(_documentWrappers);
+
             _masterViews.Insert(0, wrapper);
             _simplifiedViews.Insert(0, wrapper);
 
@@ -87,7 +124,7 @@ namespace Loop.Revit.FavouriteViews
                 //View is not unique, remove old instances
                 var newList = _simplifiedViews.Distinct().ToList();
                 _simplifiedViews = new ObservableCollection<ViewWrapper>(newList);
-                VisibleCollection = CollectionViewSource.GetDefaultView(_simplifiedViews);
+                VisibleCollection = CollectionViewSource.GetDefaultView(_documentWrappers);
             }
             
         }

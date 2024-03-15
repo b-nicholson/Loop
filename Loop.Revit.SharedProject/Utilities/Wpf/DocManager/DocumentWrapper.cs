@@ -14,10 +14,13 @@ namespace Loop.Revit.Utilities.Wpf.DocManager
 
         public List<ViewWrapper> RecentViews { get; set; }
 
+        public string Name { get; set; }
+
         public DocumentWrapper(Document doc, Color color)
         {
             Doc = doc;
             Color = color;
+            Name = doc.Title;
             RecentViews = new List<ViewWrapper>();
         }
     }
