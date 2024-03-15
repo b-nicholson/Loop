@@ -7,6 +7,7 @@
       xmlns:dataGridUtils="clr-namespace:Loop.Revit.Utilities.Wpf.DataGridUtils"
       xmlns:views="clr-namespace:Loop.Revit.FavouriteViews"
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:converters="clr-namespace:Loop.Revit.Utilities.Wpf.Converters"
       TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
       TextElement.FontWeight="Medium"
       TextElement.FontSize="14"
@@ -23,8 +24,13 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary>
                     <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
+                    <converters:ColorToBrushConverter x:Key="ColorToBrushConverter" />
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
+
+                 <ControlTemplate x:Key="NoScroll">
+         <ItemsPresenter></ItemsPresenter>
+     </ControlTemplate>
 
             <DataTemplate DataType="{x:Type views:ViewWrapper}">
                 <views:ViewControl />
@@ -101,13 +107,11 @@
 
             </DataGrid>
 
-        <!--<ScrollViewer Grid.Row="1" materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True" CanContentScroll="True" Background="Aqua">-->
+        <ScrollViewer Grid.Row="1" materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True" VerticalScrollBarVisibility="Auto">
         <ListBox Grid.Row="1" ItemsSource="{Binding VisibleCollection}"
                  materialDesign:ListBoxItemAssist.ShowSelection="False"
                  HorizontalAlignment="Stretch"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True"
-                 
+                 Template="{StaticResource NoScroll}"
                  >
 
             <ListBox.ItemTemplate>
@@ -120,15 +124,7 @@
                             Content="{materialDesign:PackIcon Kind=ArrowUp}"
                             Style="{StaticResource MaterialDesignActionToggleButton}"
                             Background="Transparent"/>
-                        <TextBlock Text="{Binding Name}"/>
-
-
-
-                            <!--<Expander
-                        HorizontalAlignment="Stretch"
-                        Header="{Binding Name}"
-                        materialDesign:TransitionAssist.DisableTransitions="True"
-                              >-->
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Foreground="{Binding Color, Converter={StaticResource ColorToBrushConverter}}"/>
                     </StackPanel>
                         <DataGrid
                                   ItemsSource="{Binding RecentViews, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -143,6 +139,7 @@
                                   IsReadOnly="False"
                                   SelectionMode="Extended"
                                   SelectionUnit="FullRow"
+                                  Template="{StaticResource NoScroll}"
                                   materialDesign:DataGridAssist.SelectedCellBorderBrush="Transparent"
                                   Margin="10"
                                   HeadersVisibility="None"
@@ -180,7 +177,7 @@
 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <!--</ScrollViewer>-->
+        </ScrollViewer>
 
 
 
