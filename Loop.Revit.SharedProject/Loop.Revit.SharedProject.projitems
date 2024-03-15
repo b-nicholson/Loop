@@ -21,7 +21,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\IconMapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\OpenViewMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\RequestId.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\TreeViewItemBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\ViewIcon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\ViewActivatedMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\ViewControl.xaml.cs">
@@ -93,7 +92,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogView.xaml.cs">
       <DependentUpon>SmallDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\TreeViewUtils\TreeViewExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\CustomColorThemeForMaterialDesign.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\IWindowService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\WindowService.cs" />
@@ -234,8 +232,8 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Schedule_light.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Section_dark.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Section_light.ico" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Sheet_light.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Sheet_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Sheet_light.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\StructuralPlan_light.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\StructuralPlan_dark.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Report_light.ico" />

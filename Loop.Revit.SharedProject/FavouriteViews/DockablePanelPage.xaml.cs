@@ -2,6 +2,8 @@
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Xaml.Behaviors;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace Loop.Revit.FavouriteViews
 {
@@ -17,6 +19,34 @@ namespace Loop.Revit.FavouriteViews
             var dummyType = typeof(Behavior);
 
             InitializeComponent();
+        }
+
+
+
+        private void DataGrid_MouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            var dataGrid = sender as DataGrid;
+            if (dataGrid?.SelectedItem == null) return;
+
+            var selectedItem = dataGrid.SelectedItem;
+
+            var viewModel = DataContext as DockablePanelViewModel;
+            if (viewModel != null)
+            {
+                viewModel?.DoubleClick.Execute(selectedItem);
+            }
+        }
+
+        private void OnRightClick1(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            if (menuItem == null) return;
+
+            var selectedItem = menuItem.CommandParameter;
+            if (selectedItem == null) return;
+
+            var viewModel = DataContext as DockablePanelViewModel;
+            viewModel?.RightClick1.Execute(selectedItem);
         }
 
         public void SetupDockablePane(DockablePaneProviderData data)

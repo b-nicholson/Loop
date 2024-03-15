@@ -6,9 +6,6 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:dataGridUtils="clr-namespace:Loop.Revit.Utilities.Wpf.DataGridUtils"
       xmlns:views="clr-namespace:Loop.Revit.FavouriteViews"
-      xmlns:docs ="clr-namespace:Loop.Revit.Utilities.Wpf.DocManager"
-      xmlns:trees ="clr-namespace:Loop.Revit.Utilities.Wpf.TreeViewUtils"
-      xmlns:trees2 ="clr-namespace:Loop.Revit.FavouriteViews.Helpers"
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
       TextElement.FontWeight="Medium"
@@ -27,26 +24,12 @@
                 <ResourceDictionary>
                     <BooleanToVisibilityConverter x:Key="VisibilityConverter" />
                 </ResourceDictionary>
-                <!--<ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DataGrid.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Treeview.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type views:ViewWrapper}">
                 <views:ViewControl />
             </DataTemplate>
 
-            <!--<HierarchicalDataTemplate DataType="{x:Type docs:DocumentWrapper}" ItemsSource="{Binding  RecentViews}">
-                <TextBlock Text="{Binding Name}" />
-            </HierarchicalDataTemplate>-->
-
-            <DataTemplate DataType="{x:Type docs:DocumentWrapper}">
-                <TreeViewItem Header="{Binding Name}">
-                    <TreeViewItem.ItemsSource>
-                        <Binding Path="RecentViews"/>
-                    </TreeViewItem.ItemsSource>
-                </TreeViewItem>
-            </DataTemplate>
 
         </ResourceDictionary>
     </Page.Resources>
@@ -118,66 +101,86 @@
 
             </DataGrid>
 
-        <TreeView Grid.Row ="1"
-                  ItemsSource="{Binding VisibleCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                  trees:TreeViewExtensions.SelectedItem="{Binding SelectedTreeItem, Mode=TwoWay}"
-                  x:Name="YourTreeView">
-            
-            <!--<TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type docs:DocumentWrapper}"
-                                          ItemsSource="{Binding SubItems}">
-                    --><!-- Replace YourNamespace and YourUserControl with the actual names --><!--
-                    <views:ViewControl />
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>-->
+        <!--<ScrollViewer Grid.Row="1" materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True" CanContentScroll="True" Background="Aqua">-->
+        <ListBox Grid.Row="1" ItemsSource="{Binding VisibleCollection}"
+                 materialDesign:ListBoxItemAssist.ShowSelection="False"
+                 HorizontalAlignment="Stretch"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True"
+                 
+                 >
 
-
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="MouseDoubleClick">
-                    <i:InvokeCommandAction Command="{Binding RowDoubleClickCommand}"
-                                           CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type TreeView}}}" />
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->
-
-            <!--<i:Interaction.Triggers>
-      <i:EventTrigger EventName="MouseDoubleClick">
-          <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}"
-                                 CommandParameter="{Binding SelectedItem, ElementName=YourTreeView}" />
-      </i:EventTrigger>
-  </i:Interaction.Triggers>-->
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <ToggleButton
+                            IsChecked="{Binding ShowRecentViews, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}"
+                            materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=ArrowDown}"
+                            Content="{materialDesign:PackIcon Kind=ArrowUp}"
+                            Style="{StaticResource MaterialDesignActionToggleButton}"
+                            Background="Transparent"/>
+                        <TextBlock Text="{Binding Name}"/>
 
 
 
+                            <!--<Expander
+                        HorizontalAlignment="Stretch"
+                        Header="{Binding Name}"
+                        materialDesign:TransitionAssist.DisableTransitions="True"
+                              >-->
+                    </StackPanel>
+                        <DataGrid
+                                  ItemsSource="{Binding RecentViews, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                  Visibility="{Binding ShowRecentViews, Converter={StaticResource VisibilityConverter}}"
+                                  Focusable="True"
+                                  AutoGenerateColumns="False"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Hidden"
+                                  CanUserAddRows="False"
+                                  CanUserResizeColumns="True"
+                                  CanUserSortColumns="False"
+                                  IsReadOnly="False"
+                                  SelectionMode="Extended"
+                                  SelectionUnit="FullRow"
+                                  materialDesign:DataGridAssist.SelectedCellBorderBrush="Transparent"
+                                  Margin="10"
+                                  HeadersVisibility="None"
+                                  MouseDoubleClick="DataGrid_MouseDoubleClick">
 
-            <!--<i:Interaction.Triggers>
-                <i:EventTrigger EventName="SelectionChanged">
-                    <i:InvokeCommandAction Command="{Binding SelectionChangedCommand}" CommandParameter="{Binding SelectedItem, ElementName=YourTreeView}"/>
-                </i:EventTrigger>
-            </i:Interaction.Triggers>-->
+                            <DataGrid.ContextMenu>
+                                <ContextMenu DataContext="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                    <MenuItem Header="Save"
+                                              Icon="{materialDesign:PackIcon Kind=ContentSave}"
+                                              Click="OnRightClick1"
+                                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+
+                                    <MenuItem Header="Exit"
+                                              Icon="{materialDesign:PackIcon Kind=ExitToApp}"
+                                              InputGestureText="Ctrl+E" />
+
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
+
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn>
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <views:ViewControl/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
 
 
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="trees2:TreeViewItemBehavior.DoubleClickCommand" 
-                            Value="{Binding Path=SelectionChangedCommand, RelativeSource={RelativeSource AncestorType={x:Type TreeView}}}"/>
-                </Style>
-            </TreeView.ItemContainerStyle>
-
-            <TreeView.Resources>
-                <Style
-                    TargetType="TreeViewItem"
-                    BasedOn="{StaticResource MaterialDesignTreeViewItem}">
-                    <!--<Setter
-                        Property="materialDesign:TreeViewAssist.ExpanderSize"
-                        Value="32" />-->
-                    <Setter
-                        Property="materialDesign:TreeViewAssist.ShowSelection"
-                        Value="True" />
-                </Style>
-            </TreeView.Resources>
-
-
-        </TreeView>
+                        </DataGrid>
+                    </StackPanel>
+                        <!--</Expander>-->
+                    
+</DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <!--</ScrollViewer>-->
 
 
 

@@ -16,6 +16,13 @@ namespace Loop.Revit.Utilities.Wpf.DocManager
 
         public string Name { get; set; }
 
+        private bool _showRecentViews;
+        public bool ShowRecentViews
+        {
+            get => _showRecentViews;
+            set => SetProperty(ref _showRecentViews, value);
+        }
+
         public DocumentWrapper(Document doc, Color color)
         {
             Doc = doc;
