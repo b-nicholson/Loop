@@ -7,6 +7,7 @@ namespace Loop.Revit.FavouriteViews.Helpers
     public enum RequestId
     {
         None,
-        ActivateView
+        ActivateView,
+        SwitchViewAndClose,
     }
 }

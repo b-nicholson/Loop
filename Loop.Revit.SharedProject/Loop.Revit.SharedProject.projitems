@@ -75,6 +75,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridColumnsBinding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DocManager\ActiveDocumentList.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DocManager\ColourList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DocManager\ColourTheme.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DocManager\DocumentWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputDialogListMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputListDialog.cs" />

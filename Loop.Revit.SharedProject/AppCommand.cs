@@ -23,6 +23,7 @@ using Loop.Revit.Utilities.Wpf.DocManager;
 using Loop.Revit.Utilities.Wpf.OutputListDialog;
 using Loop.Revit.ViewTitles;
 using Loop.Revit.ViewTitles.Helpers;
+using Color = System.Windows.Media.Color;
 using RibbonButton = Autodesk.Revit.UI.RibbonButton;
 using RibbonItem = Autodesk.Revit.UI.RibbonItem;
 using RibbonPanel = Autodesk.Revit.UI.RibbonPanel;
@@ -124,15 +125,51 @@ namespace Loop.Revit
         private void OnDocumentOpened(object sender, DocumentOpenedEventArgs e)
         {
             var alreadyLoadedDocs = ActiveDocumentList.Docs;
-            var docIndex = alreadyLoadedDocs.Count;
-            var colour = GlobalSettings.Settings.DocumentColors[docIndex];
-            var newWrapper = new DocumentWrapper(e.Document, colour);
+
+            var docColour = Colors.Transparent;
+            foreach (var colourItem in GlobalSettings.Settings.DocumentColors)
+            {
+                if (colourItem == null) continue;
+                if (!colourItem.IsTaken)
+                {
+                    docColour = colourItem.Color;
+                    colourItem.IsTaken = true;
+                    break;
+                }
+                // all taken, give it something random
+                var rdm = new Random();
+                var r = (byte)rdm.Next(0, 255);
+                var g = (byte)rdm.Next(0, 255);
+                var b = (byte)rdm.Next(0, 255);
+                docColour = Color.FromRgb(r, g, b);
+
+            }
+            var newWrapper = new DocumentWrapper(e.Document, docColour);
             ActiveDocumentList.Docs.Add(newWrapper);
         }
         private void OnDocumentClosing(object sender, DocumentClosingEventArgs e)
         {
             var docList = ActiveDocumentList.Docs;
+
+            var colour = Colors.DarkOliveGreen;
+            foreach (var wrapper in docList)
+            {
+                if (Equals(wrapper.Doc, e.Document))
+                {
+                    colour = wrapper.Color;
+                }
+            }
+
+            foreach (var colourItem in GlobalSettings.Settings.DocumentColors)
+            {
+                if (colourItem.Color == colour)
+                {
+                    colourItem.IsTaken = false;
+                }
+                
+            }
             docList.RemoveAll(item => Equals(item.Doc, e.Document));
+
         }
 
         private void OnViewActivated(object sender, ViewActivatedEventArgs e)

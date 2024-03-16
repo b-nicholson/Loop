@@ -4,6 +4,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.Creation;
 using System.Linq;
 using Autodesk.Revit.UI.Events;
+using Document = Autodesk.Revit.DB.Document;
 
 namespace Loop.Revit.FavouriteViews.Helpers
 {
@@ -11,6 +12,7 @@ namespace Loop.Revit.FavouriteViews.Helpers
     {
         public RequestId Request { get; set; }
         public object Arg1 { get; set; }
+        public object Arg2 { get; set; }
 
         public static string Prefix = "LoopTempDocSwitch";
 
@@ -24,6 +26,9 @@ namespace Loop.Revit.FavouriteViews.Helpers
                         return;
                     case RequestId.ActivateView:
                         ActivateView(app);
+                        break;
+                    case RequestId.SwitchViewAndClose:
+                        SwitchViewAndClose(app);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -100,6 +105,28 @@ namespace Loop.Revit.FavouriteViews.Helpers
                 //API supported method if we're in the same document
                 newUiDoc.RequestViewChange(view);
             }
+
+            //if (Arg2 != null)
+            //{
+
+                
+            //    var docToClose = (Document)Arg2;
+            //    try
+            //    {
+            //        docToClose.Close(false);
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        //do nothing
+            //    }
+            //    Arg2 = null;
+            //}
+        }
+
+        public void SwitchViewAndClose(UIApplication app)
+        {
+            var docToClose = (Document)Arg2;
+            docToClose.Close(false);
         }
 
         private static void UiAppOnDialogBoxShowing(object sender, DialogBoxShowingEventArgs args)

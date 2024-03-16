@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using System.Windows.Media;
+using Loop.Revit.Utilities.Wpf.DocManager;
 
 namespace Loop.Revit.Utilities.UserSettings
 {
@@ -13,7 +14,8 @@ namespace Loop.Revit.Utilities.UserSettings
 
         public Color PrimaryThemeColor { get; set; } = Color.FromRgb(0, 107, 255);
 
-        public List<Color> DocumentColors { get; set; } = new List<Color>{Colors.Red, Colors.Aqua, Colors.Green};
+        public List<ColourTheme> DocumentColors { get; set; } = new List<ColourTheme>{ new ColourTheme(Colors.Red), new ColourTheme(Colors.Aqua), new ColourTheme(Colors.Green) };
+
 
         public string AppVersion { get; set; } = "0.1";
 

@@ -1,15 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Loop.Revit.FavouriteViews.Helpers;
 using Loop.Revit.Utilities.Wpf.DocManager;
+using Loop.Revit.Utilities.Wpf.SmallDialog;
+using MaterialDesignThemes.Wpf;
 
 namespace Loop.Revit.FavouriteViews
 {
@@ -20,6 +24,7 @@ namespace Loop.Revit.FavouriteViews
 
         public RelayCommand<ViewWrapper> RightClick1 { get; set; }
         public RelayCommand<ViewWrapper> DoubleClick { get; set; }
+        public RelayCommand<DocumentWrapper> DocumentRightClickCloseDoc { get; set; }
 
         private ICollectionView _visibleCollection;
         public ICollectionView VisibleCollection
@@ -49,13 +54,82 @@ namespace Loop.Revit.FavouriteViews
             RightClick1 = new RelayCommand<ViewWrapper>(OnRightClick1);
 
             DoubleClick = new RelayCommand<ViewWrapper>(OnDoubleClick);
-            
+
+            DocumentRightClickCloseDoc = new RelayCommand<DocumentWrapper>(OnDocumentRightClickCloseDoc);
+
             VisibleCollection = CollectionViewSource.GetDefaultView(DocumentWrappers);
             
             //VisibleCollection.Filter = FilterViews;
             seenUniqueViews = new HashSet<ViewWrapper>();
 
             WeakReferenceMessenger.Default.Register<DockablePanelViewModel, ViewActivatedMessage>(this, (r, m) => r.OnActivatedView(m));
+        }
+
+
+        private void OnDocumentRightClickCloseDoc(DocumentWrapper parameter)
+        {
+            if (parameter == null) return;
+            var doc = parameter.Doc;
+
+            if (doc.IsModified)
+            {
+                var results = SmallDialog.Create(title: "Document Not Saved",
+                    message:"There are unsaved changes, do you wish to keep them?",
+                    button1:new SdButton("Save", SmallDialogResults.Yes),
+                    button2:new SdButton("Discard", SmallDialogResults.No),
+                    iconKind:PackIconKind.Warning
+                );
+
+                if (results == SmallDialogResults.Yes)
+                {
+                    if (doc.IsWorkshared)
+                    {
+                        var swcOpts = new SynchronizeWithCentralOptions();
+                        swcOpts.SaveLocalBefore = true;
+                        swcOpts.SaveLocalAfter = true;
+                        swcOpts.SetRelinquishOptions(new RelinquishOptions(true));
+                        doc.SynchronizeWithCentral(new TransactWithCentralOptions(), swcOpts);
+                    }
+                    else doc.Save();
+                }
+            }
+
+            try
+            {
+                doc.Close(false);
+            }
+            catch (Exception e)
+            {
+               var docList = ActiveDocumentList.Docs;
+               if (docList.Count > 1)
+               {
+                   foreach (var documentWrapper in docList)
+                   {
+                       if (Equals(documentWrapper.Doc, doc)) continue;
+                       var view = documentWrapper.ViewCollection[0];
+                       AppCommand.FavouriteViewsHandler.Arg1 = view;
+                       AppCommand.FavouriteViewsHandler.Arg2 = doc;
+                       
+
+                       AppCommand.FavouriteViewsHandler.Request = RequestId.SwitchViewAndClose;
+                       AppCommand.FavouriteViewsEvent.Raise();
+
+                       AppCommand.FavouriteViewsHandler.Request = RequestId.SwitchViewAndClose;
+                       AppCommand.FavouriteViewsEvent.Raise();
+
+                       AppCommand.FavouriteViewsHandler.Request = RequestId.SwitchViewAndClose;
+                       AppCommand.FavouriteViewsEvent.Raise();
+
+
+                        AppCommand.FavouriteViewsHandler.Request = RequestId.ActivateView;
+                       AppCommand.FavouriteViewsEvent.Raise();
+
+
+
+                        break;
+                   }
+               }
+            }
         }
 
         private void OnDoubleClick(ViewWrapper parameter)

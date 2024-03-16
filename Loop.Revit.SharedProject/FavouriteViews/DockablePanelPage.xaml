@@ -283,7 +283,8 @@
                                         <ContextMenu>
                                             <MenuItem Header="Close Document"
                                                       Icon="{materialDesign:PackIcon Kind=Close}"
-                                                       />
+                                                      Click="OnDocumentRightClickCloseDoc"
+                                                      CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" />
                                             <MenuItem Header="Clear Recent Views"
                                                       Icon="{materialDesign:PackIcon Kind=Clear}"
                                             />

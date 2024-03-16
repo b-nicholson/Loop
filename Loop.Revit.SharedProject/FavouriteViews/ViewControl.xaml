@@ -73,7 +73,7 @@
                    Height="2"
                    VerticalAlignment="Bottom">
             <Rectangle.Fill>
-                <SolidColorBrush Color="{Binding DocumentColour}"/>
+                <SolidColorBrush Color="{Binding DocumentColour, Converter={StaticResource ColorToBrushConverter}}"/>
             </Rectangle.Fill>
         </Rectangle>
 
