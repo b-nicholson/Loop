@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Web.UI.WebControls;
 using System.Windows.Media;
 using Autodesk.Revit.ApplicationServices;
@@ -106,12 +107,15 @@ namespace Loop.Revit
 
 
             app.ControlledApplication.DocumentOpened += OnDocumentOpened;
+            app.ControlledApplication.DocumentClosing += OnDocumentClosing;
 
 
-        #if Revit2024
+        //#if Revit2024
+
+#if !(Revit2022 || Revit2023)
             app.ThemeChanged += OnThemeChanged;
             ChangeIcons();
-        #endif
+#endif
 
             return Result.Succeeded;
         }
@@ -125,7 +129,11 @@ namespace Loop.Revit
             var newWrapper = new DocumentWrapper(e.Document, colour);
             ActiveDocumentList.Docs.Add(newWrapper);
         }
-
+        private void OnDocumentClosing(object sender, DocumentClosingEventArgs e)
+        {
+            var docList = ActiveDocumentList.Docs;
+            docList.RemoveAll(item => Equals(item.Doc, e.Document));
+        }
 
         private void OnViewActivated(object sender, ViewActivatedEventArgs e)
         {
@@ -139,7 +147,7 @@ namespace Loop.Revit
             //todo things
         }
 
-#if Revit2024
+#if !(Revit2022 || Revit2023)
         private void OnThemeChanged(object sender, ThemeChangedEventArgs e)
         {
             ChangeIcons();

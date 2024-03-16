@@ -28,9 +28,9 @@
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
 
-                 <ControlTemplate x:Key="NoScroll">
-         <ItemsPresenter></ItemsPresenter>
-     </ControlTemplate>
+            <ControlTemplate x:Key="NoScroll">
+                <ItemsPresenter></ItemsPresenter>
+            </ControlTemplate>
 
             <DataTemplate DataType="{x:Type views:ViewWrapper}">
                 <views:ViewControl />
@@ -52,14 +52,167 @@
                Margin="10,0,0,0"
                VerticalAlignment="Center"
                Content="Things" />
-        <ToggleButton IsChecked="{Binding DoNotShowDuplicateViews}" />
+        <!--<ToggleButton IsChecked="{Binding DoNotShowDuplicateViews}" />-->
         <Button Grid.Row="0"
                 Width="75"
                 HorizontalAlignment="Right"
                 Content="Load"
                 Command="{Binding LoadViews}"
                 Style="{StaticResource MaterialDesignFlatButton}" />
-        
+
+        <Menu Grid.Row="0"
+              HorizontalAlignment="Center"
+              materialDesign:MenuAssist.TopLevelMenuItemHeight="25"
+              >
+
+            <MenuItem
+                Icon="{materialDesign:PackIcon Kind=Filter}"
+                >
+                <MenuItem
+                    StaysOpenOnClick="True"
+                    Header="View Types">
+                    <Button
+                    Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                    Height="30"
+                    Width="30"
+                    materialDesign:ElevationAssist.Elevation="Dp0"
+                    materialDesign:RippleAssist.IsDisabled="True"
+                    >
+
+                        <materialDesign:PackIcon
+                        Width="10"
+                        Height="10"
+                        Kind="CheckAll" />
+                    </Button>
+                    <MenuItem
+                        StaysOpenOnClick="True"
+                        IsCheckable="True"
+                        Header="Area Plan"
+                        Height="20"/>
+                    <MenuItem
+                        StaysOpenOnClick="True"
+                        IsCheckable="True"
+                        Header="Ceiling Plan"
+                        Height="20"/>
+                    <MenuItem
+    StaysOpenOnClick="True"
+    IsCheckable="True"
+    Header="Column Schedule"
+    Height="20"
+/>
+                    <MenuItem
+    StaysOpenOnClick="True"
+    IsCheckable="True"
+    Header="Detail"
+    Height="20"
+/>
+                    <MenuItem
+    StaysOpenOnClick="True"
+    IsCheckable="True"
+    Header="Drafting View"
+    Height="20"
+/>
+                    <MenuItem
+    StaysOpenOnClick="True"
+    IsCheckable="True"
+    Header="Sheet"
+    Height="20"
+/>
+                    <MenuItem
+        StaysOpenOnClick="True"
+        IsCheckable="True"
+        Header="Elevation"
+        Height="20"
+    />
+                    <MenuItem
+        StaysOpenOnClick="True"
+        IsCheckable="True"
+        Header="Engineering Plan"
+        Height="20"
+    />
+                    <MenuItem
+        StaysOpenOnClick="True"
+        IsCheckable="True"
+        Header="Floor Plan"
+        Height="20"
+    />
+                    <MenuItem
+        StaysOpenOnClick="True"
+        IsCheckable="True"
+        Header="Legend"
+        Height="20"
+    />
+                    <MenuItem
+        StaysOpenOnClick="True"
+        IsCheckable="True"
+        Header="Panel Schedule"
+        Height="20"
+    />
+                    <MenuItem
+        StaysOpenOnClick="True"
+        IsCheckable="True"
+        Header="Rendering"
+        Height="20"
+    />
+                    <MenuItem
+    StaysOpenOnClick="True"
+    IsCheckable="True"
+    Header="Report"
+    Height="20"
+/>
+                    <MenuItem
+        StaysOpenOnClick="True"
+        IsCheckable="True"
+        Header="Section"
+        Height="20"
+    />
+                    <MenuItem
+        StaysOpenOnClick="True"
+        IsCheckable="True"
+        Header="Schedule"
+        Height="20"
+    />
+                    <MenuItem
+    StaysOpenOnClick="True"
+    IsCheckable="True"
+    Header="Walkthrough"
+    Height="20"
+/>
+                    <MenuItem
+        StaysOpenOnClick="True"
+        IsCheckable="True"
+        Header="3D"
+        Height="20"
+    />
+                </MenuItem>
+                <MenuItem Header="Search Parameters"
+                          StaysOpenOnClick="True">
+                    <MenuItem Header="Sheet Number"
+                              StaysOpenOnClick="True"
+                              Height="20"
+                              IsCheckable="True"/>
+                    <MenuItem Header="Sheet Name"
+                              StaysOpenOnClick="True"
+                              Height="20"
+                              IsCheckable="True"/>
+                    <MenuItem Header="View Name"
+                              StaysOpenOnClick="True"
+                              Height="20"
+                              IsCheckable="True"/>
+
+
+
+                </MenuItem>
+
+
+
+
+
+
+
+            </MenuItem>
+        </Menu>
+
         <DataGrid Grid.Row="1"
                   Visibility="Collapsed"
                       ItemsSource="{Binding VisibleCollection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -75,17 +228,18 @@
                       materialDesign:DataGridAssist.SelectedCellBorderBrush="Transparent"
                       Margin="10"
                       HeadersVisibility="None">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseDoubleClick">
-                        <i:InvokeCommandAction Command="{Binding RowDoubleClickCommand}"
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding RowDoubleClickCommand}"
                                                CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
 
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Save"
-                              Icon="{materialDesign:PackIcon Kind=ContentSave}" />
+                              Icon="{materialDesign:PackIcon Kind=ContentSave}"
+                              />
                     <MenuItem Header="Save As.." />
                     <MenuItem Header="Exit"
                               Icon="{materialDesign:PackIcon Kind=ExitToApp}"
@@ -94,40 +248,76 @@
                 </ContextMenu>
             </DataGrid.ContextMenu>
 
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn>
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <views:ViewControl/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <views:ViewControl/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
 
 
-            </DataGrid>
+        </DataGrid>
 
         <ScrollViewer Grid.Row="1" materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True" VerticalScrollBarVisibility="Auto">
-        <ListBox Grid.Row="1" ItemsSource="{Binding VisibleCollection}"
+            <ListBox Grid.Row="1" ItemsSource="{Binding VisibleCollection}"
                  materialDesign:ListBoxItemAssist.ShowSelection="False"
                  HorizontalAlignment="Stretch"
                  Template="{StaticResource NoScroll}"
                  >
 
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel>
-                    <StackPanel Orientation="Horizontal">
-                        <ToggleButton
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <ToggleButton
                             IsChecked="{Binding ShowRecentViews, Mode=TwoWay,  UpdateSourceTrigger=PropertyChanged}"
                             materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=ArrowDown}"
                             Content="{materialDesign:PackIcon Kind=ArrowUp}"
                             Style="{StaticResource MaterialDesignActionToggleButton}"
                             Background="Transparent"/>
-                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Foreground="{Binding Color, Converter={StaticResource ColorToBrushConverter}}"/>
-                    </StackPanel>
-                        <DataGrid
-                                  ItemsSource="{Binding RecentViews, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Foreground="{Binding Color, Converter={StaticResource ColorToBrushConverter}}">
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Close Document"
+                                                      Icon="{materialDesign:PackIcon Kind=Close}"
+                                                       />
+                                            <MenuItem Header="Clear Recent Views"
+                                                      Icon="{materialDesign:PackIcon Kind=Clear}"
+                                            />
+                                            <MenuItem Header="Go to Startup View"
+                                                      Icon="{materialDesign:PackIcon Kind=Home}"
+                                            />
+                                            <MenuItem Header="Go to Startup View + Close"
+                                                      Icon="{materialDesign:PackIcon Kind=HomeRemove}"
+                                            />
+
+
+                                        </ContextMenu>
+
+                                    </TextBlock.ContextMenu>
+
+                                </TextBlock>
+
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                    Margin="20 0 0 0"
+                                    Visibility="{Binding ShowRecentViews, Converter={StaticResource VisibilityConverter}}"
+                                    >
+                                <materialDesign:PackIcon Kind="Search"
+                                                     VerticalAlignment="Center" />
+                                <TextBox Text="{Binding Query, UpdateSourceTrigger=PropertyChanged}"
+                                     materialDesign:HintAssist.Hint="Search..."
+                                     materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                                     Margin="5 0 0 0 "
+                                     Width="500"/>
+
+                            </StackPanel>
+
+                            <DataGrid
+                                  ItemsSource="{Binding NewRecentViews, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                   Visibility="{Binding ShowRecentViews, Converter={StaticResource VisibilityConverter}}"
                                   Focusable="True"
                                   AutoGenerateColumns="False"
@@ -145,38 +335,36 @@
                                   HeadersVisibility="None"
                                   MouseDoubleClick="DataGrid_MouseDoubleClick">
 
-                            <DataGrid.ContextMenu>
-                                <ContextMenu DataContext="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                                    <MenuItem Header="Save"
+                                <DataGrid.ContextMenu>
+                                    <ContextMenu DataContext="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                        <MenuItem Header="Save"
                                               Icon="{materialDesign:PackIcon Kind=ContentSave}"
                                               Click="OnRightClick1"
                                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
 
-                                    <MenuItem Header="Exit"
+                                        <MenuItem Header="Exit"
                                               Icon="{materialDesign:PackIcon Kind=ExitToApp}"
                                               InputGestureText="Ctrl+E" />
 
-                                </ContextMenu>
-                            </DataGrid.ContextMenu>
+                                    </ContextMenu>
+                                </DataGrid.ContextMenu>
 
-                            <DataGrid.Columns>
-                                <DataGridTemplateColumn>
-                                    <DataGridTemplateColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <views:ViewControl/>
-                                        </DataTemplate>
-                                    </DataGridTemplateColumn.CellTemplate>
-                                </DataGridTemplateColumn>
-                            </DataGrid.Columns>
+                                <DataGrid.Columns>
+                                    <DataGridTemplateColumn>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <views:ViewControl/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
 
 
-                        </DataGrid>
-                    </StackPanel>
-                        <!--</Expander>-->
-                    
-</DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                            </DataGrid>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </ScrollViewer>
 
 

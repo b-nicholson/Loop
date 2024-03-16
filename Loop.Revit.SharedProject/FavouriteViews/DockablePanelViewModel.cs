@@ -28,7 +28,6 @@ namespace Loop.Revit.FavouriteViews
             set => SetProperty(ref _visibleCollection, value);
         }
 
-
         private ObservableCollection<ViewWrapper> _masterViews = new ObservableCollection<ViewWrapper>();
         private ObservableCollection<ViewWrapper> _simplifiedViews = new ObservableCollection<ViewWrapper>();
         private ObservableCollection<DocumentWrapper> _documentWrappers = new ObservableCollection<DocumentWrapper>();
@@ -83,9 +82,7 @@ namespace Loop.Revit.FavouriteViews
             
             //Skip the temp view created by the document switching method
             if (view.Name.Contains(FavouriteViewsEventHandler.Prefix))
-            {
                 return;
-            }
 
 
             var doc = message.Doc;
@@ -95,8 +92,11 @@ namespace Loop.Revit.FavouriteViews
             foreach (var docWrapper in ActiveDocumentList.Docs)
             {
                 if (Equals(docWrapper.Doc, doc))
-                {
-                    docWrapper.RecentViews.Insert(0, wrapper);
+                { 
+                    docWrapper.ViewCollection.Insert(0, wrapper);
+                    //remove old entries
+                    docWrapper.ViewCollection = new ObservableCollection<ViewWrapper>(docWrapper.ViewCollection.Distinct().ToList());
+                    docWrapper.NewRecentViews = CollectionViewSource.GetDefaultView(docWrapper.ViewCollection);
                 }
                 
             }
@@ -119,6 +119,11 @@ namespace Loop.Revit.FavouriteViews
                 VisibleCollection = CollectionViewSource.GetDefaultView(DocumentWrappers);
             }
             
+        }
+
+        private void OnClosedView()
+        {
+
         }
 
         private bool FilterViews(object obj)

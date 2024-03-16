@@ -46,6 +46,12 @@ namespace Loop.Revit.FavouriteViews
             get => _icon;
             set => SetProperty(ref _icon, value);
         }
+
+
+        private int DocHashCode { get; set; }
+
+        private int ViewHashCode { get; set; }
+
         public ViewWrapper(Document doc, View view, ViewIcon icon)
         {
             var viewType = view.ViewType;
@@ -58,6 +64,11 @@ namespace Loop.Revit.FavouriteViews
             ViewportNumber = view.get_Parameter(BuiltInParameter.VIEWPORT_DETAIL_NUMBER).AsString();
             ViewType = viewType.ToString();
             Icon = icon;
+            IsOpen = true;
+
+
+            DocHashCode = doc.GetHashCode();
+            ViewHashCode = view.GetHashCode();
 
             if (ViewportNumber !=  null)
             {
@@ -114,6 +125,9 @@ namespace Loop.Revit.FavouriteViews
                 {
                     hash = hash * 23 + ElementId.GetHashCode();
                     hash = hash * 23 + Document.GetHashCode();
+
+                    //hash = hash * 23 + ViewHashCode;
+                    //hash = hash * 23 + DocHashCode;
                 }
                 catch (Exception e)
                 {
