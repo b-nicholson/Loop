@@ -47,6 +47,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Label Padding="0"
                Margin="10,0,0,0"
@@ -62,12 +63,20 @@
 
         <Menu Grid.Row="0"
               HorizontalAlignment="Center"
-              materialDesign:MenuAssist.TopLevelMenuItemHeight="25"
+              VerticalAlignment="Center"
               >
 
             <MenuItem
-                Icon="{materialDesign:PackIcon Kind=Filter}"
                 >
+                <MenuItem.Header>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                >
+                        <materialDesign:PackIcon Kind="Filter"/>
+                    </StackPanel>
+                </MenuItem.Header>
+
+
                 <MenuItem
                     StaysOpenOnClick="True"
                     Header="View Types">
@@ -88,119 +97,137 @@
                         StaysOpenOnClick="True"
                         IsCheckable="True"
                         Header="Area Plan"
+                              IsChecked="{Binding AreaPlan, UpdateSourceTrigger=PropertyChanged}"
                         Height="20"/>
                     <MenuItem
                         StaysOpenOnClick="True"
                         IsCheckable="True"
                         Header="Ceiling Plan"
-                        Height="20"/>
+                              IsChecked="{Binding CeilingPlan, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"/>
                     <MenuItem
     StaysOpenOnClick="True"
     IsCheckable="True"
     Header="Column Schedule"
-    Height="20"
+                              IsChecked="{Binding ColumnSchedule, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
 />
                     <MenuItem
     StaysOpenOnClick="True"
     IsCheckable="True"
     Header="Detail"
-    Height="20"
+                              IsChecked="{Binding Detail, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
 />
                     <MenuItem
     StaysOpenOnClick="True"
     IsCheckable="True"
     Header="Drafting View"
-    Height="20"
+                              IsChecked="{Binding DraftingView, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
 />
                     <MenuItem
     StaysOpenOnClick="True"
     IsCheckable="True"
     Header="Sheet"
-    Height="20"
+                              IsChecked="{Binding DrawingSheet, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
 />
                     <MenuItem
         StaysOpenOnClick="True"
         IsCheckable="True"
         Header="Elevation"
-        Height="20"
+                              IsChecked="{Binding Elevation, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
     />
                     <MenuItem
         StaysOpenOnClick="True"
         IsCheckable="True"
         Header="Engineering Plan"
-        Height="20"
+                              IsChecked="{Binding EngineeringPlan, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
     />
                     <MenuItem
         StaysOpenOnClick="True"
         IsCheckable="True"
         Header="Floor Plan"
-        Height="20"
+                              IsChecked="{Binding FloorPlan, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
     />
                     <MenuItem
         StaysOpenOnClick="True"
         IsCheckable="True"
         Header="Legend"
-        Height="20"
+                              IsChecked="{Binding Legend, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
     />
                     <MenuItem
         StaysOpenOnClick="True"
         IsCheckable="True"
         Header="Panel Schedule"
-        Height="20"
+                              IsChecked="{Binding PanelSchedule, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
     />
                     <MenuItem
         StaysOpenOnClick="True"
         IsCheckable="True"
         Header="Rendering"
-        Height="20"
+                              IsChecked="{Binding Rendering, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
     />
                     <MenuItem
     StaysOpenOnClick="True"
     IsCheckable="True"
     Header="Report"
-    Height="20"
+                              IsChecked="{Binding Report, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
 />
                     <MenuItem
         StaysOpenOnClick="True"
         IsCheckable="True"
         Header="Section"
-        Height="20"
+                              IsChecked="{Binding Section, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
     />
                     <MenuItem
         StaysOpenOnClick="True"
         IsCheckable="True"
         Header="Schedule"
-        Height="20"
+                              IsChecked="{Binding Schedule, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
     />
                     <MenuItem
     StaysOpenOnClick="True"
     IsCheckable="True"
     Header="Walkthrough"
-    Height="20"
+                              IsChecked="{Binding Walkthrough, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
 />
                     <MenuItem
         StaysOpenOnClick="True"
         IsCheckable="True"
         Header="3D"
-        Height="20"
+                              IsChecked="{Binding ThreeD, UpdateSourceTrigger=PropertyChanged}"
+                              Height="20"
     />
                 </MenuItem>
                 <MenuItem Header="Search Parameters"
                           StaysOpenOnClick="True">
                     <MenuItem Header="Sheet Number"
+                              IsChecked="{Binding SearchSheetNum, UpdateSourceTrigger=PropertyChanged}"
                               StaysOpenOnClick="True"
                               Height="20"
                               IsCheckable="True"/>
                     <MenuItem Header="Sheet Name"
+                              IsChecked="{Binding SearchSheetName, UpdateSourceTrigger=PropertyChanged}"
                               StaysOpenOnClick="True"
                               Height="20"
                               IsCheckable="True"/>
                     <MenuItem Header="View Name"
+                              IsChecked="{Binding SearchViewName, UpdateSourceTrigger=PropertyChanged}"
                               StaysOpenOnClick="True"
                               Height="20"
                               IsCheckable="True"/>
-
-
 
                 </MenuItem>
 
@@ -262,7 +289,7 @@
         </DataGrid>
 
         <ScrollViewer Grid.Row="1" materialDesign:ScrollViewerAssist.IsAutoHideEnabled="True" VerticalScrollBarVisibility="Auto">
-            <ListBox Grid.Row="1" ItemsSource="{Binding VisibleCollection}"
+            <ListBox Grid.Row="1" ItemsSource="{Binding VisibleCollection, UpdateSourceTrigger=PropertyChanged}"
                  materialDesign:ListBoxItemAssist.ShowSelection="False"
                  HorizontalAlignment="Stretch"
                  Template="{StaticResource NoScroll}"
@@ -290,6 +317,9 @@
                                             />
                                             <MenuItem Header="Go to Startup View"
                                                       Icon="{materialDesign:PackIcon Kind=Home}"
+                                                      Click="OnDocumentRightClickGoToStartupView"
+                                                      CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
+                                                      
                                             />
                                             <MenuItem Header="Go to Startup View + Close"
                                                       Icon="{materialDesign:PackIcon Kind=HomeRemove}"
@@ -367,6 +397,8 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </ScrollViewer>
+        <materialDesign:Snackbar Grid.Row="2"
+                                 MessageQueue="{Binding MessageQueue}" />
 
 
 

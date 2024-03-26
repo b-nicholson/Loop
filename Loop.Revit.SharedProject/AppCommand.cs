@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Web.UI.WebControls;
 using System.Windows.Media;
-using Autodesk.Revit.ApplicationServices;
-using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
-using Autodesk.Windows;
 using CommunityToolkit.Mvvm.Messaging;
 using Loop.Revit.FavouriteViews;
 using Loop.Revit.FavouriteViews.Helpers;
@@ -17,12 +12,10 @@ using Loop.Revit.FirstButton;
 using Loop.Revit.SecondButton;
 using Loop.Revit.Settings;
 using Loop.Revit.ThirdButton;
-using Loop.Revit.Utilities.RevitUi;
 using Loop.Revit.Utilities.UserSettings;
 using Loop.Revit.Utilities.Wpf.DocManager;
 using Loop.Revit.Utilities.Wpf.OutputListDialog;
 using Loop.Revit.ViewTitles;
-using Loop.Revit.ViewTitles.Helpers;
 using Color = System.Windows.Media.Color;
 using RibbonButton = Autodesk.Revit.UI.RibbonButton;
 using RibbonItem = Autodesk.Revit.UI.RibbonItem;
@@ -106,12 +99,16 @@ namespace Loop.Revit
             }
             GlobalSettings.Settings = settings;
 
+            foreach (var colour in settings.DocumentColors)
+            {
+                ColourThemeList.Colours.Add(new ColourTheme(colour));
+            }
+
+
 
             app.ControlledApplication.DocumentOpened += OnDocumentOpened;
             app.ControlledApplication.DocumentClosing += OnDocumentClosing;
 
-
-        //#if Revit2024
 
 #if !(Revit2022 || Revit2023)
             app.ThemeChanged += OnThemeChanged;
@@ -127,7 +124,7 @@ namespace Loop.Revit
             var alreadyLoadedDocs = ActiveDocumentList.Docs;
 
             var docColour = Colors.Transparent;
-            foreach (var colourItem in GlobalSettings.Settings.DocumentColors)
+            foreach (var colourItem in ColourThemeList.Colours)
             {
                 if (colourItem == null) continue;
                 if (!colourItem.IsTaken)
@@ -160,7 +157,7 @@ namespace Loop.Revit
                 }
             }
 
-            foreach (var colourItem in GlobalSettings.Settings.DocumentColors)
+            foreach (var colourItem in ColourThemeList.Colours)
             {
                 if (colourItem.Color == colour)
                 {

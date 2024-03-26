@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Web.UI.WebControls;
 using System.Windows.Data;
 using System.Windows.Input;
 using Autodesk.Revit.DB;
@@ -20,11 +21,12 @@ namespace Loop.Revit.FavouriteViews
     public class DockablePanelViewModel : ObservableObject
     {
         public DockablePanelModel Model { get; set; }
+        public SnackbarMessageQueue MessageQueue { get; } = new SnackbarMessageQueue();
         public RelayCommand LoadViews { get; set; }
-
         public RelayCommand<ViewWrapper> RightClick1 { get; set; }
         public RelayCommand<ViewWrapper> DoubleClick { get; set; }
         public RelayCommand<DocumentWrapper> DocumentRightClickCloseDoc { get; set; }
+        public RelayCommand<DocumentWrapper> DocumentRightClickGoToStartupView { get; set; }
 
         private ICollectionView _visibleCollection;
         public ICollectionView VisibleCollection
@@ -33,19 +35,277 @@ namespace Loop.Revit.FavouriteViews
             set => SetProperty(ref _visibleCollection, value);
         }
 
-        private ObservableCollection<ViewWrapper> _masterViews = new ObservableCollection<ViewWrapper>();
-        private ObservableCollection<ViewWrapper> _simplifiedViews = new ObservableCollection<ViewWrapper>();
         private ObservableCollection<DocumentWrapper> _documentWrappers = new ObservableCollection<DocumentWrapper>();
-
         private ObservableCollection<DocumentWrapper> DocumentWrappers
         {
             get => _documentWrappers;
             set => SetProperty(ref _documentWrappers, value);
         }
 
+        //Filters
+        #region ViewWrapperFilterBools
+        private bool _areaPlan = true;
+        public bool AreaPlan
+        {
+            get => _areaPlan;
+            set
+            {
+                if (SetProperty(ref _areaPlan, value))
+                {
+                    UpdateDocFilters(nameof(AreaPlan));
+                }
+            }
+        }
+        private bool _ceilingPlan = true;
+        public bool CeilingPlan
+        {
+            get => _ceilingPlan;
+            set
+            {
+                if (SetProperty(ref _ceilingPlan, value))
+                {
+                    UpdateDocFilters(nameof(CeilingPlan));
+                }
+            }
+        }
 
-        public bool DoNotShowDuplicateViews { get; set; }
-        private HashSet<ViewWrapper> seenUniqueViews;
+        private bool _columnSchedule = true;
+        public bool ColumnSchedule
+        {
+            get => _columnSchedule;
+            set
+            {
+                if (SetProperty(ref _columnSchedule, value))
+                {
+                    UpdateDocFilters(nameof(ColumnSchedule));
+                }
+            }
+        }
+
+        private bool _detail = true;
+        public bool Detail
+        {
+            get => _detail;
+            set
+            {
+                if (SetProperty(ref _detail, value))
+                {
+                    UpdateDocFilters(nameof(Detail));
+                }
+            }
+        }
+
+        private bool _draftingView = true;
+        public bool DraftingView
+        {
+            get => _draftingView;
+            set
+            {
+                if (SetProperty(ref _draftingView, value))
+                {
+                    UpdateDocFilters(nameof(DraftingView));
+                }
+            }
+        }
+
+        private bool _drawingSheet = true;
+        public bool DrawingSheet
+        {
+            get => _drawingSheet;
+            set
+            {
+                if (SetProperty(ref _drawingSheet, value))
+                {
+                    UpdateDocFilters(nameof(DrawingSheet));
+                }
+            }
+        }
+
+        private bool _elevation = true;
+        public bool Elevation
+        {
+            get => _elevation;
+            set
+            {
+                if (SetProperty(ref _elevation, value))
+                {
+                    UpdateDocFilters(nameof(Elevation));
+                }
+            }
+        }
+
+        private bool _engineeringPlan = true;
+        public bool EngineeringPlan
+        {
+            get => _engineeringPlan;
+            set
+            {
+                if (SetProperty(ref _engineeringPlan, value))
+                {
+                    UpdateDocFilters(nameof(EngineeringPlan));
+                }
+            }
+        }
+
+        private bool _floorPlan = true;
+        public bool FloorPlan
+        {
+            get => _floorPlan;
+            set
+            {
+                if (SetProperty(ref _floorPlan, value))
+                {
+                    UpdateDocFilters(nameof(FloorPlan));
+                }
+            }
+        }
+
+        private bool _legend = true;
+        public bool Legend
+        {
+            get => _legend;
+            set
+            {
+                if (SetProperty(ref _legend, value))
+                {
+                    UpdateDocFilters(nameof(Legend));
+                }
+            }
+        }
+
+        private bool _panelSchedule = true;
+        public bool PanelSchedule
+        {
+            get => _panelSchedule;
+            set
+            {
+                if (SetProperty(ref _panelSchedule, value))
+                {
+                    UpdateDocFilters(nameof(PanelSchedule));
+                }
+            }
+        }
+
+        private bool _rendering = true;
+        public bool Rendering
+        {
+            get => _rendering;
+            set
+            {
+                if (SetProperty(ref _rendering, value))
+                {
+                    UpdateDocFilters(nameof(Rendering));
+                }
+            }
+        }
+
+        private bool _report = true;
+        public bool Report
+        {
+            get => _report;
+            set
+            {
+                if (SetProperty(ref _report, value))
+                {
+                    UpdateDocFilters(nameof(Report));
+                }
+            }
+        }
+
+        private bool _section = true;
+        public bool Section
+        {
+            get => _section;
+            set
+            {
+                if (SetProperty(ref _section, value))
+                {
+                    UpdateDocFilters(nameof(Section));
+                }
+            }
+        }
+
+        private bool _schedule = true;
+        public bool Schedule
+        {
+            get => _schedule;
+            set
+            {
+                if (SetProperty(ref _schedule, value))
+                {
+                    UpdateDocFilters(nameof(Schedule));
+                }
+            }
+        }
+
+        private bool _threeD = true;
+        public bool ThreeD
+        {
+            get => _threeD;
+            set
+            {
+                if (SetProperty(ref _threeD, value))
+                {
+                    UpdateDocFilters(nameof(ThreeD));
+                }
+            }
+        }
+
+        private bool _walkthrough = true;
+        public bool Walkthrough
+        {
+            get => _walkthrough;
+            set
+            {
+                if (SetProperty(ref _walkthrough, value))
+                {
+                    UpdateDocFilters(nameof(Walkthrough));
+                }
+            }
+        }
+
+        // Sheet Params
+        private bool _searchSheetNum = true;
+        public bool SearchSheetNum
+        {
+            get => _searchSheetNum;
+            set
+            {
+                if (SetProperty(ref _searchSheetNum, value))
+                {
+                    UpdateDocFilters(nameof(SearchSheetNum));
+                }
+            }
+        }
+
+        private bool _searchSheetName = true;
+        public bool SearchSheetName
+        {
+            get => _searchSheetName;
+            set
+            {
+                if (SetProperty(ref _searchSheetName, value))
+                {
+                    UpdateDocFilters(nameof(SearchSheetName));
+                }
+            }
+        }
+
+        private bool _searchViewName = true;
+        public bool SearchViewName
+        {
+            get => _searchViewName;
+            set
+            {
+                if (SetProperty(ref _searchViewName, value))
+                {
+                    UpdateDocFilters(nameof(SearchViewName));
+                }
+            }
+        }
+        #endregion
+
+
 
         public DockablePanelViewModel()
         {
@@ -57,12 +317,68 @@ namespace Loop.Revit.FavouriteViews
 
             DocumentRightClickCloseDoc = new RelayCommand<DocumentWrapper>(OnDocumentRightClickCloseDoc);
 
+            DocumentRightClickGoToStartupView = new RelayCommand<DocumentWrapper>(OnDocumentRightClickGoToStartupView);
+
             VisibleCollection = CollectionViewSource.GetDefaultView(DocumentWrappers);
             
             //VisibleCollection.Filter = FilterViews;
-            seenUniqueViews = new HashSet<ViewWrapper>();
 
             WeakReferenceMessenger.Default.Register<DockablePanelViewModel, ViewActivatedMessage>(this, (r, m) => r.OnActivatedView(m));
+        }
+
+        private void UpdateDocFilters(string propertyName)
+        {
+            //foreach (var documentWrapper in DocumentWrappers)
+            //{
+            //    // Use reflection to find the property by name
+            //    var propertyInfo = documentWrapper.GetType().GetProperty(propertyName);
+            //    if (propertyInfo != null)
+            //    {
+            //        // Get the value of the same property in this class
+            //        var value = GetType().GetProperty(propertyName)?.GetValue(this, null);
+            //        // Set the value of the property in the document wrapper
+            //        propertyInfo.SetValue(documentWrapper, value, null);
+            //    }
+            //    documentWrapper.NewRecentViews.Refresh();
+            //}
+            foreach (var documentWrapper in DocumentWrappers)
+            {
+                // Assuming all properties you're dealing with are of type bool for simplicity
+                var value = GetType().GetProperty(propertyName)?.GetValue(this, null);
+                if (value is bool boolValue)
+                {
+                    // This calls into the wrapper's method that uses SetProperty internally
+                    documentWrapper.UpdatePropertyByName(propertyName, boolValue);
+                }
+            }
+
+        }
+
+        private void OnDocumentRightClickGoToStartupView(DocumentWrapper parameter)
+        {
+            if (parameter == null) return;
+            var doc = parameter.Doc;
+
+            FilteredElementCollector startingViewSettingsCollector =
+                new FilteredElementCollector(doc);
+            startingViewSettingsCollector.OfClass(typeof(StartingViewSettings));
+
+            Autodesk.Revit.DB.View startingView = null;
+
+            foreach (StartingViewSettings settings in startingViewSettingsCollector)
+            {
+                startingView = (Autodesk.Revit.DB.View)doc.GetElement(settings.ViewId);
+            }
+
+            if (startingView == null)
+            {
+                MessageQueue.Enqueue(content: "❎ No Startup View Defined");
+                return;
+            }
+            var newWrapper = new ViewWrapper(doc, startingView, IconMapper.GetIcon(startingView));
+            AppCommand.FavouriteViewsHandler.Arg1 = newWrapper;
+            AppCommand.FavouriteViewsHandler.Request = RequestId.ActivateView;
+            AppCommand.FavouriteViewsEvent.Raise();
         }
 
 
@@ -111,12 +427,8 @@ namespace Loop.Revit.FavouriteViews
                        AppCommand.FavouriteViewsHandler.Arg2 = doc;
                        
 
-                       AppCommand.FavouriteViewsHandler.Request = RequestId.SwitchViewAndClose;
-                       AppCommand.FavouriteViewsEvent.Raise();
-
-                       AppCommand.FavouriteViewsHandler.Request = RequestId.SwitchViewAndClose;
-                       AppCommand.FavouriteViewsEvent.Raise();
-
+                 
+                        //TODO doesn't work
                        AppCommand.FavouriteViewsHandler.Request = RequestId.SwitchViewAndClose;
                        AppCommand.FavouriteViewsEvent.Raise();
 
@@ -128,7 +440,9 @@ namespace Loop.Revit.FavouriteViews
 
                         break;
                    }
+                   return;
                }
+               MessageQueue.Enqueue(content: "❎ Can't close the only open document");
             }
         }
 
@@ -171,27 +485,13 @@ namespace Loop.Revit.FavouriteViews
                     //remove old entries
                     docWrapper.ViewCollection = new ObservableCollection<ViewWrapper>(docWrapper.ViewCollection.Distinct().ToList());
                     docWrapper.NewRecentViews = CollectionViewSource.GetDefaultView(docWrapper.ViewCollection);
+                    docWrapper.RefreshICollectionFilter();
                 }
-                
             }
 
           
             DocumentWrappers = new ObservableCollection<DocumentWrapper>(ActiveDocumentList.Docs);
             VisibleCollection = CollectionViewSource.GetDefaultView(DocumentWrappers);
-
-            _masterViews.Insert(0, wrapper);
-            _simplifiedViews.Insert(0, wrapper);
-
-            var viewIsUnique = seenUniqueViews.Add(wrapper);
-
-           
-            if (!viewIsUnique && DoNotShowDuplicateViews)
-            {
-                //View is not unique, remove old instances
-                var newList = _simplifiedViews.Distinct().ToList();
-                _simplifiedViews = new ObservableCollection<ViewWrapper>(newList);
-                VisibleCollection = CollectionViewSource.GetDefaultView(DocumentWrappers);
-            }
             
         }
 
@@ -202,30 +502,11 @@ namespace Loop.Revit.FavouriteViews
 
         private bool FilterViews(object obj)
         {
-
-            if (DoNotShowDuplicateViews)
-            {
-                var wrapper = (ViewWrapper)obj;
-
-                var res = seenUniqueViews.Contains(wrapper);
-                //var res = wrapper != null && seenUniqueViews.Contains(wrapper);
-                return !res;
-            }
-            else
-            {
-                return true;
-            }
-           
+            return true;
         }
 
         private void OnLoadViews()
         {
-            //seenUniqueViews.Clear();
-            //_masterViews.Clear();
-            //_simplifiedViews.Clear();
-
-            VisibleCollection = CollectionViewSource.GetDefaultView(_masterViews);
-
             //TODO add event handler since we need the event to provide the document context
         }
     }

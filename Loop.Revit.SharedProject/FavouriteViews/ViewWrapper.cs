@@ -12,7 +12,7 @@ namespace Loop.Revit.FavouriteViews
     {
         public ElementId ElementId { get; set; }
         public Document Document { get; set; }
-        public string ViewType { get; set; }
+        public ViewType ViewType { get; set; }
         public string ViewName { get; set; }
         public string SheetName { get; set; }
         public string SheetNumber { get; set; }
@@ -46,8 +46,7 @@ namespace Loop.Revit.FavouriteViews
             get => _icon;
             set => SetProperty(ref _icon, value);
         }
-
-
+        
         private int DocHashCode { get; set; }
 
         private int ViewHashCode { get; set; }
@@ -62,10 +61,9 @@ namespace Loop.Revit.FavouriteViews
             SheetName = view.get_Parameter(BuiltInParameter.VIEWPORT_SHEET_NAME).AsString();
             SheetNumber = view.get_Parameter(BuiltInParameter.VIEWPORT_SHEET_NUMBER).AsString();
             ViewportNumber = view.get_Parameter(BuiltInParameter.VIEWPORT_DETAIL_NUMBER).AsString();
-            ViewType = viewType.ToString();
+            ViewType = viewType;
             Icon = icon;
             IsOpen = true;
-
 
             DocHashCode = doc.GetHashCode();
             ViewHashCode = view.GetHashCode();
@@ -95,10 +93,6 @@ namespace Loop.Revit.FavouriteViews
                     break;
                 }
             }
-
-
-
-
             UpdateIcons();
         }
 

@@ -21,6 +21,19 @@ namespace Loop.Revit.FavouriteViews
             InitializeComponent();
         }
 
+        private void OnDocumentRightClickGoToStartupView(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            if (menuItem == null) return;
+            var selectedItem = menuItem.CommandParameter;
+
+            var viewModel = DataContext as DockablePanelViewModel;
+            if (viewModel != null)
+            {
+                viewModel?.DocumentRightClickGoToStartupView.Execute(selectedItem);
+            }
+        }
+
         private void OnDocumentRightClickCloseDoc(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
@@ -33,7 +46,7 @@ namespace Loop.Revit.FavouriteViews
                 viewModel?.DocumentRightClickCloseDoc.Execute(selectedItem);
             }
         }
-        
+
         private void DataGrid_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
             var dataGrid = sender as DataGrid;
