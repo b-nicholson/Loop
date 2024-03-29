@@ -5,6 +5,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns:dataGridUtils="clr-namespace:Loop.Revit.Utilities.Wpf.DataGridUtils"
+      xmlns:highlightUtils="clr-namespace:Loop.Revit.Utilities.Wpf"
       xmlns:views="clr-namespace:Loop.Revit.FavouriteViews"
       xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       xmlns:converters="clr-namespace:Loop.Revit.Utilities.Wpf.Converters"
@@ -49,10 +50,10 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Label Padding="0"
+        <TextBlock Padding="0"
                Margin="10,0,0,0"
                VerticalAlignment="Center"
-               Content="Things" />
+               Text="Things" />
         <!--<ToggleButton IsChecked="{Binding DoNotShowDuplicateViews}" />-->
         <Button Grid.Row="0"
                 Width="75"
@@ -384,7 +385,11 @@
                                     <DataGridTemplateColumn>
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <views:ViewControl/>
+                                                <views:ViewControl FilterText="{Binding DataContext.Query, RelativeSource={RelativeSource AncestorType=DataGrid}, Mode=TwoWay}"
+                                                                   SearchViewNameEnabled="{Binding DataContext.SearchViewName, RelativeSource={RelativeSource AncestorType=DataGrid}, Mode=TwoWay}"
+                                                                   SearchSheetNameEnabled="{Binding DataContext.SearchSheetName, RelativeSource={RelativeSource AncestorType=DataGrid}, Mode=TwoWay}"
+                                                                   SearchSheetNumberEnabled="{Binding DataContext.SearchSheetNum, RelativeSource={RelativeSource AncestorType=DataGrid}, Mode=TwoWay}"
+                                                                   />
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
                                     </DataGridTemplateColumn>

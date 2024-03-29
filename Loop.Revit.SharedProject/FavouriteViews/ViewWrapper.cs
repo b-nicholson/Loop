@@ -20,6 +20,14 @@ namespace Loop.Revit.FavouriteViews
         public string DetailReference { get; set; } = "";
         public string DisplaySheetNumber { get; set; }
         public Color DocumentColour { get; set;}
+
+        private string _searchQuery;
+
+        public string SearchQuery
+        {
+            get=> _searchQuery;
+            set=> SetProperty(ref _searchQuery, value);
+        }
         public bool IsFavourite { get; set; }
 
         public bool IsOpen { get; set; }
