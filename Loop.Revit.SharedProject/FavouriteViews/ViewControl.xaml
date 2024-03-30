@@ -10,18 +10,18 @@
     xmlns:converters="clr-namespace:Loop.Revit.Utilities.Wpf.Converters"
     xmlns:favouriteViews="clr-namespace:Loop.Revit.FavouriteViews"
     mc:Ignorable="d"
-    d:DesignWidth="400"
-    TextElement.Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"
+    d:DesignWidth="800"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     TextElement.FontWeight="Medium"
     TextElement.FontSize="14"
     FontFamily="{materialDesign:MaterialDesignFont}"
-             Height="Auto"
-    Background="{Binding DocumentColour}">
+    UseLayoutRounding="True"
+             >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <materialDesign:CustomColorTheme BaseTheme="Light"
-                                                 PrimaryColor="#FF25C5C5"
+                                                 PrimaryColor="Orange"
                                                  SecondaryColor="DarkGreen" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary>
@@ -85,6 +85,7 @@
                    highlightUtils:TextBlockHighlighter.Selection="{Binding FilterText, RelativeSource={RelativeSource AncestorType={x:Type favouriteViews:ViewControl}}}"
                    highlightUtils:TextBlockHighlighter.HighlightColor="{DynamicResource PrimaryHueLightBrush}"
                    highlightUtils:TextBlockHighlighter.Forecolor="{DynamicResource PrimaryHueLightForegroundBrush}"/>
+  
         <Rectangle Grid.Row="1"
                    Grid.ColumnSpan="3"
                    Height="2"

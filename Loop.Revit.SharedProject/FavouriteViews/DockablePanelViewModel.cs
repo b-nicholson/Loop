@@ -27,6 +27,8 @@ namespace Loop.Revit.FavouriteViews
         public RelayCommand<ViewWrapper> DoubleClick { get; set; }
         public RelayCommand<DocumentWrapper> DocumentRightClickCloseDoc { get; set; }
         public RelayCommand<DocumentWrapper> DocumentRightClickGoToStartupView { get; set; }
+        public RelayCommand<DocumentWrapper> DocumentRightClickGoToStartupViewAndClose { get; set; }
+        public RelayCommand<DocumentWrapper> DocumentRightCLickClearRecentViews { get; set; }
 
         private ICollectionView _visibleCollection;
         public ICollectionView VisibleCollection
@@ -305,7 +307,8 @@ namespace Loop.Revit.FavouriteViews
         }
         #endregion
 
-
+        private bool _checkAllViewParams { get; set; }
+        public RelayCommand CheckAllViewParams { get; set; }
 
         public DockablePanelViewModel()
         {
@@ -319,6 +322,13 @@ namespace Loop.Revit.FavouriteViews
 
             DocumentRightClickGoToStartupView = new RelayCommand<DocumentWrapper>(OnDocumentRightClickGoToStartupView);
 
+            DocumentRightClickGoToStartupViewAndClose = 
+                new RelayCommand<DocumentWrapper>(OnDocumentRightClickGoToStartupViewAndClose);
+            DocumentRightCLickClearRecentViews =
+                new RelayCommand<DocumentWrapper>(OnDocumentRightClickClearRecentViews);
+
+            CheckAllViewParams = new RelayCommand(OnCheckAllViewParams);
+
             VisibleCollection = CollectionViewSource.GetDefaultView(DocumentWrappers);
             
             //VisibleCollection.Filter = FilterViews;
@@ -326,21 +336,31 @@ namespace Loop.Revit.FavouriteViews
             WeakReferenceMessenger.Default.Register<DockablePanelViewModel, ViewActivatedMessage>(this, (r, m) => r.OnActivatedView(m));
         }
 
+        private void OnCheckAllViewParams()
+        {
+            _checkAllViewParams = !_checkAllViewParams;
+            AreaPlan = _checkAllViewParams;
+            CeilingPlan = _checkAllViewParams;
+            ColumnSchedule = _checkAllViewParams;
+            Detail = _checkAllViewParams;
+            DraftingView = _checkAllViewParams;
+            DrawingSheet = _checkAllViewParams;
+            Elevation = _checkAllViewParams;
+            EngineeringPlan = _checkAllViewParams;
+            FloorPlan = _checkAllViewParams;
+            Legend = _checkAllViewParams;
+            PanelSchedule = _checkAllViewParams;
+            Rendering = _checkAllViewParams;
+            Report = _checkAllViewParams;
+            Section = _checkAllViewParams;
+            Schedule = _checkAllViewParams;
+            ThreeD = _checkAllViewParams;
+            Walkthrough = _checkAllViewParams;
+
+        }
+
         private void UpdateDocFilters(string propertyName)
         {
-            //foreach (var documentWrapper in DocumentWrappers)
-            //{
-            //    // Use reflection to find the property by name
-            //    var propertyInfo = documentWrapper.GetType().GetProperty(propertyName);
-            //    if (propertyInfo != null)
-            //    {
-            //        // Get the value of the same property in this class
-            //        var value = GetType().GetProperty(propertyName)?.GetValue(this, null);
-            //        // Set the value of the property in the document wrapper
-            //        propertyInfo.SetValue(documentWrapper, value, null);
-            //    }
-            //    documentWrapper.NewRecentViews.Refresh();
-            //}
             foreach (var documentWrapper in DocumentWrappers)
             {
                 // Assuming all properties you're dealing with are of type bool for simplicity
@@ -352,6 +372,17 @@ namespace Loop.Revit.FavouriteViews
                 }
             }
 
+        }
+
+        private void OnDocumentRightClickGoToStartupViewAndClose(DocumentWrapper parameter)
+        {
+            if (parameter == null) return;
+            OnDocumentRightClickGoToStartupView(parameter);
+            var doc = parameter.Doc;
+
+            AppCommand.FavouriteViewsHandler.Arg2 = doc;
+            AppCommand.FavouriteViewsHandler.Request = RequestId.CloseOpenViews;
+            AppCommand.FavouriteViewsEvent.Raise();
         }
 
         private void OnDocumentRightClickGoToStartupView(DocumentWrapper parameter)
@@ -381,6 +412,16 @@ namespace Loop.Revit.FavouriteViews
             AppCommand.FavouriteViewsEvent.Raise();
         }
 
+
+        private void OnDocumentRightClickClearRecentViews(DocumentWrapper parameter)
+        {
+            if (parameter != null)
+            {
+                parameter.ViewCollection.Clear();
+
+            }
+
+        }
 
         private void OnDocumentRightClickCloseDoc(DocumentWrapper parameter)
         {
@@ -488,11 +529,8 @@ namespace Loop.Revit.FavouriteViews
                     docWrapper.RefreshICollectionFilter();
                 }
             }
-
-          
             DocumentWrappers = new ObservableCollection<DocumentWrapper>(ActiveDocumentList.Docs);
             VisibleCollection = CollectionViewSource.GetDefaultView(DocumentWrappers);
-            
         }
 
         private void OnClosedView()

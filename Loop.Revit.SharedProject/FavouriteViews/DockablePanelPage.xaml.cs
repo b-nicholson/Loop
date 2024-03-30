@@ -21,6 +21,32 @@ namespace Loop.Revit.FavouriteViews
             InitializeComponent();
         }
 
+        private void OnDocumentRightClickClearRecent(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            if (menuItem == null) return;
+            var selectedItem = menuItem.CommandParameter;
+
+            var viewModel = DataContext as DockablePanelViewModel;
+            if (viewModel != null)
+            {
+                viewModel?.DocumentRightCLickClearRecentViews.Execute(selectedItem);
+            }
+        }
+
+        private void OnDocumentRightClickGoToStartupViewAndClose(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            if (menuItem == null) return;
+            var selectedItem = menuItem.CommandParameter;
+
+            var viewModel = DataContext as DockablePanelViewModel;
+            if (viewModel != null)
+            {
+                viewModel?.DocumentRightClickGoToStartupViewAndClose.Execute(selectedItem);
+            }
+        }
+
         private void OnDocumentRightClickGoToStartupView(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;

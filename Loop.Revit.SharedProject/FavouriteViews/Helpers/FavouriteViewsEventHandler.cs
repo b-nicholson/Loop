@@ -1,10 +1,10 @@
 ﻿using Autodesk.Revit.UI;
 using System;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.Creation;
 using System.Linq;
 using Autodesk.Revit.UI.Events;
 using Document = Autodesk.Revit.DB.Document;
+
 
 namespace Loop.Revit.FavouriteViews.Helpers
 {
@@ -29,6 +29,9 @@ namespace Loop.Revit.FavouriteViews.Helpers
                         break;
                     case RequestId.SwitchViewAndClose:
                         SwitchViewAndClose(app);
+                        break;
+                    case RequestId.CloseOpenViews:
+                        CloseOpenUiViews(app);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -127,6 +130,42 @@ namespace Loop.Revit.FavouriteViews.Helpers
         {
             var docToClose = (Document)Arg2;
             docToClose.Close(false);
+        }
+
+        public void CloseOpenUiViews(UIApplication app)
+        {
+            var newDoc = (Document)Arg2;
+            var newUiDoc = new UIDocument(newDoc);
+
+
+            FilteredElementCollector startingViewSettingsCollector =
+                new FilteredElementCollector(newDoc);
+            startingViewSettingsCollector.OfClass(typeof(StartingViewSettings));
+
+            ElementId startingViewId = null;
+
+            foreach (StartingViewSettings settings in startingViewSettingsCollector)
+            {
+                startingViewId = settings.ViewId;
+            }
+
+
+            var uiViews = newUiDoc.GetOpenUIViews();
+
+            foreach (var view in uiViews)
+            {
+                try
+                {
+                    if (!Equals(startingViewId, view.ViewId))
+                    {
+                        view.Close();
+                    }
+                }
+                catch (Exception)
+                {
+                   //do nothing
+                }
+            }
         }
 
         private static void UiAppOnDialogBoxShowing(object sender, DialogBoxShowingEventArgs args)

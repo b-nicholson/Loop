@@ -373,7 +373,7 @@ namespace Loop.Revit.Utilities.Wpf.DocManager
                     }
                     if (SearchSheetNum)
                     {
-                        checkList.Add(!string.IsNullOrEmpty(view.DetailReference) && view.DetailReference.IndexOf(Query, StringComparison.OrdinalIgnoreCase) >= 0);
+                        checkList.Add(!string.IsNullOrEmpty(view.DisplaySheetNumber) && view.DisplaySheetNumber.IndexOf(Query, StringComparison.OrdinalIgnoreCase) >= 0);
                     }
                     if (SearchViewName)
                     {
