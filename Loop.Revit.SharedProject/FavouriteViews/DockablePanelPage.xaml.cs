@@ -1,9 +1,11 @@
-﻿using Autodesk.Revit.UI;
+﻿using System;
+using Autodesk.Revit.UI;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
 using Microsoft.Xaml.Behaviors;
 using System.Windows;
 using System.Windows.Controls;
+using Loop.Revit.Utilities.Wpf.DocManager;
 
 namespace Loop.Revit.FavouriteViews
 {
@@ -87,16 +89,19 @@ namespace Loop.Revit.FavouriteViews
             }
         }
 
-        private void OnRightClick1(object sender, RoutedEventArgs e)
+        private void OnRightClickRemove(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;
             if (menuItem == null) return;
 
             var selectedItem = menuItem.CommandParameter;
             if (selectedItem == null) return;
+            var context = menuItem.DataContext;
+
+            var param = new Tuple<object, object>(selectedItem, context);
 
             var viewModel = DataContext as DockablePanelViewModel;
-            viewModel?.RightClick1.Execute(selectedItem);
+            viewModel?.RightClickRemove.Execute(param);
         }
 
         public void SetupDockablePane(DockablePaneProviderData data)

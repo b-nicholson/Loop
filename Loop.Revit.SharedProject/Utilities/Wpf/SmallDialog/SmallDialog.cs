@@ -1,6 +1,6 @@
 ﻿using System.Windows;
-using Loop.Revit.Utilities.Wpf.WindowServices;
 using MaterialDesignThemes.Wpf;
+using Utilities.Wpf.Services.WindowServices;
 
 namespace Loop.Revit.Utilities.Wpf.SmallDialog
 {

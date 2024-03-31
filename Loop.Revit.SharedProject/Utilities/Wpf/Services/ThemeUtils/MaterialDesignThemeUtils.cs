@@ -1,32 +1,19 @@
-﻿using System.Windows;
+﻿using MaterialDesignThemes.Wpf;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Windows;
 using System.Windows.Media;
-using MaterialDesignThemes.Wpf;
+using System.Xml;
 
-namespace Loop.Revit.Utilities.Wpf.WindowServices
+namespace Loop.Revit.Utilities.Wpf.Services.ThemeUtils
 {
-    public class WindowService : IWindowService
+    public static class MaterialDesignThemeUtils
     {
-        private readonly Window _window;
-        private ITheme _theme;
-
-        public WindowService(Window window)
+        private static ITheme _theme { get; set; }
+        public static ITheme GetMaterialDesignTheme(FrameworkElement xamlElement)
         {
-            _window = window;
-        }
-        public void CloseWindow()
-        {
-            _window.Close();
-        }
-
-        public Window GetWindow()
-        {
-            return _window;
-        }
-
-        public ITheme GetMaterialDesignTheme()
-        {
-            var resourceDictionaries = _window.Resources.MergedDictionaries;
-
+            var resourceDictionaries = xamlElement.Resources.MergedDictionaries;
             foreach (var d in resourceDictionaries)
             {
                 if (d is CustomColorTheme customTheme)
@@ -38,10 +25,10 @@ namespace Loop.Revit.Utilities.Wpf.WindowServices
             return _theme;
         }
 
-        public void SetMaterialDesignTheme(ITheme theme)
+        public static void SetMaterialDesignTheme(FrameworkElement xamlElement, ITheme theme)
         {
             _theme = theme;
-            var resourceDictionaries = _window.Resources.MergedDictionaries;
+            var resourceDictionaries = xamlElement.Resources.MergedDictionaries;
             foreach (var d in resourceDictionaries)
             {
                 if (d is CustomColorTheme customTheme)
@@ -51,12 +38,12 @@ namespace Loop.Revit.Utilities.Wpf.WindowServices
             }
         }
 
-        public void ToggleDarkMode(bool darkMode)
+        public static void ToggleDarkMode(FrameworkElement xamlElement, bool darkMode)
         {
-            var theme = GetMaterialDesignTheme();
+            var theme = GetMaterialDesignTheme(xamlElement);
             var backgroundColour = Colors.White;
             var backgroundColourDark = Color.FromRgb(59, 68, 83);
-            
+
             if (darkMode)
             {
                 theme.SetBaseTheme(Theme.Dark);
@@ -67,7 +54,7 @@ namespace Loop.Revit.Utilities.Wpf.WindowServices
                 theme.SetBaseTheme(Theme.Light);
             }
 
-            var brush = _window.FindResource("MaterialDesignPaper") as SolidColorBrush;
+            var brush = xamlElement.FindResource("MaterialDesignPaper") as SolidColorBrush;
             if (brush != null)
             {
                 if (brush.IsFrozen)
@@ -77,7 +64,7 @@ namespace Loop.Revit.Utilities.Wpf.WindowServices
                     // Now modify the clone
                     brush.Color = backgroundColour;
                     // Replace the resource with the modifiable clone
-                    _window.Resources["MaterialDesignPaper"] = brush;
+                    xamlElement.Resources["MaterialDesignPaper"] = brush;
                 }
                 else
                 {
@@ -85,7 +72,7 @@ namespace Loop.Revit.Utilities.Wpf.WindowServices
                     brush.Color = backgroundColour;
                 }
             }
-            SetMaterialDesignTheme(theme);
+            SetMaterialDesignTheme(xamlElement, theme);
 
         }
     }

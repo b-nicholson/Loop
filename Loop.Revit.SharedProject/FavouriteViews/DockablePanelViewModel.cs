@@ -1,29 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Web.UI.WebControls;
 using System.Windows.Data;
-using System.Windows.Input;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Loop.Revit.FavouriteViews.Helpers;
+using Loop.Revit.Utilities.UserSettings;
 using Loop.Revit.Utilities.Wpf.DocManager;
 using Loop.Revit.Utilities.Wpf.SmallDialog;
 using MaterialDesignThemes.Wpf;
+using Utilities.Wpf.Services.PageServices;
 
 namespace Loop.Revit.FavouriteViews
 {
     public class DockablePanelViewModel : ObservableObject
     {
+        private readonly IPageService _pageService;
         public DockablePanelModel Model { get; set; }
         public SnackbarMessageQueue MessageQueue { get; } = new SnackbarMessageQueue();
         public RelayCommand LoadViews { get; set; }
-        public RelayCommand<ViewWrapper> RightClick1 { get; set; }
+        public RelayCommand RefreshViews { get; set; }
+        public RelayCommand<Tuple<object, object>> RightClickRemove { get; set; }
         public RelayCommand<ViewWrapper> DoubleClick { get; set; }
         public RelayCommand<DocumentWrapper> DocumentRightClickCloseDoc { get; set; }
         public RelayCommand<DocumentWrapper> DocumentRightClickGoToStartupView { get; set; }
@@ -307,14 +307,18 @@ namespace Loop.Revit.FavouriteViews
         }
         #endregion
 
-        private bool _checkAllViewParams { get; set; }
+        private bool _checkAllViewParams { get; set; } = true;
         public RelayCommand CheckAllViewParams { get; set; }
 
-        public DockablePanelViewModel()
+        public DockablePanelViewModel(IPageService pageService)
         {
+            _pageService = pageService;
+
             LoadViews = new RelayCommand(OnLoadViews);
 
-            RightClick1 = new RelayCommand<ViewWrapper>(OnRightClick1);
+            RefreshViews = new RelayCommand(OnRefreshViews);
+
+            RightClickRemove = new RelayCommand<Tuple<object, object>>(OnRightClickRemove);
 
             DoubleClick = new RelayCommand<ViewWrapper>(OnDoubleClick);
 
@@ -412,7 +416,6 @@ namespace Loop.Revit.FavouriteViews
             AppCommand.FavouriteViewsEvent.Raise();
         }
 
-
         private void OnDocumentRightClickClearRecentViews(DocumentWrapper parameter)
         {
             if (parameter != null)
@@ -500,9 +503,11 @@ namespace Loop.Revit.FavouriteViews
             }
         }
 
-        private void OnRightClick1(ViewWrapper parameter)
+        private void OnRightClickRemove(Tuple<object, object> parameter)
         {
-            var hi = 1;
+            var viewWrapper =(ViewWrapper)parameter.Item1;
+            var docWrapper = (DocumentWrapper)parameter.Item2;
+            docWrapper.ViewCollection.Remove(viewWrapper);
         }
         
         private void OnActivatedView(ViewActivatedMessage message)
@@ -538,13 +543,69 @@ namespace Loop.Revit.FavouriteViews
 
         }
 
-        private bool FilterViews(object obj)
+        private void OnRefreshViews()
         {
-            return true;
+            var docWrapperList = ActiveDocumentList.Docs;
+
+            foreach (var docWrapper in docWrapperList)
+            {
+
+                var viewWrapperList = docWrapper.ViewCollection;
+                var newViewWrapperList = new ObservableCollection<ViewWrapper>();
+                foreach (var viewWrapper in viewWrapperList)
+                {
+                    var viewId = viewWrapper.ElementId;
+                    var doc = viewWrapper.Document;
+
+                 
+                    var updatedView = doc.GetElement(viewId);
+                    if (updatedView == null) continue;
+
+                    try
+                    {
+                        var newView = (View)updatedView;
+                        var icon = IconMapper.GetIcon(newView);
+                        var newWrapper = new ViewWrapper(doc, newView, icon);
+                        newViewWrapperList.Add(newWrapper);
+                    }
+                    catch (Exception)
+                    {
+                        //pass
+                    }
+
+                 
+                }
+                docWrapper.ViewCollection = newViewWrapperList;
+                docWrapper.NewRecentViews = CollectionViewSource.GetDefaultView(docWrapper.ViewCollection);
+                docWrapper.RefreshICollectionFilter();
+            }
+
         }
+        private void LoadSettings()
+        {
+           #if !(Revit2022 || Revit2023)
+            var darkmode = GlobalSettings.Settings.IsDarkModeTheme;
+            _pageService.ToggleDarkMode(darkmode);
+
+            foreach (var docWrapper in ActiveDocumentList.Docs)
+            {
+                foreach (var viewWrapper in docWrapper.ViewCollection)
+                {
+                    viewWrapper.IsDarkMode = darkmode;
+                }
+            }
+            #endif
+            
+            var colour = GlobalSettings.Settings.PrimaryThemeColor;
+            var theme = _pageService.GetMaterialDesignTheme();
+            theme.SetPrimaryColor(colour);
+            _pageService.SetMaterialDesignTheme(theme);
+        }
+
 
         private void OnLoadViews()
         {
+            LoadSettings();
             //TODO add event handler since we need the event to provide the document context
         }
     }

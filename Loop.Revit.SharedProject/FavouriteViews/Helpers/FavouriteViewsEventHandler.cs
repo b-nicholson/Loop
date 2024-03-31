@@ -1,9 +1,12 @@
 ﻿using Autodesk.Revit.UI;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Autodesk.Revit.DB;
 using System.Linq;
 using Autodesk.Revit.UI.Events;
 using Document = Autodesk.Revit.DB.Document;
+using Loop.Revit.Utilities.Wpf.DocManager;
 
 
 namespace Loop.Revit.FavouriteViews.Helpers
@@ -41,6 +44,33 @@ namespace Loop.Revit.FavouriteViews.Helpers
             {
                 // ignore
             }
+        }
+
+        public void RefreshViews(UIApplication app)
+        {
+            var docWrapperList = ActiveDocumentList.Docs;
+
+            foreach (var docWrapper in docWrapperList)
+            {
+
+                var viewWrapperList = docWrapper.ViewCollection;
+                var newViewWrapperList = new ObservableCollection<ViewWrapper>();
+                foreach (var viewWrapper in viewWrapperList)
+                {
+                    var viewId = viewWrapper.ElementId;
+                    var doc = viewWrapper.Document;
+
+                    var updatedView = new FilteredElementCollector(doc, viewId).ToElements();
+                    if (updatedView == null) continue;
+
+                    var newView = (View)updatedView[0];
+                    var icon = IconMapper.GetIcon(newView);
+                    var newWrapper = new ViewWrapper(doc, newView, icon);
+                    newViewWrapperList.Add(newWrapper);
+                }
+                docWrapper.ViewCollection = newViewWrapperList;
+            }
+
         }
 
         public void ActivateView(UIApplication app)

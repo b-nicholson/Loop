@@ -10,7 +10,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Loop.Revit.Utilities;
 using Loop.Revit.Utilities.RevitUi;
-using Loop.Revit.Utilities.Wpf.WindowServices;
+using Utilities.Wpf.Services.WindowServices;
 
 namespace Loop.Revit.ViewTitles
 {

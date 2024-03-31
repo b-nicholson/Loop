@@ -4,7 +4,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Loop.Revit.Utilities.UserSettings;
 using MaterialDesignThemes.Wpf;
-using Loop.Revit.Utilities.Wpf.WindowServices;
+using Utilities.Wpf.Services.WindowServices;
 
 namespace Loop.Revit.Utilities.Wpf.SmallDialog
 {

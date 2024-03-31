@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Forms;
+using System.Windows.Media;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -29,6 +32,46 @@ namespace Loop.Revit.FirstButton
                 var uiApp = commandData.Application;
                 var doc = uiApp.ActiveUIDocument.Document;
                 var uiDoc = uiApp.ActiveUIDocument;
+
+                var blah = commandData.Application.Application.Documents;
+
+                var oi = uiDoc.GetOpenUIViews();
+
+
+
+                var docList = new List<Document>();
+                foreach (var docu in blah)
+                {
+                    var tempDoc = (Document)docu;
+
+                    if (!Equals(doc, tempDoc))
+                    {
+                        var hi = "";
+                        var newUiDoc = new UIDocument(tempDoc);
+                        var stupid = newUiDoc.GetOpenUIViews();
+                    }
+                    docList.Add(tempDoc);
+                }
+
+               
+
+
+                var win= UIFramework.MainWindow.getMainWnd();
+
+                var children = win.getAllViews();
+
+                var b = "";
+                foreach (var child in children)
+                {
+                    child.Foreground = new SolidColorBrush(Colors.Aqua);
+                    b = child.Name;
+                    child.FontSize = 22;
+        
+                }
+
+                
+
+
 
 
 

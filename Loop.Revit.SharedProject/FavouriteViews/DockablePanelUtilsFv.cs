@@ -1,5 +1,6 @@
 ﻿using System;
 using Autodesk.Revit.UI;
+using Utilities.Wpf.Services.PageServices;
 
 
 namespace Loop.Revit.FavouriteViews
@@ -8,11 +9,9 @@ namespace Loop.Revit.FavouriteViews
     {
         public static void RegisterDockablePanel(UIControlledApplication app)
         {
-            var vm = new DockablePanelViewModel();
-            var v = new DockablePanelPage()
-            {
-                DataContext = vm
-            };
+            var v = new DockablePanelPage();
+            var vm = new DockablePanelViewModel(new PageService(v));
+            v.DataContext = vm;
             var panelId = new DockablePaneId(new Guid("83088243-FE6A-444A-8114-FC5B8520AECD"));
 
             try

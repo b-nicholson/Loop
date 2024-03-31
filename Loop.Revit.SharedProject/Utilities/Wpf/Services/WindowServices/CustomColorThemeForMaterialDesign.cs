@@ -1,11 +1,8 @@
-﻿using MaterialDesignThemes.Wpf;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
+using MaterialDesignThemes.Wpf;
 
-namespace Loop.Revit.Utilities.Wpf.WindowServices
+namespace Utilities.Wpf.Services.WindowServices
 {
     public class CustomColorThemeForMaterialDesign : ResourceDictionary
     {

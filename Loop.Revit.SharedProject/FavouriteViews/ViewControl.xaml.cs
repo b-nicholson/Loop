@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Media;
 
 namespace Loop.Revit.FavouriteViews
 {
@@ -16,7 +17,32 @@ namespace Loop.Revit.FavouriteViews
 
         public static readonly DependencyProperty SearchSheetNumberProperty = DependencyProperty.Register(
             nameof(SearchSheetNumberEnabled), typeof(bool), typeof(ViewControl), new PropertyMetadata(default(bool)));
+        
+        public static readonly DependencyProperty HighlightColorProperty = DependencyProperty.Register(
+            nameof(HighlightColor), typeof(Brush), typeof(ViewControl), new PropertyMetadata(default(Brush)));
 
+        public static readonly DependencyProperty TextColorProperty = DependencyProperty.Register(
+            nameof(TextColor), typeof(Brush), typeof(ViewControl), new PropertyMetadata(default(Brush)));
+
+        public static readonly DependencyProperty TextAccentColorProperty = DependencyProperty.Register(
+            nameof(TextAccentColor), typeof(Brush), typeof(ViewControl), new PropertyMetadata(default(Brush)));
+
+        public Brush TextAccentColor
+        {
+            get { return (Brush)GetValue(TextAccentColorProperty); }
+            set { SetValue(TextAccentColorProperty, value); }
+        }
+
+        public Brush TextColor
+        {
+            get { return (Brush)GetValue(TextColorProperty); }
+            set { SetValue(TextColorProperty, value); }
+        }
+        public Brush HighlightColor
+        {
+            get { return (Brush)GetValue(HighlightColorProperty); }
+            set { SetValue(HighlightColorProperty, value); }
+        }
         public bool SearchSheetNameEnabled
         {
             get => (bool)GetValue(SearchSheetNameProperty);

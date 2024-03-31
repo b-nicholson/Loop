@@ -84,7 +84,9 @@
       <DependentUpon>OutputListDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputListDialogViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\PageServices\IPageService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\PaletteHelperExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\ThemeUtils\MaterialDesignThemeUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SdButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogResults.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialog.cs" />
@@ -94,9 +96,10 @@
       <DependentUpon>SmallDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\TextBlockHighlighter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\CustomColorThemeForMaterialDesign.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\IWindowService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\WindowService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\WindowServices\CustomColorThemeForMaterialDesign.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\WindowServices\IWindowService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\PageServices\PageService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\WindowServices\WindowService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\ActiveViewMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\CancelMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\NonEditableViewportsMessage.cs" />
@@ -244,5 +247,11 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\PanelSchedule_dark.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Walkthrough_dark.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Walkthrough_light.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Utilities\Wpf\PageServices\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\PageServices\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\WindowServices\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\" />
   </ItemGroup>
 </Project>
