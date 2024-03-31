@@ -338,6 +338,7 @@ namespace Loop.Revit.FavouriteViews
             //VisibleCollection.Filter = FilterViews;
 
             WeakReferenceMessenger.Default.Register<DockablePanelViewModel, ViewActivatedMessage>(this, (r, m) => r.OnActivatedView(m));
+            WeakReferenceMessenger.Default.Register<DockablePanelViewModel, DocumentSwitchMessage>(this, (r, m) => r.OnDelayedCloseDoc(m));
         }
 
         private void OnCheckAllViewParams()
@@ -426,6 +427,23 @@ namespace Loop.Revit.FavouriteViews
 
         }
 
+        private void OnDelayedCloseDoc(DocumentSwitchMessage message)
+        {
+            if (message.RequestId == RequestId.CloseDocument)
+            {
+                var doc = message.Document;
+                AppCommand.FavouriteViewsHandler.Request = RequestId.CloseDocument;
+                AppCommand.FavouriteViewsHandler.Arg2 = doc;
+                AppCommand.FavouriteViewsEvent.Raise();
+            }
+
+            if (message.RequestId == RequestId.RefreshViews)
+            {
+                RefreshDocumentList();
+            }
+
+        }
+
         private void OnDocumentRightClickCloseDoc(DocumentWrapper parameter)
         {
             if (parameter == null) return;
@@ -457,6 +475,7 @@ namespace Loop.Revit.FavouriteViews
             try
             {
                 doc.Close(false);
+                RefreshDocumentList();
             }
             catch (Exception e)
             {
@@ -470,18 +489,8 @@ namespace Loop.Revit.FavouriteViews
                        AppCommand.FavouriteViewsHandler.Arg1 = view;
                        AppCommand.FavouriteViewsHandler.Arg2 = doc;
                        
-
-                 
-                        //TODO doesn't work
-                       AppCommand.FavouriteViewsHandler.Request = RequestId.SwitchViewAndClose;
+                       AppCommand.FavouriteViewsHandler.Request = RequestId.SwitchViewAndQueueClose;
                        AppCommand.FavouriteViewsEvent.Raise();
-
-
-                        AppCommand.FavouriteViewsHandler.Request = RequestId.ActivateView;
-                       AppCommand.FavouriteViewsEvent.Raise();
-
-
-
                         break;
                    }
                    return;
@@ -534,6 +543,12 @@ namespace Loop.Revit.FavouriteViews
                     docWrapper.RefreshICollectionFilter();
                 }
             }
+            DocumentWrappers = new ObservableCollection<DocumentWrapper>(ActiveDocumentList.Docs);
+            VisibleCollection = CollectionViewSource.GetDefaultView(DocumentWrappers);
+        }
+
+        private void RefreshDocumentList()
+        {
             DocumentWrappers = new ObservableCollection<DocumentWrapper>(ActiveDocumentList.Docs);
             VisibleCollection = CollectionViewSource.GetDefaultView(DocumentWrappers);
         }

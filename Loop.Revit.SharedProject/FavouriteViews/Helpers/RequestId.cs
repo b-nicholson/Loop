@@ -8,7 +8,9 @@ namespace Loop.Revit.FavouriteViews.Helpers
     {
         None,
         ActivateView,
-        SwitchViewAndClose,
+        SwitchViewAndQueueClose,
         CloseOpenViews,
+        CloseDocument,
+        RefreshViews
     }
 }

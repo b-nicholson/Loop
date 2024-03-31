@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using Autodesk.Revit.DB;
 using System.Linq;
 using Autodesk.Revit.UI.Events;
+using CommunityToolkit.Mvvm.Messaging;
 using Document = Autodesk.Revit.DB.Document;
 using Loop.Revit.Utilities.Wpf.DocManager;
 
@@ -30,11 +31,14 @@ namespace Loop.Revit.FavouriteViews.Helpers
                     case RequestId.ActivateView:
                         ActivateView(app);
                         break;
-                    case RequestId.SwitchViewAndClose:
+                    case RequestId.SwitchViewAndQueueClose:
                         SwitchViewAndClose(app);
                         break;
                     case RequestId.CloseOpenViews:
                         CloseOpenUiViews(app);
+                        break;
+                    case RequestId.CloseDocument:
+                        CloseDoc();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -46,32 +50,6 @@ namespace Loop.Revit.FavouriteViews.Helpers
             }
         }
 
-        public void RefreshViews(UIApplication app)
-        {
-            var docWrapperList = ActiveDocumentList.Docs;
-
-            foreach (var docWrapper in docWrapperList)
-            {
-
-                var viewWrapperList = docWrapper.ViewCollection;
-                var newViewWrapperList = new ObservableCollection<ViewWrapper>();
-                foreach (var viewWrapper in viewWrapperList)
-                {
-                    var viewId = viewWrapper.ElementId;
-                    var doc = viewWrapper.Document;
-
-                    var updatedView = new FilteredElementCollector(doc, viewId).ToElements();
-                    if (updatedView == null) continue;
-
-                    var newView = (View)updatedView[0];
-                    var icon = IconMapper.GetIcon(newView);
-                    var newWrapper = new ViewWrapper(doc, newView, icon);
-                    newViewWrapperList.Add(newWrapper);
-                }
-                docWrapper.ViewCollection = newViewWrapperList;
-            }
-
-        }
 
         public void ActivateView(UIApplication app)
         {
@@ -158,8 +136,26 @@ namespace Loop.Revit.FavouriteViews.Helpers
 
         public void SwitchViewAndClose(UIApplication app)
         {
+
+            ActivateView(app);
+            var docToClose = (Document)Arg2;
+
+            var message = new DocumentSwitchMessage(RequestId.CloseDocument);
+            message.Document = docToClose;
+
+            WeakReferenceMessenger.Default.Send(message);
+
+            
+           // docToClose.Close(false);
+        }
+
+        public void CloseDoc()
+        {
             var docToClose = (Document)Arg2;
             docToClose.Close(false);
+
+            var message = new DocumentSwitchMessage(RequestId.RefreshViews);
+            WeakReferenceMessenger.Default.Send(message);
         }
 
         public void CloseOpenUiViews(UIApplication app)
