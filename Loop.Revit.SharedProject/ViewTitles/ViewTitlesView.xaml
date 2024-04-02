@@ -409,6 +409,7 @@
                       CanUserSortColumns="True"
                       IsReadOnly="False"
                       SelectionMode="Extended"
+                      materialDesign:DataGridAssist.SelectedCellBorderBrush="Transparent"
                       Margin="10">
 
                 <DataGrid.Columns>

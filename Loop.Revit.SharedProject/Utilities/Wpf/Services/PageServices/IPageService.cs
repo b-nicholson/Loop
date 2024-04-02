@@ -1,16 +1,13 @@
-﻿using System.Windows;
+﻿using System.Windows.Controls;
 using MaterialDesignThemes.Wpf;
 
-namespace Loop.Revit.Utilities.Wpf.WindowServices
+namespace Utilities.Wpf.Services.PageServices
 {
-    public interface IWindowService
+    public interface IPageService
     {
-        void CloseWindow();
-
-        Window GetWindow();
+        Page GetPage();
         ITheme GetMaterialDesignTheme();
         void SetMaterialDesignTheme(ITheme materialDesignTheme);
-
         void ToggleDarkMode(bool darkMode);
     }
 }

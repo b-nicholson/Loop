@@ -18,7 +18,7 @@ using Loop.Revit.Utilities.Units;
 using Loop.Revit.Utilities.UserSettings;
 using Loop.Revit.Utilities.Wpf;
 using Loop.Revit.Utilities.Wpf.DataGridUtils;
-using Loop.Revit.Utilities.Wpf.WindowServices;
+using Utilities.Wpf.Services.WindowServices;
 using MaterialDesignThemes.Wpf;
 using Loop.Revit.Utilities.Wpf.SmallDialog;
 using Loop.Revit.ViewTitles.Helpers;

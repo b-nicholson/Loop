@@ -17,9 +17,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelUtilsFv.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\FavouriteViewsCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\DocumentSwitchMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\FavouriteViewsEventHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\IconMapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\OpenViewMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\RequestId.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\ViewIcon.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\Helpers\ViewActivatedMessage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\ViewControl.xaml.cs">
+      <DependentUpon>ViewControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)FavouriteViews\ViewWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FirstButton\FirstButtonCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SecondButton\SecondButtonCommand.cs" />
@@ -67,6 +74,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridCheckboxColumnModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridColumnModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DataGridUtils\DataGridColumnsBinding.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DocManager\ActiveDocumentList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DocManager\ColourThemeList.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DocManager\ColourTheme.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\DocManager\DocumentWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputDialogListMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputListDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputListDialogEventHandler.cs" />
@@ -74,7 +85,9 @@
       <DependentUpon>OutputListDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\OutputListDialog\OutputListDialogViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\PageServices\IPageService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\PaletteHelperExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\ThemeUtils\MaterialDesignThemeUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SdButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogResults.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialog.cs" />
@@ -83,9 +96,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\SmallDialog\SmallDialogView.xaml.cs">
       <DependentUpon>SmallDialogView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\CustomColorThemeForMaterialDesign.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\IWindowService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\WindowService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\TextBlockHighlighter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\WindowServices\CustomColorThemeForMaterialDesign.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\WindowServices\IWindowService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\PageServices\PageService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\WindowServices\WindowService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\ActiveViewMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\CancelMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewTitles\Helpers\NonEditableViewportsMessage.cs" />
@@ -111,6 +126,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)FavouriteViews\DockablePanelPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)FavouriteViews\ViewControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -219,8 +238,8 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Schedule_light.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Section_dark.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Section_light.ico" />
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Sheet_light.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Sheet_dark.ico" />
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Sheet_light.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\StructuralPlan_light.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\StructuralPlan_dark.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Report_light.ico" />
@@ -229,5 +248,11 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\PanelSchedule_dark.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Walkthrough_dark.ico" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Walkthrough_light.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Utilities\Wpf\PageServices\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\PageServices\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\WindowServices\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\" />
   </ItemGroup>
 </Project>

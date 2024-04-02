@@ -6,10 +6,9 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Interop;
 using Autodesk.Revit.DB;
-using Loop.Revit.Utilities;
-using Loop.Revit.Utilities.Wpf.WindowServices;
 using System.Windows.Threading;
 using Loop.Revit.Utilities.RevitUi;
+using Utilities.Wpf.Services.WindowServices;
 
 namespace Loop.Revit.Settings
 {
