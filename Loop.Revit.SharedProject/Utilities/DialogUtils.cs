@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
-
-
+﻿using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
+using SaveFileDialog = Microsoft.Win32.SaveFileDialog;
 
 namespace Loop.Revit.Utilities
 {
@@ -22,7 +17,7 @@ namespace Loop.Revit.Utilities
             var result = dialog.ShowDialog();
             var filePath = dialog.FileName;
 
-            return result != DialogResult.OK ? string.Empty : filePath;
+            return result != true ? string.Empty : filePath;
 
         }
 
@@ -36,7 +31,7 @@ namespace Loop.Revit.Utilities
             var result = dialog.ShowDialog();
             var filePath = dialog.FileName;
 
-            return result != DialogResult.OK ? string.Empty : filePath;
+            return result != true ? string.Empty : filePath;
 
         }
 

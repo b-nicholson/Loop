@@ -5,7 +5,8 @@ using MaterialDesignThemes.Wpf;
 using Microsoft.Xaml.Behaviors;
 using System.Windows;
 using System.Windows.Controls;
-using Loop.Revit.Utilities.Wpf.DocManager;
+using MenuItem = System.Windows.Controls.MenuItem;
+
 
 namespace Loop.Revit.FavouriteViews
 {

@@ -47,6 +47,7 @@ namespace Utilities.Wpf.Services.WindowServices
             colorAdjust.Contrast = Contrast.Medium;
             colorAdjust.Colors = ColorSelection.All;
 
+
             var nt = Theme.Create(Theme.Light, PrimaryColor, SecondaryColor);
             nt.ColorAdjustment = colorAdjust;
             CustomTheme = nt;

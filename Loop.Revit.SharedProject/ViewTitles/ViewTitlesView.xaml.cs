@@ -1,8 +1,4 @@
-﻿
-using System;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Forms;
+﻿using System.Windows;
 using System.Windows.Input;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;

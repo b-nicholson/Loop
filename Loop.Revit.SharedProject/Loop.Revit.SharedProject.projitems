@@ -250,9 +250,7 @@
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources\AdskIcons\Walkthrough_light.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Utilities\Wpf\PageServices\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\PageServices\" />
     <Folder Include="$(MSBuildThisFileDirectory)Utilities\Wpf\Services\WindowServices\" />
-    <Folder Include="$(MSBuildThisFileDirectory)Utilities\Wpf\WindowServices\" />
   </ItemGroup>
 </Project>

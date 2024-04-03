@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Media;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Windows;
-using Loop.Revit.Utilities;
 using Loop.Revit.Utilities.RevitUi;
 using RibbonPanel = Autodesk.Revit.UI.RibbonPanel;
 

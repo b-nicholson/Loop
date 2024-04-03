@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Forms;
 using Autodesk.Revit.UI;
 using MaterialDesignThemes.Wpf;
 using Utilities.Wpf.Services.WindowServices;

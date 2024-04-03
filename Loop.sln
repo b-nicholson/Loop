@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loop.Revit.2023", "Loop.Rev
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loop.Revit.2024", "Loop.Revit.2024\Loop.Revit.2024.csproj", "{2C04B340-B114-4338-8CFE-3EA9B4CFBA7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loop.Revit.2025", "Loop.Revit.2025\Loop.Revit.2025.csproj", "{2680A746-25CE-4E60-B0A9-9098E2B52D37}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{2C04B340-B114-4338-8CFE-3EA9B4CFBA7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C04B340-B114-4338-8CFE-3EA9B4CFBA7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C04B340-B114-4338-8CFE-3EA9B4CFBA7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2680A746-25CE-4E60-B0A9-9098E2B52D37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2680A746-25CE-4E60-B0A9-9098E2B52D37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2680A746-25CE-4E60-B0A9-9098E2B52D37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2680A746-25CE-4E60-B0A9-9098E2B52D37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -38,6 +44,7 @@ Global
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Loop.Revit.SharedProject\Loop.Revit.SharedProject.projitems*{1b0ad122-9e2c-41d5-8d9d-979284c5afaa}*SharedItemsImports = 4
+		Loop.Revit.SharedProject\Loop.Revit.SharedProject.projitems*{2680a746-25ce-4e60-b0a9-9098e2b52d37}*SharedItemsImports = 5
 		Loop.Revit.SharedProject\Loop.Revit.SharedProject.projitems*{2c04b340-b114-4338-8cfe-3ea9b4cfba7f}*SharedItemsImports = 4
 		Loop.Revit.SharedProject\Loop.Revit.SharedProject.projitems*{9ce24522-ff3c-4138-bafe-cfe1d4e5b86c}*SharedItemsImports = 13
 		Loop.Revit.SharedProject\Loop.Revit.SharedProject.projitems*{f3a0cc6f-1df9-48e1-8cde-8e656b6eb080}*SharedItemsImports = 4
