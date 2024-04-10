@@ -118,8 +118,8 @@ namespace Loop.Revit.Settings
             TemporarySettings.IsDarkModeTheme = IsDarkMode;
             _windowService.ToggleDarkMode(IsDarkMode);
 
-            #if Revit2024
-                Model.ChangeTheme(IsDarkMode);
+            #if !(Revit2022 || Revit2023)
+            Model.ChangeTheme(IsDarkMode);
             #endif
         }
 
