@@ -522,11 +522,21 @@ namespace Loop.Revit.FavouriteViews
         private void OnActivatedView(ViewActivatedMessage message)
         {
             var view = message.NewView;
-            
+
             //Skip the temp view created by the document switching method
             if (view.Name.Contains(FavouriteViewsEventHandler.Prefix))
                 return;
 
+            // Editing a family inside the document, rather than file>open doesn't trigger a document opened event
+            // Need to add the document here rather than use a different event handler. Expensive, so better to only test families
+            if (message.Doc.IsFamilyDocument)
+            {
+                bool docListContains = ActiveDocumentList.Docs.Any(docWrapper => Equals(docWrapper.Doc, message.Doc));
+                if (!docListContains)
+                {
+                    DocumentWrapperHelper.AddNewDocument(message.Doc);
+                }
+            }
 
             var doc = message.Doc;
             var icon = IconMapper.GetIcon(view);
@@ -543,8 +553,7 @@ namespace Loop.Revit.FavouriteViews
                     docWrapper.RefreshICollectionFilter();
                 }
             }
-            DocumentWrappers = new ObservableCollection<DocumentWrapper>(ActiveDocumentList.Docs);
-            VisibleCollection = CollectionViewSource.GetDefaultView(DocumentWrappers);
+            RefreshDocumentList();
         }
 
         private void RefreshDocumentList()
@@ -564,7 +573,6 @@ namespace Loop.Revit.FavouriteViews
 
             foreach (var docWrapper in docWrapperList)
             {
-
                 var viewWrapperList = docWrapper.ViewCollection;
                 var newViewWrapperList = new ObservableCollection<ViewWrapper>();
                 foreach (var viewWrapper in viewWrapperList)
@@ -572,7 +580,6 @@ namespace Loop.Revit.FavouriteViews
                     var viewId = viewWrapper.ElementId;
                     var doc = viewWrapper.Document;
 
-                 
                     var updatedView = doc.GetElement(viewId);
                     if (updatedView == null) continue;
 
@@ -587,14 +594,11 @@ namespace Loop.Revit.FavouriteViews
                     {
                         //pass
                     }
-
-                 
                 }
                 docWrapper.ViewCollection = newViewWrapperList;
                 docWrapper.NewRecentViews = CollectionViewSource.GetDefaultView(docWrapper.ViewCollection);
                 docWrapper.RefreshICollectionFilter();
             }
-
         }
         private void LoadSettings()
         {

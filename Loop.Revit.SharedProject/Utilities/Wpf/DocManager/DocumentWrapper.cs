@@ -33,6 +33,8 @@ namespace Loop.Revit.Utilities.Wpf.DocManager
         }
         public string Name { get; set; }
 
+        public bool IsFamilyDocument { get; set; }
+
         private bool _showRecentViews;
         public bool ShowRecentViews
         {
@@ -307,7 +309,8 @@ namespace Loop.Revit.Utilities.Wpf.DocManager
         {
             Doc = doc;
             Color = color;
-            Name = doc.Title;
+            Name = doc.Title.Replace(".rfa", "");
+            IsFamilyDocument = doc.IsFamilyDocument;
             NewRecentViews = CollectionViewSource.GetDefaultView(ViewCollection);
         }
 
