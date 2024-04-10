@@ -36,6 +36,7 @@
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.77" />
+    <PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2025.0.0" />
     <PackageReference Include="System.Buffers" Version="4.5.1" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
@@ -45,21 +46,6 @@
     <PackageReference Include="System.Text.Json" Version="8.0.3" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="AdWindows">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2025\AdWindows.dll</HintPath>
-    </Reference>
-    <Reference Include="RevitAPI">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2025\RevitAPI.dll</HintPath>
-    </Reference>
-    <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2025\RevitAPIUI.dll</HintPath>
-    </Reference>
-    <Reference Include="UIFramework">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Autodesk\Revit 2025\UIFramework.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
