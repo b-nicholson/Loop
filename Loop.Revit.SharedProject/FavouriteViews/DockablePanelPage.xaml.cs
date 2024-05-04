@@ -24,6 +24,19 @@ namespace Loop.Revit.FavouriteViews
             InitializeComponent();
         }
 
+        private void OnViewRightClickAddToFavourites(object sender, RoutedEventArgs e)
+        {
+            var menuItem = sender as MenuItem;
+            if (menuItem == null) return;
+            var selectedItem = menuItem.CommandParameter;
+
+            var viewModel = DataContext as DockablePanelViewModel;
+            if (viewModel != null)
+            {
+                viewModel?.DocumentRightClickGoToStartupView.Execute(selectedItem);
+            }
+        }
+
         private void OnDocumentRightClickClearRecent(object sender, RoutedEventArgs e)
         {
             var menuItem = sender as MenuItem;

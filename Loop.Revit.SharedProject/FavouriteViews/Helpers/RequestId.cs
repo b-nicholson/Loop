@@ -11,6 +11,7 @@ namespace Loop.Revit.FavouriteViews.Helpers
         SwitchViewAndQueueClose,
         CloseOpenViews,
         CloseDocument,
-        RefreshViews
+        RefreshViews,
+        RefreshTheme
     }
 }

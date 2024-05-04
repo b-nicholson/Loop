@@ -71,27 +71,9 @@ namespace Loop.Revit
             SettingsCommand.CreateButton(ribbonPanel);
 
             DockablePanelUtilsFv.RegisterDockablePanel(app);
+
+            RegisterEventHandlers(app);
             
-            app.ControlledApplication.DocumentChanged += OnDocumentChanged;
-            app.ViewActivated += OnViewActivated;
-
-
-            ThirdButtonHandler =new ThirdButtonRequestHandler();
-            ThirdButtonEvent = ExternalEvent.Create(ThirdButtonHandler);
-
-            ViewTitlesHandler = new ViewTitlesRequestHandler();
-            ViewTitlesEvent = ExternalEvent.Create(ViewTitlesHandler);
-
-            SettingsRequestHandler = new SettingsRequestHandler();
-            SettingsEvent = ExternalEvent.Create(SettingsRequestHandler);
-
-            FavouriteViewsHandler = new FavouriteViewsEventHandler();
-            FavouriteViewsEvent = ExternalEvent.Create(FavouriteViewsHandler);
-
-
-            OutputListDialogHandler = new OutputListDialogEventHandler();
-            OutputListDialogEvent = ExternalEvent.Create(OutputListDialogHandler);
-
             var settingsResult = UserSettingsManager.LoadSettings();
             var settings = new UserSetting();
             if (settingsResult.Success)
@@ -105,20 +87,39 @@ namespace Loop.Revit
                 ColourThemeList.Colours.Add(new ColourTheme(colour));
             }
 
+            return Result.Succeeded;
+        }
 
+
+        private void RegisterEventHandlers(UIControlledApplication app)
+        {
+            app.ControlledApplication.DocumentChanged += OnDocumentChanged;
+            app.ViewActivated += OnViewActivated;
+
+            ThirdButtonHandler = new ThirdButtonRequestHandler();
+            ThirdButtonEvent = ExternalEvent.Create(ThirdButtonHandler);
+
+            ViewTitlesHandler = new ViewTitlesRequestHandler();
+            ViewTitlesEvent = ExternalEvent.Create(ViewTitlesHandler);
+
+            SettingsRequestHandler = new SettingsRequestHandler();
+            SettingsEvent = ExternalEvent.Create(SettingsRequestHandler);
+
+            FavouriteViewsHandler = new FavouriteViewsEventHandler();
+            FavouriteViewsEvent = ExternalEvent.Create(FavouriteViewsHandler);
+
+            OutputListDialogHandler = new OutputListDialogEventHandler();
+            OutputListDialogEvent = ExternalEvent.Create(OutputListDialogHandler);
 
             app.ControlledApplication.DocumentOpened += OnDocumentOpened;
             app.ControlledApplication.DocumentClosing += OnDocumentClosing;
 
 
-#if !(Revit2022 || Revit2023)
+            #if !(Revit2022 || Revit2023)
             app.ThemeChanged += OnThemeChanged;
             ChangeIcons();
-#endif
-
-            return Result.Succeeded;
+            #endif
         }
-
 
         private void OnDocumentOpened(object sender, DocumentOpenedEventArgs e)
         {
@@ -141,7 +142,7 @@ namespace Loop.Revit
             //todo things
         }
 
-#if !(Revit2022 || Revit2023)
+        #if !(Revit2022 || Revit2023)
         private void OnThemeChanged(object sender, ThemeChangedEventArgs e)
         {
             ChangeIcons();
@@ -154,8 +155,10 @@ namespace Loop.Revit
             ChangeRibbonButtons.SwapIconTheme(CustomPanels, theme);
             bool isDarkMode = theme == UITheme.Dark;
             GlobalSettings.Settings.IsDarkModeTheme = isDarkMode;
+
+            WeakReferenceMessenger.Default.Send(new ColourChangedMessage());
         }
-#endif
+        #endif
 
         public Result OnShutdown(UIControlledApplication app)
         {

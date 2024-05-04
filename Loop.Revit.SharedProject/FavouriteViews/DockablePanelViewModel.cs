@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Data;
 using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -23,7 +24,11 @@ namespace Loop.Revit.FavouriteViews
         public SnackbarMessageQueue MessageQueue { get; } = new SnackbarMessageQueue();
         public RelayCommand LoadViews { get; set; }
         public RelayCommand RefreshViews { get; set; }
+
+        public RelayCommand<DocumentWrapper> MoveDocumentUp { get; set; }
+        public RelayCommand<DocumentWrapper> MoveDocumentDown { get; set; }
         public RelayCommand<Tuple<object, object>> RightClickRemove { get; set; }
+        public RelayCommand<Tuple<object, object>> ViewRightClickAddToFavourites { get; set; }
         public RelayCommand<ViewWrapper> DoubleClick { get; set; }
         public RelayCommand<DocumentWrapper> DocumentRightClickCloseDoc { get; set; }
         public RelayCommand<DocumentWrapper> DocumentRightClickGoToStartupView { get; set; }
@@ -314,11 +319,16 @@ namespace Loop.Revit.FavouriteViews
         {
             _pageService = pageService;
 
+            MoveDocumentUp = new RelayCommand<DocumentWrapper>(OnMoveDocumentUp);
+            MoveDocumentDown = new RelayCommand<DocumentWrapper>(OnMoveDocumentDown);
+
             LoadViews = new RelayCommand(OnLoadViews);
 
             RefreshViews = new RelayCommand(OnRefreshViews);
 
             RightClickRemove = new RelayCommand<Tuple<object, object>>(OnRightClickRemove);
+
+            ViewRightClickAddToFavourites = new RelayCommand<Tuple<object, object>>(OnViewRightClickAddToFavourites);
 
             DoubleClick = new RelayCommand<ViewWrapper>(OnDoubleClick);
 
@@ -339,6 +349,33 @@ namespace Loop.Revit.FavouriteViews
 
             WeakReferenceMessenger.Default.Register<DockablePanelViewModel, ViewActivatedMessage>(this, (r, m) => r.OnActivatedView(m));
             WeakReferenceMessenger.Default.Register<DockablePanelViewModel, DocumentSwitchMessage>(this, (r, m) => r.OnDelayedCloseDoc(m));
+            WeakReferenceMessenger.Default.Register<DockablePanelViewModel, ColourChangedMessage>(this, (r, m) => r.OnColourChanged());
+        }
+
+        public void OnMoveDocumentUp(DocumentWrapper docWrapper)
+        {
+            var docIndex = ActiveDocumentList.Docs.IndexOf(docWrapper);
+            if (docIndex > 0)
+            {
+                var itemToMove = ActiveDocumentList.Docs[docIndex];
+                ActiveDocumentList.Docs.RemoveAt(docIndex);
+                ActiveDocumentList.Docs.Insert(docIndex - 1, itemToMove);
+            }
+            RefreshDocumentList();
+        }
+
+        public void OnMoveDocumentDown(DocumentWrapper docWrapper)
+        {
+            var docIndex = ActiveDocumentList.Docs.IndexOf(docWrapper);
+            var listLength = ActiveDocumentList.Docs.Count - 1;
+
+            if (docIndex != listLength)
+            {
+                var itemToMove = ActiveDocumentList.Docs[docIndex];
+                ActiveDocumentList.Docs.RemoveAt(docIndex);
+                ActiveDocumentList.Docs.Insert(docIndex + 1, itemToMove);
+            }
+            RefreshDocumentList();
         }
 
         private void OnCheckAllViewParams()
@@ -518,7 +555,16 @@ namespace Loop.Revit.FavouriteViews
             var docWrapper = (DocumentWrapper)parameter.Item2;
             docWrapper.ViewCollection.Remove(viewWrapper);
         }
-        
+
+        private void OnViewRightClickAddToFavourites(Tuple<object, object> parameter)
+        {
+            var viewWrapper = (ViewWrapper)parameter.Item1;
+            var docWrapper = (DocumentWrapper)parameter.Item2;
+            docWrapper.ViewCollection.Remove(viewWrapper);
+
+        }
+
+
         private void OnActivatedView(ViewActivatedMessage message)
         {
             var view = message.NewView;
@@ -598,29 +644,37 @@ namespace Loop.Revit.FavouriteViews
                 docWrapper.ViewCollection = newViewWrapperList;
                 docWrapper.NewRecentViews = CollectionViewSource.GetDefaultView(docWrapper.ViewCollection);
                 docWrapper.RefreshICollectionFilter();
+                OnColourChanged();
             }
         }
         private void LoadSettings()
         {
-           #if !(Revit2022 || Revit2023)
-            var darkmode = GlobalSettings.Settings.IsDarkModeTheme;
-            _pageService.ToggleDarkMode(darkmode);
-
-            foreach (var docWrapper in ActiveDocumentList.Docs)
-            {
-                foreach (var viewWrapper in docWrapper.ViewCollection)
-                {
-                    viewWrapper.IsDarkMode = darkmode;
-                }
-            }
-            #endif
-            
-            var colour = GlobalSettings.Settings.PrimaryThemeColor;
-            var theme = _pageService.GetMaterialDesignTheme();
-            theme.SetPrimaryColor(colour);
-            _pageService.SetMaterialDesignTheme(theme);
         }
 
+        private void OnColourChanged()
+        {
+            //#if !(Revit2022 || Revit2023)
+            //var darkmode = GlobalSettings.Settings.IsDarkModeTheme;
+            //_pageService.ToggleDarkMode(darkmode);
+
+            //foreach (var docWrapper in ActiveDocumentList.Docs)
+            //{
+            //    foreach (var viewWrapper in docWrapper.ViewCollection)
+            //    {
+            //        viewWrapper.IsDarkMode = darkmode;
+            //    }
+            //}
+            //#endif
+
+            //var colour = GlobalSettings.Settings.PrimaryThemeColor;
+            //var theme = _pageService.GetMaterialDesignTheme();
+            //theme.SetPrimaryColor(colour);
+            //_pageService.SetMaterialDesignTheme(theme);
+            AppCommand.FavouriteViewsHandler.Arg1 = _pageService;
+            AppCommand.FavouriteViewsHandler.Request = RequestId.RefreshTheme;
+            AppCommand.FavouriteViewsEvent.Raise();
+
+        }
 
         private void OnLoadViews()
         {

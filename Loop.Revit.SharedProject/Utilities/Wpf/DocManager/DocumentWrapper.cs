@@ -20,6 +20,13 @@ namespace Loop.Revit.Utilities.Wpf.DocManager
             get => _newRecentViews; 
             set=> SetProperty(ref _newRecentViews, value);}
 
+        private ICollectionView _favouriteViews;
+        public ICollectionView FavouriteViews
+        {
+            get => _newRecentViews;
+            set => SetProperty(ref _favouriteViews, value);
+        }
+
         public ObservableCollection<ViewWrapper> ViewCollection= new ObservableCollection<ViewWrapper>();
         private string _query;
         public string Query

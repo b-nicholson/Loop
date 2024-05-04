@@ -51,7 +51,6 @@ namespace Loop.Revit.FavouriteViews.Helpers
                 {
                     colourItem.IsTaken = false;
                 }
-
             }
             docList.RemoveAll(item => Equals(item.Doc, doc));
         }

@@ -5,9 +5,12 @@ using Loop.Revit.Utilities;
 using Loop.Revit.Utilities.UserSettings;
 using Loop.Revit.Utilities.Wpf.SmallDialog;
 using System.Text.Json;
+using System.Windows;
 using MaterialDesignThemes.Wpf;
 using System.Windows.Media;
 using Utilities.Wpf.Services.WindowServices;
+using CommunityToolkit.Mvvm.Messaging;
+using Loop.Revit.FavouriteViews.Helpers;
 
 
 namespace Loop.Revit.Settings
@@ -158,7 +161,16 @@ namespace Loop.Revit.Settings
                     actionArgument: saveResult.FullMessage);
                 return;
             }
+
+            WeakReferenceMessenger.Default.Send(new ColourChangedMessage());
+
+   
             MessageQueue.Enqueue("✅ Settings Saved");
+        }
+
+        private void SendUpdateToDockablePanel()
+        {
+            WeakReferenceMessenger.Default.Send(new ColourChangedMessage());
         }
 
         private void OnImportSettings()

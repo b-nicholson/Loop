@@ -268,7 +268,11 @@
                             materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=ArrowDown}"
                             Content="{materialDesign:PackIcon Kind=ArrowUp}"
                             Style="{StaticResource MaterialDesignActionToggleButton}"
-                            Background="Transparent"/>
+                            Background="Transparent"
+                            Foreground="Black"
+                            BorderBrush="Black"
+                            BorderThickness="5"
+                            />
                                 <TextBlock Text="{Binding Name}" VerticalAlignment="Center" Foreground="{Binding Color, Converter={StaticResource ColorToBrushConverter}}">
                                     <TextBlock.ContextMenu>
                                         <ContextMenu>
@@ -285,13 +289,11 @@
                                                       Icon="{materialDesign:PackIcon Kind=Home}"
                                                       Click="OnDocumentRightClickGoToStartupView"
                                                       CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
-                                                      
                                             />
                                             <MenuItem Header="Go to Startup View + Close"
                                                       Icon="{materialDesign:PackIcon Kind=HomeRemove}"
                                                       Click="OnDocumentRightClickGoToStartupViewAndClose"
                                                       CommandParameter="{Binding Path=DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" 
-
                                             />
 
 
@@ -300,6 +302,32 @@
                                     </TextBlock.ContextMenu>
 
                                 </TextBlock>
+                                <StackPanel>
+                                    <Button
+                                        Style="{x:Null}"  
+                                        Cursor="Hand"
+                                        Height="13"
+                                        Background="{x:Null}"
+                                        BorderBrush="{x:Null}"
+                                        Command="{Binding DataContext.MoveDocumentUp, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"
+                                        CommandParameter="{Binding}"
+                                        >
+                                        <materialDesign:PackIcon
+                                            Kind="ChevronUp" Height="13"/>
+                                    </Button>
+                                    <Button
+                                        Style="{x:Null}"  
+                                        Cursor="Hand"
+                                        Height="13"
+                                        Background="{x:Null}"
+                                        BorderBrush="{x:Null}"
+                                        Command="{Binding DataContext.MoveDocumentDown, RelativeSource={RelativeSource AncestorType={x:Type ListBox}}}"
+                                        CommandParameter="{Binding}"
+                                    >
+                                        <materialDesign:PackIcon
+                                            Kind="ChevronDown" Height="13"/>
+                                    </Button>
+                                </StackPanel>
 
                             </StackPanel>
                             <StackPanel Orientation="Horizontal"
@@ -315,6 +343,39 @@
                                      Width="500"/>
 
                             </StackPanel>
+                            <DataGrid
+                                ItemsSource="{Binding FavouriteViews, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Visibility="{Binding ShowRecentViews, Converter={StaticResource VisibilityConverter}}"
+                                Focusable="True"
+                                AutoGenerateColumns="False"
+                                VerticalScrollBarVisibility="Auto"
+                                HorizontalScrollBarVisibility="Hidden"
+                                CanUserAddRows="False"
+                                CanUserResizeColumns="True"
+                                CanUserSortColumns="False"
+                                IsReadOnly="False"
+                                SelectionMode="Extended"
+                                SelectionUnit="FullRow"
+                                Template="{StaticResource NoScroll}"
+                                materialDesign:DataGridAssist.SelectedCellBorderBrush="Transparent"
+                                Margin="10"
+                                HeadersVisibility="None"
+                                MouseDoubleClick="DataGrid_MouseDoubleClick">>
+                                <DataGrid.ContextMenu>
+                                    <ContextMenu DataContext="{Binding Path=PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                        <MenuItem Header="Remove"
+                                                  Icon="{materialDesign:PackIcon Kind=Delete}"
+                                                  Click="OnRightClickRemove"
+                                                  CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+
+                                        <MenuItem Header="Exit"
+                                                  Icon="{materialDesign:PackIcon Kind=ExitToApp}"
+                                                  InputGestureText="Ctrl+E" />
+
+                                    </ContextMenu>
+                                </DataGrid.ContextMenu>
+
+                            </DataGrid>
 
                             <DataGrid
                                   ItemsSource="{Binding NewRecentViews, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -342,9 +403,12 @@
                                               Click="OnRightClickRemove"
                                               CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
 
-                                        <MenuItem Header="Exit"
-                                              Icon="{materialDesign:PackIcon Kind=ExitToApp}"
-                                              InputGestureText="Ctrl+E" />
+                                        <MenuItem Header="Add to Favourites"
+                                              Icon="{materialDesign:PackIcon Kind=Heart}"
+                                              InputGestureText="Ctrl+E"
+                                              Click="OnViewRightClickAddToFavourites"
+                                              CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"
+                                              />
 
                                     </ContextMenu>
                                 </DataGrid.ContextMenu>
