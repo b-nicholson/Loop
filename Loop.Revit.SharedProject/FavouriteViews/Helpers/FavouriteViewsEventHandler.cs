@@ -65,9 +65,9 @@ namespace Loop.Revit.FavouriteViews.Helpers
             var viewWrapper = (ViewWrapper)Arg2;
 
             var Doc = app.ActiveUIDocument.Document;
-            var schemaName = "ViewTitleLength";
-            var schemaDescription = "Function for storing the viewport title line extension length";
-            var paramName = "ExtensionDistance";
+            var schemaName = "FavouriteViews";
+            var schemaDescription = "Function for storing the user's favourite views";
+            var paramName = "View";
             var schemaInfo = new List<(string, Type)> { (paramName, typeof(double)) };
 
             var result = new OperationResult();
@@ -105,7 +105,7 @@ namespace Loop.Revit.FavouriteViews.Helpers
 
             #if !(Revit2022 || Revit2023)
             var darkmode = GlobalSettings.Settings.IsDarkModeTheme;
-            _pageService.ToggleDarkMode(darkmode);
+            pageService.ToggleDarkMode(darkmode);
 
             foreach (var docWrapper in ActiveDocumentList.Docs)
             {

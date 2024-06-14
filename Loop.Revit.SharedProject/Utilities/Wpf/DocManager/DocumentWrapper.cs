@@ -23,7 +23,7 @@ namespace Loop.Revit.Utilities.Wpf.DocManager
         private ICollectionView _favouriteViews;
         public ICollectionView FavouriteViews
         {
-            get => _newRecentViews;
+            get => _favouriteViews;
             set => SetProperty(ref _favouriteViews, value);
         }
 
