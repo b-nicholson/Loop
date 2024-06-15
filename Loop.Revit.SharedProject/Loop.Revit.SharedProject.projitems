@@ -63,6 +63,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\RevitUi\ChangeRibbonButtons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\RevitUi\CustomRibbonButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\RevitUi\RibbonButtonRecord.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\ShapeEdits\BoundaryFaceIntersections.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ShapeEdits\CurveComparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ShapeEdits\ShapeEditUtils.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\Units\AccuracyWrapper.cs" />
