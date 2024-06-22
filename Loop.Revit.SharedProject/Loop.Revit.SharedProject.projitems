@@ -43,6 +43,13 @@
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Settings\SettingsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ShapeEdits\ShapeEditsCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ShapeEdits\ShapeEditsRequestHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ShapeEdits\ShapeEditsModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ShapeEdits\ShapeEditsView.xaml.cs">
+      <DependentUpon>ShapeEditsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ShapeEdits\ShapeEditsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\SpatialObjectDeletedMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\SpatialObjectWrapper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ThirdButton\ThirdButtonCommand.cs" />
@@ -151,6 +158,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Settings\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)ShapeEdits\ShapeEditsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
