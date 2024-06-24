@@ -1,9 +1,7 @@
-﻿
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Windows.Media.Media3D;
 using Autodesk.Revit.DB;
 
@@ -138,15 +136,17 @@ namespace Loop.Revit.Utilities.ShapeEdits
             }
         }
 
-        public static ModelCurve DrawModelCurve(Document doc, Line line)
+        public static ModelCurve DrawModelCurve(Document doc, Curve curve)
         {
-            var dir = line.Direction;
+            var startPoint = curve.GetEndPoint(0);
+            var endPoint = curve.GetEndPoint(1);
+
+            var dir = (endPoint- startPoint).Normalize();
             var xDir = dir.CrossProduct(XYZ.BasisZ);
-            var startPoint = line.Origin;
 
             var geometryPlane = Plane.CreateByNormalAndOrigin(xDir, startPoint);
             var sketchPlane = SketchPlane.Create(doc, geometryPlane);
-            return doc.Create.NewModelCurve(line, sketchPlane);
+            return doc.Create.NewModelCurve(curve, sketchPlane);
 
         }
 
@@ -217,14 +217,14 @@ namespace Loop.Revit.Utilities.ShapeEdits
 
             foreach (var line1 in lineList1)
             {
-                var line1Converted = (Line)line1;
+                var line1Converted = (DetailLine)line1;
                 var flatPointsList = new List<XYZ>();
                 foreach (var line2 in lineList2)
                 {
-                    var line2Converted = (Line)line2;
+                    var line2Converted = (DetailLine)line2;
 
                     var results = new IntersectionResultArray();
-                    var intersectionResult = line1Converted.Intersect(line2Converted, out results);
+                    var intersectionResult = line1Converted.GeometryCurve.Intersect(line2Converted.GeometryCurve, out results);
 
                     if (intersectionResult != SetComparisonResult.Disjoint)
                     {
@@ -249,7 +249,7 @@ namespace Loop.Revit.Utilities.ShapeEdits
 
         //Heavy Chatgpt, check thoroughly
         public static BoundaryFaceIntersections IntersectBoundariesWithFaceEdges(Document doc, ModelCurveArray boundaryModelCurves,
-            List<Line> faceEdges)
+            List<Curve> faceEdges)
         {
             //Create model curves from face edges
             var modelCurves = new ModelCurveArray();
@@ -270,7 +270,7 @@ namespace Loop.Revit.Utilities.ShapeEdits
             var flatIntersectingPoints = IntersectListOfLines(flatLines, flatBoundaries);
 
             //find pairs of lines that intersect
-            var intersectingLines = new List<Line>();
+            var intersectingLines = new List<Curve>();
 
             foreach (var (listOfPts, edge) in flatIntersectingPoints.Zip(faceEdges, Tuple.Create))
             {
@@ -307,7 +307,17 @@ namespace Loop.Revit.Utilities.ShapeEdits
                     {
                         XYZ pt1 = sortedList[i];
                         XYZ pt2 = sortedList[i + 1];
-                        intersectingLines.Add(Line.CreateBound(pt1, pt2));
+
+                        //TODO check why too small lines get created
+                        try
+                        {
+                            intersectingLines.Add(Line.CreateBound(pt1, pt2));
+                        }
+                        catch (Exception e)
+                        {
+                           //pass
+                        }
+                        
                     }
                 }
             }
@@ -333,6 +343,65 @@ namespace Loop.Revit.Utilities.ShapeEdits
             return topFaces;
         }
 
+        public static List<Curve> ProjectCurvesVerticallyToFaces(List<PlanarFace> faces, List<Curve> curveList)
+        {
+            var projectedCurves = new List<Curve>();
+            foreach (var curve in curveList)
+            {
+                var startPoint = curve.GetEndPoint(0);
+                var endPoint = curve.GetEndPoint(1);
+
+                XYZ projectedStart = null;
+                XYZ projectedEnd = null;
+
+                foreach (PlanarFace face in faces)
+                {
+                    var startPt = ProjectPointToFace(startPoint, face);
+                    if (startPt != null)
+                    {
+                        projectedStart = startPt;
+                    }
+                    var endPt = ProjectPointToFace(endPoint, face);
+                    if (endPt != null)
+                    {
+                        projectedEnd = endPt;
+                    }
+
+                }
+
+                if (projectedStart != null && projectedEnd != null)
+                {
+                    projectedCurves.Add(Line.CreateBound(startPoint, endPoint));
+                }
+            }
+            return projectedCurves;
+
+        }
+
+        private static XYZ ProjectPointToFace(XYZ point, PlanarFace face)
+        {
+            XYZ projectedPoint = null;
+            var line = Line.CreateUnbound(point, XYZ.BasisZ);
+            var results = new IntersectionResultArray();
+            var result = face.Intersect(line, out results);
+
+            if (result != SetComparisonResult.Disjoint)
+            {
+                try
+                {
+                    var intersection = results.get_Item(0);
+                    projectedPoint = intersection.XYZPoint;
+
+                }
+                catch (Exception)
+                {
+                    //Do nothing
+                }
+            }
+            return projectedPoint;
+        }
+
+
         public static List<XYZ> ProjectPointVerticallyToFaces(List<PlanarFace> faces, List<XYZ> pointList)
         {
             var projectedPoints = new List<XYZ>();
@@ -340,31 +409,18 @@ namespace Loop.Revit.Utilities.ShapeEdits
             {
                 foreach (var boundaryPoint in pointList)
                 {
-                    var line = Line.CreateUnbound(boundaryPoint, XYZ.BasisZ);
-                    var results = new IntersectionResultArray();
-                    var result = face.Intersect(line, out results);
-
-                    if (result != SetComparisonResult.Disjoint)
+                    var projectedPoint = ProjectPointToFace(boundaryPoint, face);
+                    if (projectedPoint != null)
                     {
-                        try
-                        {
-                            var intersection = results.get_Item(0);
-                            projectedPoints.Add(intersection.XYZPoint);
-
-                        }
-                        catch (Exception)
-                        {
-                           //Do nothing
-                        }
+                        projectedPoints.Add(projectedPoint);
                     }
-
                 }
             }
             return projectedPoints;
         }
 
-        public static List<Line> UseFilledRegionToTrimLines(Document doc, List<CurveLoop> boundaryEdgeLoops,
-            List<List<XYZ>> intersectingPoints, List<Line> edges)
+        public static List<Curve> UseFilledRegionToTrimLines(Document doc, List<CurveLoop> boundaryEdgeLoops,
+            List<List<XYZ>> intersectingPoints, List<Curve> edges)
         {
             var tg = new TransactionGroup(doc, "Temporary Filled Region");
             tg.Start();
@@ -398,7 +454,7 @@ namespace Loop.Revit.Utilities.ShapeEdits
                 }
             }
 
-            var newEdges = new List<Line>();
+            var newEdges = new List<Curve>();
 
             foreach (var edgePoints in intersectingPoints)
             {
@@ -432,6 +488,15 @@ namespace Loop.Revit.Utilities.ShapeEdits
                                 }
 
                                 var trimmedStart = boundaryIntersectionResults.get_Item(0).XYZPoint;
+
+                                //var newRayLine = Line.CreateUnbound(trimmedStart, new XYZ(0, 0, -1));
+
+                                //var newIntersectionResults = new IntersectionResultArray();
+                                //var newIntersectionResult = filledRegionFace.Intersect(newRayLine, out newIntersectionResults);
+                                //var newStart = newIntersectionResults.get_Item(0).XYZPoint;
+
+
+                                //newEdges.Add(Line.CreateBound(newStart, trimmedEnd));
                                 newEdges.Add(Line.CreateBound(trimmedStart, trimmedEnd));
 
                             }
@@ -496,6 +561,8 @@ namespace Loop.Revit.Utilities.ShapeEdits
 
                 triangleCounter += 1;
             }
+
+            return newFaces;
 
         }
 

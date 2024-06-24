@@ -10,6 +10,18 @@
     d:DesignWidth="400">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Button Command="{Binding SelectTarget, Mode=OneWay}" Content="Target"/>
+        <Button Command="{Binding SelectHost, Mode=OneWay}" Content="Host" Grid.Row="1"/>
+        <Button Command="{Binding Run, Mode=OneWay}" Content="Run" Grid.Row="2" />
 
     </Grid>
 </Window>

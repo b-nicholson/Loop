@@ -43,6 +43,7 @@
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Settings\SettingsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ShapeEdits\Helpers\ShapeEditsSelectionMessage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShapeEdits\ShapeEditsCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShapeEdits\ShapeEditsRequestHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ShapeEdits\ShapeEditsModel.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\RevitUi\ChangeRibbonButtons.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\RevitUi\CustomRibbonButton.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\RevitUi\RibbonButtonRecord.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\Selection\SelectionFilterMultipleCategories.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ShapeEdits\BoundaryFaceIntersections.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ShapeEdits\CurveComparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utilities\ShapeEdits\ShapeEditUtils.cs" />

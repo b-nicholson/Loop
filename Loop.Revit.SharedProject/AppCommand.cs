@@ -10,6 +10,7 @@ using Loop.Revit.FavouriteViews.Helpers;
 using Loop.Revit.FirstButton;
 using Loop.Revit.SecondButton;
 using Loop.Revit.Settings;
+using Loop.Revit.ShapeEdits;
 using Loop.Revit.ThirdButton;
 using Loop.Revit.Utilities.RevitUi;
 using Loop.Revit.Utilities.UserSettings;
@@ -35,6 +36,9 @@ namespace Loop.Revit
         public static ExternalEvent FavouriteViewsEvent { get; set; }
         public static OutputListDialogEventHandler OutputListDialogHandler { get; set; }
         public static ExternalEvent OutputListDialogEvent { get; set; }
+
+        public static ShapeEditsRequestHandler ShapeEditsHandler { get; set; }
+        public static ExternalEvent ShapeEditsEvent { get; set; }
         private static List<RibbonPanel> CustomPanels { get; set; } = new List<RibbonPanel>();
 
         public Result OnStartup(UIControlledApplication app)
@@ -67,6 +71,8 @@ namespace Loop.Revit
             ViewTitlesCommand.CreateButton(ribbonPanel);
             ribbonPanel.AddSeparator();
             SettingsCommand.CreateButton(ribbonPanel);
+
+            ShapeEditsCommand.CreateButton(ribbonPanel);
 
             DockablePanelUtilsFv.RegisterDockablePanel(app);
 
@@ -108,6 +114,9 @@ namespace Loop.Revit
 
             OutputListDialogHandler = new OutputListDialogEventHandler();
             OutputListDialogEvent = ExternalEvent.Create(OutputListDialogHandler);
+
+            ShapeEditsHandler = new ShapeEditsRequestHandler();
+            ShapeEditsEvent = ExternalEvent.Create(ShapeEditsHandler);
 
             app.ControlledApplication.DocumentOpened += OnDocumentOpened;
             app.ControlledApplication.DocumentClosing += OnDocumentClosing;

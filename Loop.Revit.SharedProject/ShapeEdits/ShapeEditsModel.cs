@@ -1,5 +1,8 @@
-﻿using Autodesk.Revit.DB;
+﻿using System.Collections.Generic;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Selection;
+using Loop.Revit.Utilities.Selection;
 
 namespace Loop.Revit.ShapeEdits
 {
@@ -16,6 +19,26 @@ namespace Loop.Revit.ShapeEdits
             UiDoc = UiApp.ActiveUIDocument;
             Doc = UiDoc.Document;
             ActiveView = Doc.ActiveView;
+        }
+
+        public void Project(List<Element> targets, List<Element> hostElements, bool ignoreInternalPoints, bool boundaryPointOnly)
+        {
+
+
+            AppCommand.ShapeEditsHandler.Targets = targets;
+            AppCommand.ShapeEditsHandler.HostElements = hostElements;
+            AppCommand.ShapeEditsHandler.IgnoreInternalPoints = ignoreInternalPoints;
+            AppCommand.ShapeEditsHandler.BoundaryPointOnly = boundaryPointOnly;
+            AppCommand.ShapeEditsHandler.Request = RequestId.Project;
+            AppCommand.ShapeEditsEvent.Raise();
+
+        }
+
+        public void SelectObjects(bool isTargetElement)
+        {
+            AppCommand.ShapeEditsHandler.IsTargetElement = isTargetElement;
+            AppCommand.ShapeEditsHandler.Request = RequestId.Select;
+            AppCommand.ShapeEditsEvent.Raise();
         }
     }
 }
