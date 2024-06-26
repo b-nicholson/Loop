@@ -61,14 +61,10 @@ namespace Loop.Revit.ShapeEdits
             try
             {
                 var Doc = app.ActiveUIDocument.Document;
-
                 var hostElements = HostElements;
                 var targets = Targets;
                 var ignoreInternalPoints = IgnoreInternalPoints;
                 var boundaryPointOnly = BoundaryPointOnly;
-
-
-
 
                 //Need logic control between floors and roofs
                 var isRoof = false;
@@ -178,7 +174,6 @@ namespace Loop.Revit.ShapeEdits
                     var splitLines = new List<List<Curve>>();
                     if (!boundaryPointOnly)
                     {
-                        splitLines.Add(allEdges);
                         //need to make temporary elements for 2D intersection analysis
                         var t = new Transaction(Doc, "Temporary Element Creation");
                         t.Start();
@@ -194,6 +189,7 @@ namespace Loop.Revit.ShapeEdits
                         if (isRoof)
                         {
                             //var shapeEdges = targetElem.GetProfiles();
+
 
                             //TODO Implement roof logic
 
@@ -257,8 +253,6 @@ namespace Loop.Revit.ShapeEdits
                         var edgesAtBoundaryIntersection = ShapeEditUtils.UseFilledRegionToTrimLines(Doc, boundaryCurveLoops,
                             flatIntersectingPoints, cleanedEdges);
 
-                        //var projectedIntersections =
-                        //    ShapeEditUtils.ProjectCurvesVerticallyToFaces(topFaces, edgesAtBoundaryIntersection);
                         splitLines.Add(edgesAtBoundaryIntersection);
 
 
@@ -270,7 +264,9 @@ namespace Loop.Revit.ShapeEdits
 
                     //Add Split Lines
                     var flatList = splitLines.SelectMany(list => list).ToList();
-                    ShapeEditUtils.AddSplitLines(flatList, targetElem);
+
+                    var cleanLines = ShapeEditUtils.CleanLines(flatList);
+                    ShapeEditUtils.AddSplitLines(cleanLines, targetElem);
 
                     //Add projected Points
 

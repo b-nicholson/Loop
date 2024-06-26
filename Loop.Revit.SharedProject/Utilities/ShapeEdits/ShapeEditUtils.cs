@@ -489,15 +489,17 @@ namespace Loop.Revit.Utilities.ShapeEdits
 
                                 var trimmedStart = boundaryIntersectionResults.get_Item(0).XYZPoint;
 
-                                //var newRayLine = Line.CreateUnbound(trimmedStart, new XYZ(0, 0, -1));
+                                var newRayLine = Line.CreateUnbound(trimmedStart, new XYZ(0, 0, -1));
 
-                                //var newIntersectionResults = new IntersectionResultArray();
-                                //var newIntersectionResult = filledRegionFace.Intersect(newRayLine, out newIntersectionResults);
-                                //var newStart = newIntersectionResults.get_Item(0).XYZPoint;
-
-
-                                //newEdges.Add(Line.CreateBound(newStart, trimmedEnd));
-                                newEdges.Add(Line.CreateBound(trimmedStart, trimmedEnd));
+                                var newIntersectionResults = new IntersectionResultArray();
+                                var newIntersectionResult = edge.Intersect(newRayLine, out newIntersectionResults);
+                                if (newIntersectionResult != SetComparisonResult.Disjoint)
+                                {
+                                    var newStart = newIntersectionResults.get_Item(0).XYZPoint;
+                                    newEdges.Add(Line.CreateBound(newStart, trimmedEnd));
+                                }
+                                
+                                //newEdges.Add(Line.CreateBound(trimmedStart, trimmedEnd));
 
                             }
                             catch (Exception)
