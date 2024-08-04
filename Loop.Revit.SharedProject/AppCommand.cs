@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
 using CommunityToolkit.Mvvm.Messaging;
+using GenFusionsRevitCore.Servers3dContext;
 using Loop.Revit.FavouriteViews;
 using Loop.Revit.FavouriteViews.Helpers;
 using Loop.Revit.FirstButton;
@@ -26,6 +28,11 @@ namespace Loop.Revit
 {
     public class AppCommand : IExternalApplication
     {
+
+        //DirectContext3D library stuff
+        public ServerStateMachine ServerStateMachine { get; private set; }
+        public static AppCommand s_AppInstance { get; private set; }
+
         public static ThirdButtonRequestHandler ThirdButtonHandler { get; set; }
         public static ExternalEvent ThirdButtonEvent { get; set; }
         public static ViewTitlesRequestHandler ViewTitlesHandler { get; set; }
@@ -43,6 +50,10 @@ namespace Loop.Revit
 
         public Result OnStartup(UIControlledApplication app)
         {
+
+            s_AppInstance = this;
+            ServerStateMachine = new ServerStateMachine(this);
+
             string tabName = "Loop";
             try
             {

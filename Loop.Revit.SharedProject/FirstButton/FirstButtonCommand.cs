@@ -5,6 +5,7 @@ using System.Windows.Media;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using GenFusionsRevitCore.Servers3dContext.Graphics;
 using Loop.Revit.Utilities.RevitUi;
 using RibbonPanel = Autodesk.Revit.UI.RibbonPanel;
 
@@ -25,41 +26,50 @@ namespace Loop.Revit.FirstButton
                 var doc = uiApp.ActiveUIDocument.Document;
                 var uiDoc = uiApp.ActiveUIDocument;
 
-                var blah = commandData.Application.Application.Documents;
+                //var blah = commandData.Application.Application.Documents;
 
-                var oi = uiDoc.GetOpenUIViews();
+                //var oi = uiDoc.GetOpenUIViews();
 
 
 
-                var docList = new List<Document>();
-                foreach (var docu in blah)
-                {
-                    var tempDoc = (Document)docu;
+                //var docList = new List<Document>();
+                //foreach (var docu in blah)
+                //{
+                //    var tempDoc = (Document)docu;
 
-                    if (!Equals(doc, tempDoc))
-                    {
-                        var hi = "";
-                        var newUiDoc = new UIDocument(tempDoc);
-                        var stupid = newUiDoc.GetOpenUIViews();
-                    }
-                    docList.Add(tempDoc);
-                }
+                //    if (!Equals(doc, tempDoc))
+                //    {
+                //        var hi = "";
+                //        var newUiDoc = new UIDocument(tempDoc);
+                //        var stupid = newUiDoc.GetOpenUIViews();
+                //    }
+                //    docList.Add(tempDoc);
+                //}
 
                
 
 
-                var win= UIFramework.MainWindow.getMainWnd();
+                //var win= UIFramework.MainWindow.getMainWnd();
 
-                var children = win.getAllViews();
+                //var children = win.getAllViews();
 
-                var b = "";
-                foreach (var child in children)
-                {
-                    child.Foreground = new SolidColorBrush(Colors.Aqua);
-                    b = child.Name;
-                    child.FontSize = 22;
+                //var b = "";
+                //foreach (var child in children)
+                //{
+                //    child.Foreground = new SolidColorBrush(Colors.Aqua);
+                //    b = child.Name;
+                //    child.FontSize = 22;
         
-                }
+                //}
+
+                var point = new List<XYZ>();
+                    point.Add(new XYZ(0,0,0));
+
+                AppCommand.s_AppInstance.ServerStateMachine.ClearSolidServers();
+                
+                AppCommand.s_AppInstance.ServerStateMachine.DrawPointCube(doc, new XYZ(0,0,10), 30,SimpleColors.Blue,SimpleColors.Orange;
+
+                AppCommand.s_AppInstance.ServerStateMachine.DrawPointsSphere(doc,point, 3, new ColorWithTransparency(255,165,0,50), new ColorWithTransparency(255,255,255,0));
 
                 
 
