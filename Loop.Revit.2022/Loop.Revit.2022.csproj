@@ -60,6 +60,9 @@
     <Reference Include="FluentValidation, Version=11.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentValidation.11.9.0\lib\netstandard2.0\FluentValidation.dll</HintPath>
     </Reference>
+    <Reference Include="GenFusionsRevitCore.Servers3dContext, Version=2022.1.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\GenFusionsRevitCore.Servers3dContext.2022.1.0\lib\net48\GenFusionsRevitCore.Servers3dContext.dll</HintPath>
+    </Reference>
     <Reference Include="MaterialDesignColors, Version=2.1.4.0, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.2.1.4\lib\net462\MaterialDesignColors.dll</HintPath>
     </Reference>
