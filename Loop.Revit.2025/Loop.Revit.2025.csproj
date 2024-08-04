@@ -31,6 +31,7 @@
     <PackageReference Include="EPPlus.Interfaces" Version="6.1.1" />
     <PackageReference Include="EPPlus.System.Drawing" Version="6.1.1" />
     <PackageReference Include="FluentValidation" Version="11.9.0" />
+    <PackageReference Include="GenFusionsRevitCore.Servers3dContext" Version="2025.1.0" />
     <PackageReference Include="MaterialDesignColors" Version="2.1.4" />
     <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
@@ -43,7 +44,7 @@
     <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.3" />
+    <PackageReference Include="System.Text.Json" Version="8.0.4" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
