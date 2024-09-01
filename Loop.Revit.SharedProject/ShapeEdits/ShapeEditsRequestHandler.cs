@@ -257,13 +257,13 @@ namespace Loop.Revit.ShapeEdits
 
                         //since all these things are 3D,
                         //the easiest way to find what's relevant is to convert it all to 2D and intersect + trim
-                        var test = ShapeEditUtils.UseBoundaryCurvesToMakeSolidToTrimLines(Doc, boundaryCurveLoops,
-                            cleanedEdges);
+                        //var test = ShapeEditUtils.UseBoundaryCurvesToMakeSolidToTrimLines(Doc, boundaryCurveLoops,
+                        //    cleanedEdges);
                         var edgesAtBoundaryIntersection = ShapeEditUtils.UseFilledRegionToTrimLines(Doc, boundaryCurveLoops,
                             flatIntersectingPoints, cleanedEdges);
 
-                        //splitLines.Add(edgesAtBoundaryIntersection);
-                        splitLines.Add(test);
+                        splitLines.Add(edgesAtBoundaryIntersection);
+                        //splitLines.Add(test);
 
                     }
 
