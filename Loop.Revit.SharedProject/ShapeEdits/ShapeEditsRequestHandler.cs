@@ -181,17 +181,9 @@ namespace Loop.Revit.ShapeEdits
                     var splitLines = new List<List<Curve>>();
                     if (!boundaryPointOnly)
                     {
-                        //need to make temporary elements for 2D intersection analysis
-                        var t = new Transaction(Doc, "Temporary Element Creation");
-                        t.Start();
-
                         //get target boundary edges, create model lines for later conversion to 2D
-
-
                         var boundaryCurveLoops = new List<CurveLoop>();
                         var singletonCurveLoop = new CurveLoop();
-                        var boundaryModelCurves = new ModelCurveArray();
-                        var flatIntersectingPoints = new List<List<XYZ>>();
 
 
                         if (isRoof)
@@ -220,7 +212,6 @@ namespace Loop.Revit.ShapeEdits
                                     foreach (Curve curve in itemArray)
                                     {
                                         curveLoop.Append(curve);
-                                        boundaryModelCurves.Append(ShapeEditUtils.DrawModelCurve(Doc, curve));
                                     }
                                     boundaryCurveLoops.Add(curveLoop);
                                 }
@@ -229,7 +220,6 @@ namespace Loop.Revit.ShapeEdits
                                 {
                                     var itemCurve = (Curve)item;
                                     singletonCurveLoop.Append(itemCurve);
-                                    boundaryModelCurves.Append(ShapeEditUtils.DrawModelCurve(Doc, itemCurve));
                                 }
 
                             }
@@ -240,30 +230,14 @@ namespace Loop.Revit.ShapeEdits
                                 boundaryCurveLoops.Add(singletonCurveLoop);
                             }
 
-                            // find the point where the target's boundary intersects with the host face geometry, and get the relevant lines
-                            // needs to be in a rollback transaction since we generate temporary elements to do so
-
-                            var intersectionResult =
-                                ShapeEditUtils.IntersectBoundariesWithFaceEdges(Doc, boundaryModelCurves, cleanedEdges);
-                            var intersections = intersectionResult.LineIntersections;
-                           
-
-                            //splitLines.Add(intersections);
-
-                            flatIntersectingPoints = intersectionResult.IntersectingPoints;
+          
 
                         }
-                        t.RollBack();
+                        
+                        var test = ShapeEditUtils.UseBoundaryCurvesToMakeSolidToTrimLines(Doc, boundaryCurveLoops,
+                            cleanedEdges);
 
-                        //since all these things are 3D,
-                        //the easiest way to find what's relevant is to convert it all to 2D and intersect + trim
-                        //var test = ShapeEditUtils.UseBoundaryCurvesToMakeSolidToTrimLines(Doc, boundaryCurveLoops,
-                        //    cleanedEdges);
-                        var edgesAtBoundaryIntersection = ShapeEditUtils.UseFilledRegionToTrimLines(Doc, boundaryCurveLoops,
-                            flatIntersectingPoints, cleanedEdges);
-
-                        splitLines.Add(edgesAtBoundaryIntersection);
-                        //splitLines.Add(test);
+                        splitLines.Add(test);
 
                     }
 
@@ -277,10 +251,6 @@ namespace Loop.Revit.ShapeEdits
                     var cleanLines = ShapeEditUtils.CleanLines(flatList);
                     ShapeEditUtils.AddSplitLines(cleanLines, targetElem);
 
-                    foreach (var curve in flatList)
-                    {
-                        ShapeEditUtils.DrawModelCurve(Doc, curve);
-                    }
 
 
                     //Add projected Points
