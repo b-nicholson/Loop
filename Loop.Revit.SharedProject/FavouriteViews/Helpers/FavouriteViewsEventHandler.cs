@@ -75,18 +75,18 @@ namespace Loop.Revit.FavouriteViews.Helpers
 
             try
             {
-                var t = new Transaction(Doc, "Save Viewport Titles Extension Length");
-                t.Start();
+                //var t = new Transaction(Doc, "Save Viewport Titles Extension Length");
+                //t.Start();
 
-                var schema = ExtensibleStorageHelper.CreateSimpleSchema(
-                    Model.ExtensibleStorageGuid, schemaName, schemaDescription, schemaInfo, SpecTypeId.Length);
-                var paramInfo = new List<(string, dynamic)> { (paramName, Model.ExtensionDistance) };
+                //var schema = ExtensibleStorageHelper.CreateSimpleSchema(
+                //    Model.ExtensibleStorageGuid, schemaName, schemaDescription, schemaInfo, SpecTypeId.Length);
+                //var paramInfo = new List<(string, dynamic)> { (paramName, Model.ExtensionDistance) };
 
-                // I have no idea why it stores a weird number when looking it up manually in lookup,
-                // it comes back out correctly though
-                ExtensibleStorageHelper.CreateDataStorage(Doc, schema, Model.ExtensibleStorageGuid,
-                    "Viewport Title Length Extension Distance", paramInfo, UnitTypeId.Feet);
-                t.Commit();
+                //// I have no idea why it stores a weird number when looking it up manually in lookup,
+                //// it comes back out correctly though
+                //ExtensibleStorageHelper.CreateDataStorage(Doc, schema, Model.ExtensibleStorageGuid,
+                //    "Viewport Title Length Extension Distance", paramInfo, UnitTypeId.Feet);
+                //t.Commit();
                 result.Success = true;
             }
             catch (Exception e)

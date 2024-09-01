@@ -62,12 +62,11 @@ namespace Loop.Revit.FirstButton
         
                 //}
 
-                var point = new List<XYZ>();
-                    point.Add(new XYZ(0,0,0));
+                var point = new List<XYZ> { new XYZ(0,0,0) };
 
                 AppCommand.s_AppInstance.ServerStateMachine.ClearSolidServers();
                 
-                AppCommand.s_AppInstance.ServerStateMachine.DrawPointCube(doc, new XYZ(0,0,10), 30,SimpleColors.Blue,SimpleColors.Orange;
+                AppCommand.s_AppInstance.ServerStateMachine.DrawPointCube(doc, new XYZ(0,0,10), 30,SimpleColors.Blue,SimpleColors.Orange);
 
                 AppCommand.s_AppInstance.ServerStateMachine.DrawPointsSphere(doc,point, 3, new ColorWithTransparency(255,165,0,50), new ColorWithTransparency(255,255,255,0));
 

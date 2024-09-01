@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Diagnostics;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Events;
 using Autodesk.Revit.UI.Selection;
 using CommunityToolkit.Mvvm.Messaging;
 using Loop.Revit.ShapeEdits.Helpers;
 using Loop.Revit.Utilities.Selection;
 using Loop.Revit.Utilities.ShapeEdits;
 using Loop.Revit.ViewTitles.Helpers;
+using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Loop.Revit.ShapeEdits
 {
@@ -60,6 +60,12 @@ namespace Loop.Revit.ShapeEdits
         {
             try
             {
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+                //Event handler to deal with warnings
+                app.DialogBoxShowing += UiAppOnDialogBoxShowing;
+
+
                 var Doc = app.ActiveUIDocument.Document;
                 var hostElements = HostElements;
                 var targets = Targets;
@@ -123,20 +129,21 @@ namespace Loop.Revit.ShapeEdits
                 foreach (var target in targets)
                 {
                     var elemType = target.GetType();
-                    Floor targetElem;
+                    dynamic targetElem;
 
                     if (elemType == typeof(FootPrintRoof))
                     {
-                        //targetElem = (FootPrintRoof)target;
+                        targetElem = (FootPrintRoof)target;
                         isRoof = true;
                     }
 
-                    if (elemType == typeof(Floor))
+                    else if (elemType == typeof(Floor))
                     {
                         targetElem = (Floor)target;
                     }
                     else
                     {
+
                         continue;
                     }
 
@@ -186,6 +193,7 @@ namespace Loop.Revit.ShapeEdits
                         var boundaryModelCurves = new ModelCurveArray();
                         var flatIntersectingPoints = new List<List<XYZ>>();
 
+
                         if (isRoof)
                         {
                             //var shapeEdges = targetElem.GetProfiles();
@@ -200,6 +208,7 @@ namespace Loop.Revit.ShapeEdits
                             var shapeSketchId = targetElem.SketchId;
                             var sketch = (Sketch)Doc.GetElement(shapeSketchId);
                             var profile = sketch.Profile;
+                            
 
                             foreach (var item in profile)
                             {
@@ -239,22 +248,22 @@ namespace Loop.Revit.ShapeEdits
                             var intersections = intersectionResult.LineIntersections;
                            
 
-                            splitLines.Add(intersections);
+                            //splitLines.Add(intersections);
 
                             flatIntersectingPoints = intersectionResult.IntersectingPoints;
 
                         }
-
                         t.RollBack();
 
                         //since all these things are 3D,
                         //the easiest way to find what's relevant is to convert it all to 2D and intersect + trim
-
+                        var test = ShapeEditUtils.UseBoundaryCurvesToMakeSolidToTrimLines(Doc, boundaryCurveLoops,
+                            cleanedEdges);
                         var edgesAtBoundaryIntersection = ShapeEditUtils.UseFilledRegionToTrimLines(Doc, boundaryCurveLoops,
                             flatIntersectingPoints, cleanedEdges);
 
-                        splitLines.Add(edgesAtBoundaryIntersection);
-
+                        //splitLines.Add(edgesAtBoundaryIntersection);
+                        splitLines.Add(test);
 
                     }
 
@@ -267,6 +276,12 @@ namespace Loop.Revit.ShapeEdits
 
                     var cleanLines = ShapeEditUtils.CleanLines(flatList);
                     ShapeEditUtils.AddSplitLines(cleanLines, targetElem);
+
+                    foreach (var curve in flatList)
+                    {
+                        ShapeEditUtils.DrawModelCurve(Doc, curve);
+                    }
+
 
                     //Add projected Points
 
@@ -282,6 +297,11 @@ namespace Loop.Revit.ShapeEdits
 
                 transactionGroup.Assimilate();
 
+                //Un register to the event, we don't need it anymore.
+                app.DialogBoxShowing -= UiAppOnDialogBoxShowing;
+                stopwatch.Stop();
+                TaskDialog.Show("Time Elapsed", stopwatch.Elapsed.ToString());
+
             }
             catch (Exception)
             {
@@ -289,6 +309,27 @@ namespace Loop.Revit.ShapeEdits
             }
 
         }
+
+        private static void UiAppOnDialogBoxShowing(object sender, DialogBoxShowingEventArgs args)
+        {
+            switch (args)
+            {
+                // Dismiss no open view pop-up. We pick a view dependent element so it is fast to find
+                case DialogBoxShowingEventArgs args2:
+
+                    args2.OverrideResult(1);
+                    //if (args2.Message ==
+                    //    "There is no open view that shows any of the highlighted elements.  Searching through the closed views to find a good view could take a long time.  Continue?")
+                    //{
+                    //    //This is from the windows forms dialog result enum. Direct cast to save a reference
+                    //    args2.OverrideResult(1);
+                    //}
+                    break;
+                default:
+                    return;
+            }
+        }
+
 
         private void Select(UIApplication app)
         {

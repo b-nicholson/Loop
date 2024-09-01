@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Windows.Media.Media3D;
-using Autodesk.Revit.DB;
+﻿using Autodesk.Revit.DB;
+using Line = Autodesk.Revit.DB.Line;
 
 namespace Loop.Revit.Utilities.ShapeEdits
 {
@@ -144,7 +140,16 @@ namespace Loop.Revit.Utilities.ShapeEdits
             var dir = (endPoint- startPoint).Normalize();
             var xDir = dir.CrossProduct(XYZ.BasisZ);
 
+            double x = dir.X, y = dir.Y, z = dir.Z;
+            XYZ n = new XYZ(z - y, x - z, y - x);
+
             var geometryPlane = Plane.CreateByNormalAndOrigin(xDir, startPoint);
+            if (curve.GetType() == typeof(Arc))
+            {
+                var arc = (Arc)curve;
+                geometryPlane = Plane.CreateByNormalAndOrigin(arc.Normal, startPoint);
+            }
+
             var sketchPlane = SketchPlane.Create(doc, geometryPlane);
             return doc.Create.NewModelCurve(curve, sketchPlane);
 
@@ -217,11 +222,11 @@ namespace Loop.Revit.Utilities.ShapeEdits
 
             foreach (var line1 in lineList1)
             {
-                var line1Converted = (DetailLine)line1;
+                var line1Converted = (DetailCurve)line1;
                 var flatPointsList = new List<XYZ>();
                 foreach (var line2 in lineList2)
                 {
-                    var line2Converted = (DetailLine)line2;
+                    var line2Converted = (DetailCurve)line2;
 
                     var results = new IntersectionResultArray();
                     var intersectionResult = line1Converted.GeometryCurve.Intersect(line2Converted.GeometryCurve, out results);
@@ -230,8 +235,12 @@ namespace Loop.Revit.Utilities.ShapeEdits
                     {
                         try
                         {
-                            var intersectionEdges = results.get_Item(0);
-                            flatPointsList.Add(intersectionEdges.XYZPoint);
+                            if (results != null)
+                            {
+                                var intersectionEdges = results.get_Item(0);
+                                flatPointsList.Add(intersectionEdges.XYZPoint);
+                            }
+                            
 
                         }
                         catch (Exception)
@@ -253,17 +262,27 @@ namespace Loop.Revit.Utilities.ShapeEdits
         {
             //Create model curves from face edges
             var modelCurves = new ModelCurveArray();
+
             foreach (var edge in faceEdges)
             {
                 modelCurves.Append(DrawModelCurve(doc, edge));
             }
 
-            //Get a random plan view, doesn't matter what one
-            var viewElement = new FilteredElementCollector(doc).OfClass(typeof(ViewPlan)).WhereElementIsNotElementType()
-                .FirstElement();
+            //Get a random plan view, doesn't matter what one. Need to explicity filter for templates
+            var viewElement = new FilteredElementCollector(doc).OfClass(typeof(ViewPlan))
+                .WhereElementIsNotElementType().Cast<ViewPlan>().FirstOrDefault(viewPlan => !viewPlan.IsTemplate);
+            
             var view = (View)viewElement;
             //flatten the model curves to detail lines
-            var flatLines = doc.ConvertModelToDetailCurves(view, modelCurves);
+            var flatLines = new DetailCurveArray();
+            try
+            {
+                flatLines = doc.ConvertModelToDetailCurves(view, modelCurves);
+            }
+            catch (Exception e)
+            {
+                //do nothing
+            }
             var flatBoundaries = doc.ConvertModelToDetailCurves(view, boundaryModelCurves);
 
             //find intersecting points from lines
@@ -326,15 +345,15 @@ namespace Loop.Revit.Utilities.ShapeEdits
 
         }
 
-        public static List<PlanarFace> GetTopFaces(FaceArray faces)
+        public static List<Face> GetTopFaces(FaceArray faces)
         {
-            var topFaces = new List<PlanarFace>();
+            var topFaces = new List<Face>();
 
             foreach (var face in faces)
             {
-                var convertedFace = (PlanarFace)face;
-
-                if (convertedFace.FaceNormal[2] > 0)
+                var convertedFace = (Face)face;
+                var normal = convertedFace.ComputeNormal(new UV(0.5, 0.5));
+                if (normal[2] > 0)
                 {
                     topFaces.Add(convertedFace);
                 }
@@ -343,7 +362,7 @@ namespace Loop.Revit.Utilities.ShapeEdits
             return topFaces;
         }
 
-        public static List<Curve> ProjectCurvesVerticallyToFaces(List<PlanarFace> faces, List<Curve> curveList)
+        public static List<Curve> ProjectCurvesVerticallyToFaces(List<Face> faces, List<Curve> curveList)
         {
             var projectedCurves = new List<Curve>();
             foreach (var curve in curveList)
@@ -354,7 +373,7 @@ namespace Loop.Revit.Utilities.ShapeEdits
                 XYZ projectedStart = null;
                 XYZ projectedEnd = null;
 
-                foreach (PlanarFace face in faces)
+                foreach (Face face in faces)
                 {
                     var startPt = ProjectPointToFace(startPoint, face);
                     if (startPt != null)
@@ -378,7 +397,7 @@ namespace Loop.Revit.Utilities.ShapeEdits
 
         }
 
-        private static XYZ ProjectPointToFace(XYZ point, PlanarFace face)
+        private static XYZ ProjectPointToFace(XYZ point, Face face)
         {
             XYZ projectedPoint = null;
             var line = Line.CreateUnbound(point, XYZ.BasisZ);
@@ -402,10 +421,10 @@ namespace Loop.Revit.Utilities.ShapeEdits
         }
 
 
-        public static List<XYZ> ProjectPointVerticallyToFaces(List<PlanarFace> faces, List<XYZ> pointList)
+        public static List<XYZ> ProjectPointVerticallyToFaces(List<Face> faces, List<XYZ> pointList)
         {
             var projectedPoints = new List<XYZ>();
-            foreach (PlanarFace face in faces)
+            foreach (Face face in faces)
             {
                 foreach (var boundaryPoint in pointList)
                 {
@@ -427,12 +446,11 @@ namespace Loop.Revit.Utilities.ShapeEdits
             var t = new Transaction(doc, "Create Temp Filled Region");
             t.Start();
 
-            var view = new FilteredElementCollector(doc).OfClass(typeof(ViewPlan)).WhereElementIsNotElementType()
-                .FirstElement().Id;
-            var filledRegiontype =
+            var view = new FilteredElementCollector(doc).OfClass(typeof(ViewPlan)).WhereElementIsNotElementType().Cast<ViewPlan>().FirstOrDefault(viewPlan => !viewPlan.IsTemplate).Id;
+            var filledRegionType =
                 new FilteredElementCollector(doc).OfClass(typeof(FilledRegionType)).FirstElement().Id;
 
-            var filledRegion = FilledRegion.Create(doc, filledRegiontype, view, boundaryEdgeLoops);
+            var filledRegion = FilledRegion.Create(doc, filledRegionType, view, boundaryEdgeLoops);
             t.Commit();
 
             var opts = new Options();
@@ -518,8 +536,117 @@ namespace Loop.Revit.Utilities.ShapeEdits
 
         }
 
+        public static List<Curve> UseBoundaryCurvesToMakeSolidToTrimLines(Document doc, List<CurveLoop> boundaryEdgeLoops,
+            List<Curve> edges)
+        {
+            var distance = 10000;
+            var solid = GeometryCreationUtilities.CreateExtrusionGeometry(boundaryEdgeLoops, XYZ.BasisZ, distance);
+            var transform = Transform.CreateTranslation(new XYZ(0,0, -(distance/2)));
+            var translatedSolid = SolidUtils.CreateTransformed(solid, transform);
 
-        public static List<PlanarFace> ConvertTopographyToFaces(Element topographyElement)
+            var boundingBox = translatedSolid.GetBoundingBox();
+
+
+
+            var edgeList = new List<Curve>();
+
+
+            var intlist = new List<SolidCurveIntersection>();
+            foreach (var edge in edges)
+            {
+                if (_isCurveWithinBoundingBox(edge, boundingBox))
+                {
+                    edgeList.Add(edge);
+                }
+                //var intersection = translatedSolid.IntersectWithCurve(edge, new SolidCurveIntersectionOptions());
+                //if (intersection.ResultType == SolidCurveIntersectionMode.CurveSegmentsInside)
+                //{
+                //    var count = intersection.SegmentCount;
+                //    var oi = intersection.GetEnumerator();
+                //    if (count > 0)
+                //    {
+                //        var intCrv = intersection.GetCurveSegment(0);
+                //        intlist.Add(intersection);
+                //    }
+
+                //}
+            }
+
+            var viableEdges = new List<Curve>();
+            foreach (var edge in edges)
+            {
+                var intersection = translatedSolid.IntersectWithCurve(edge, new SolidCurveIntersectionOptions());
+                if (intersection.ResultType == SolidCurveIntersectionMode.CurveSegmentsInside)
+                {
+                    var count = intersection.SegmentCount;
+                    var enumerator = intersection.GetEnumerator();
+                    intlist.Add(intersection);
+
+                    if (count == 0)
+                    {
+                        //viableEdges.Add(edge);
+                    }
+                    if (count > 0)
+                    {
+                        while (enumerator.MoveNext())
+                        {
+                            var currrentIntersectionResult = enumerator.Current;
+                            var midpoint = currrentIntersectionResult.Evaluate(0.5, false);
+                            var midpointMoved = midpoint + new XYZ(0, 0, 0.1);
+                            var checkLine = Line.CreateBound(midpoint, midpointMoved);
+
+                            var segmentIntersection =
+                                translatedSolid.IntersectWithCurve(checkLine, new SolidCurveIntersectionOptions());
+
+                            if (segmentIntersection.ResultType == SolidCurveIntersectionMode.CurveSegmentsInside)
+                            {
+                                viableEdges.Add(currrentIntersectionResult);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return viableEdges;
+        }
+
+        private static bool _isPointWithinBoundingBox(XYZ point, XYZ minPoint, XYZ maxPoint)
+        {
+            return (point.X >= minPoint.X && point.X <= maxPoint.X &&
+                    point.Y >= minPoint.Y && point.Y <= maxPoint.Y &&
+                    point.Z >= minPoint.Z && point.Z <= maxPoint.Z);
+        }
+
+        private static bool _isCurveWithinBoundingBox(Curve curve, BoundingBoxXYZ boundingBox, int numSamples = 10)
+        {
+            // Get the minimum and maximum points of the bounding box
+            XYZ minPoint = boundingBox.Min;
+            XYZ maxPoint = boundingBox.Max;
+
+            // Check start and end points
+            if (_isPointWithinBoundingBox(curve.GetEndPoint(0), minPoint, maxPoint) ||
+                _isPointWithinBoundingBox(curve.GetEndPoint(1), minPoint, maxPoint))
+            {
+                return true;
+            }
+
+
+            // For more complex curves (e.g., splines), sample points along the curve
+            for (int i = 1; i < numSamples; i++)
+            {
+                double parameter = curve.GetEndParameter(0) + (curve.GetEndParameter(1) - curve.GetEndParameter(0)) * i / (double)numSamples;
+                XYZ point = curve.Evaluate(parameter, false);
+                if (_isPointWithinBoundingBox(point, minPoint, maxPoint))
+                {
+                    return true;
+                }
+            }
+
+            // No points are within the bounding box
+            return false;
+        }
+
+        public static List<Face> ConvertTopographyToFaces(Element topographyElement)
         {
             var geo = topographyElement.get_Geometry(new Options());
             Mesh mesh = null;
@@ -534,7 +661,7 @@ namespace Loop.Revit.Utilities.ShapeEdits
 
             int triangleCounter = 0;
             var meshTriangles = mesh.NumTriangles;
-            var newFaces = new List<PlanarFace>();
+            var newFaces = new List<Face>();
 
             while (triangleCounter != (meshTriangles-1))
             {
