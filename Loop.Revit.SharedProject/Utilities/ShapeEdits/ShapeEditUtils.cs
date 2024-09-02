@@ -421,9 +421,10 @@ namespace Loop.Revit.Utilities.ShapeEdits
         }
 
 
-        public static List<XYZ> ProjectPointVerticallyToFaces(List<Face> faces, List<XYZ> pointList)
+        public static PointProjectionResult ProjectPointVerticallyToFaces(List<Face> faces, List<XYZ> pointList, double verticalOffset = 0.0)
         {
             var projectedPoints = new List<XYZ>();
+            var missingPoints = pointList.ToList();
             foreach (Face face in faces)
             {
                 foreach (var boundaryPoint in pointList)
@@ -431,13 +432,68 @@ namespace Loop.Revit.Utilities.ShapeEdits
                     var projectedPoint = ProjectPointToFace(boundaryPoint, face);
                     if (projectedPoint != null)
                     {
-                        projectedPoints.Add(projectedPoint);
+                        projectedPoints.Add(projectedPoint+ new XYZ(0,0, verticalOffset));
+                        missingPoints.Remove(boundaryPoint);
                     }
+
                 }
             }
-            return projectedPoints;
+
+            var results = new PointProjectionResult(projectedPoints, missingPoints);
+            return results;
         }
 
+        public static List<XYZ> FindClosestPointsFromListOfPoints(List<XYZ> inputPoints, List<XYZ> listOfPointsToReadFrom, double verticalOffset = 0.0)
+        {
+            //This is somewhat gnarly, there's probably a more efficient way, but it's probably not worth the complexity / effort
+
+            var matchedPoints = new List<XYZ>();
+            var cleanedListOfPoints = listOfPointsToReadFrom.ToList();
+
+            foreach (var point in listOfPointsToReadFrom)
+            {
+                foreach (var inputPoint in inputPoints)
+                {
+                    if (inputPoint.IsAlmostEqualTo(point))
+                    {
+                        cleanedListOfPoints.Remove(point);
+                    }
+                } 
+            }
+
+            foreach (var missingPoint in inputPoints)
+            {
+                XYZ? closestPoint = null;
+                var minDistance = double.MaxValue;
+                var sortedPoints = cleanedListOfPoints.OrderBy(p => p.X).ToList();
+
+                foreach (var sortedPoint in sortedPoints)
+                {
+                    var distanceAlongAxis = Math.Abs(missingPoint.X - sortedPoint.X);
+
+                    // Early exit if the closest possible distance along the axis is already greater than minDistance
+                    if (distanceAlongAxis >= minDistance)
+                    {
+                        break;
+                    }
+
+                    var distance = missingPoint.DistanceTo(sortedPoint);
+
+                    if (distance < minDistance)
+                    {
+                        minDistance = distance;
+                        closestPoint = sortedPoint;
+                    }
+                }
+
+                if (closestPoint != null)
+                {
+                    var newPoint = new XYZ(missingPoint.X, missingPoint.Y, closestPoint.Z + verticalOffset);
+                    matchedPoints.Add(newPoint);
+                }
+            }
+            return matchedPoints;
+        }
         public static List<Curve> UseFilledRegionToTrimLines(Document doc, List<CurveLoop> boundaryEdgeLoops,
             List<List<XYZ>> intersectingPoints, List<Curve> edges)
         {
@@ -537,7 +593,7 @@ namespace Loop.Revit.Utilities.ShapeEdits
         }
 
         public static List<Curve> UseBoundaryCurvesToMakeSolidToTrimLines(Document doc, List<CurveLoop> boundaryEdgeLoops,
-            List<Curve> edges)
+            List<Curve> edges, double verticalOffset =0.0)
         {
             var distance = 10000;
             var solid = GeometryCreationUtilities.CreateExtrusionGeometry(boundaryEdgeLoops, XYZ.BasisZ, distance);
@@ -581,11 +637,6 @@ namespace Loop.Revit.Utilities.ShapeEdits
                     var count = intersection.SegmentCount;
                     var enumerator = intersection.GetEnumerator();
                     intlist.Add(intersection);
-
-                    if (count == 0)
-                    {
-                        //viableEdges.Add(edge);
-                    }
                     if (count > 0)
                     {
                         while (enumerator.MoveNext())
@@ -600,7 +651,9 @@ namespace Loop.Revit.Utilities.ShapeEdits
 
                             if (segmentIntersection.ResultType == SolidCurveIntersectionMode.CurveSegmentsInside)
                             {
-                                viableEdges.Add(currrentIntersectionResult);
+                                var transformOffsetVertically = Transform.CreateTranslation(new XYZ(0, 0,verticalOffset));
+                                var transformedCurve = currrentIntersectionResult.CreateTransformed(transformOffsetVertically);
+                                viableEdges.Add(transformedCurve);
                             }
                         }
                     }
@@ -617,7 +670,80 @@ namespace Loop.Revit.Utilities.ShapeEdits
                     point.Z >= minPoint.Z && point.Z <= maxPoint.Z);
         }
 
-        private static bool _isCurveWithinBoundingBox(Curve curve, BoundingBoxXYZ boundingBox, int numSamples = 10)
+        public static List<Curve> SortCurvesContiguously(List<Curve> curves)
+        {
+            if (curves == null || curves.Count == 0)
+                return curves;
+
+            // Start with the first curve
+            List<Curve> sortedCurves = new List<Curve>();
+            Curve currentCurve = curves[0];
+            sortedCurves.Add(currentCurve);
+            curves.RemoveAt(0);
+
+            var isBound = currentCurve.IsBound;
+
+            if (!isBound)
+            {
+                var oi = 2;
+            }
+
+            var isClosed = currentCurve.IsClosed;
+            {
+                var oii = 2;
+            }
+
+
+
+            XYZ currentEndPoint = currentCurve.GetEndPoint(1); // End point of the current curve
+
+            // Loop until all curves are sorted
+            while (curves.Count > 0)
+            {
+                // Find the next curve that starts or ends at the current endpoint
+                Curve nextCurve = null;
+                bool shouldReverse = false;
+                for (int i = 0; i < curves.Count; i++)
+                {
+                    Curve candidate = curves[i];
+                    if (candidate.GetEndPoint(0).IsAlmostEqualTo(currentEndPoint))
+                    {
+                        nextCurve = candidate;
+                        shouldReverse = false;
+                        break;
+                    }
+                    else if (candidate.GetEndPoint(1).IsAlmostEqualTo(currentEndPoint))
+                    {
+                        nextCurve = candidate;
+                        shouldReverse = true;
+                        break;
+                    }
+                }
+
+                // If no matching curve is found, break out of the loop
+                if (nextCurve == null)
+                {
+                    break;
+                }
+
+                // Reverse the curve if needed
+                if (shouldReverse)
+                {
+                    nextCurve = nextCurve.CreateReversed();
+                }
+
+                // Add the next curve to the sorted list
+                sortedCurves.Add(nextCurve);
+                curves.Remove(nextCurve);
+
+                // Update the current end point
+                currentEndPoint = nextCurve.GetEndPoint(1);
+            }
+
+            return sortedCurves;
+        }
+
+    private static bool _isCurveWithinBoundingBox(Curve curve, BoundingBoxXYZ boundingBox, int numSamples = 10)
         {
             // Get the minimum and maximum points of the bounding box
             XYZ minPoint = boundingBox.Min;

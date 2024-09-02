@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Events;
@@ -7,8 +8,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using Loop.Revit.ShapeEdits.Helpers;
 using Loop.Revit.Utilities.Selection;
 using Loop.Revit.Utilities.ShapeEdits;
+using Loop.Revit.Utilities.Warnings;
 using Loop.Revit.ViewTitles.Helpers;
-using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Loop.Revit.ShapeEdits
 {
@@ -22,14 +23,14 @@ namespace Loop.Revit.ShapeEdits
     {
         public RequestId Request { get; set; }
         public ShapeEditsModel Model { get; set; }
-
         public List<Element> Targets { get; set; }
         public List<Element> HostElements { get; set; }
         public bool IgnoreInternalPoints { get; set; }
         public bool BoundaryPointOnly { get; set; }
 
+        public bool FindClosestPointIfMissingTarget { get; set; }
         public bool IsTargetElement { get; set; }
-
+        public double VerticalOffset { get; set; }
         private bool Cancel { get; set; }
 
         public void Execute(UIApplication app)
@@ -60,17 +61,15 @@ namespace Loop.Revit.ShapeEdits
         {
             try
             {
-                var stopwatch = new Stopwatch();
-                stopwatch.Start();
-                //Event handler to deal with warnings
-                app.DialogBoxShowing += UiAppOnDialogBoxShowing;
-
-
                 var Doc = app.ActiveUIDocument.Document;
                 var hostElements = HostElements;
                 var targets = Targets;
                 var ignoreInternalPoints = IgnoreInternalPoints;
                 var boundaryPointOnly = BoundaryPointOnly;
+                var findClosestPoint = FindClosestPointIfMissingTarget;
+                var verticalOffset = VerticalOffset;
+                verticalOffset = 0.0;
+                findClosestPoint = true;
 
                 //Need logic control between floors and roofs
                 var isRoof = false;
@@ -140,10 +139,10 @@ namespace Loop.Revit.ShapeEdits
                     else if (elemType == typeof(Floor))
                     {
                         targetElem = (Floor)target;
+                        isRoof = false;
                     }
                     else
                     {
-
                         continue;
                     }
 
@@ -175,24 +174,62 @@ namespace Loop.Revit.ShapeEdits
                     }
 
                     //project boundary points onto surfaces
-                    var projectedPoints = ShapeEditUtils.ProjectPointVerticallyToFaces(topFaces, boundaryPoints);
+                    var projectedPointResult = ShapeEditUtils.ProjectPointVerticallyToFaces(topFaces, boundaryPoints, verticalOffset);
+                    var projectedPoints = projectedPointResult.SuccessfulProjections;
 
 
                     var splitLines = new List<List<Curve>>();
                     if (!boundaryPointOnly)
                     {
-                        //get target boundary edges, create model lines for later conversion to 2D
+                        //get target boundary edges 
                         var boundaryCurveLoops = new List<CurveLoop>();
                         var singletonCurveLoop = new CurveLoop();
 
-
                         if (isRoof)
                         {
-                            //var shapeEdges = targetElem.GetProfiles();
+                            var revisedElem = (FootPrintRoof)targetElem;
+                            var shapeEdges = revisedElem.GetProfiles();
 
+                            foreach (ModelCurveArray boundary in shapeEdges)
+                            {
+                                var curveList = new List<Curve>();
+                                var curveLoop = new CurveLoop();
+                                foreach (ModelCurve modelLine in boundary)
+                                {
+                                    var curve = modelLine.GeometryCurve;
+                                    //is it a circle?
+                                    if (!curve.IsBound && curve.IsClosed)
+                                    {
+                                        var circle = (Arc)curve;
+                                        // Get the center, radius, and normal of the circle
+                                        XYZ center = circle.Center;
+                                        double radius = circle.Radius;
+                                        XYZ normal = circle.Normal;
 
-                            //TODO Implement roof logic
+                                        // Define the start angle and angle increment for each segment
+                                        double startAngle = 0;
+                                        double angleIncrement = Math.PI / 2; // 90 degrees
 
+                                        for (int i = 0; i < 4; i++)
+                                        {
+                                            // Calculate the start and end angles for the current segment
+                                            double segmentStartAngle = startAngle + i * angleIncrement;
+                                            double segmentEndAngle = segmentStartAngle + angleIncrement;
+
+                                            // Create the arc segment
+                                            Arc arcSegment = Arc.Create(center, radius, segmentStartAngle,
+                                                segmentEndAngle, circle.XDirection, circle.YDirection);
+                                            curveLoop.Append(arcSegment);
+                                        }
+                                    }
+                                    //curveList.Add(curve);
+                                    //curveLoop.Append(curve);
+                                }
+
+                                //var sortedCurveloop = ShapeEditUtils.SortCurvesContiguously(curveList);
+                                //curveLoop = CurveLoop.Create(sortedCurveloop);
+                                boundaryCurveLoops.Add(curveLoop);
+                            }
                         }
 
                         if (!isRoof)
@@ -221,7 +258,6 @@ namespace Loop.Revit.ShapeEdits
                                     var itemCurve = (Curve)item;
                                     singletonCurveLoop.Append(itemCurve);
                                 }
-
                             }
 
                             // keep downstream data consistent if it wasn't a multi loop sketch
@@ -229,36 +265,55 @@ namespace Loop.Revit.ShapeEdits
                             {
                                 boundaryCurveLoops.Add(singletonCurveLoop);
                             }
-
-          
-
                         }
-                        
-                        var test = ShapeEditUtils.UseBoundaryCurvesToMakeSolidToTrimLines(Doc, boundaryCurveLoops,
-                            cleanedEdges);
 
-                        splitLines.Add(test);
+                        //Take the boundaries of the top face, and intersect them with an extended solid of the target footprint
+                        var linesFromSolid = ShapeEditUtils.UseBoundaryCurvesToMakeSolidToTrimLines(Doc, boundaryCurveLoops,
+                            cleanedEdges, verticalOffset);
 
+                        splitLines.Add(linesFromSolid);
                     }
 
                     var tIndividual = new Transaction(Doc, "Shape Edit Individuals");
                     tIndividual.Start();
 
+                    var failureOpts = tIndividual.GetFailureHandlingOptions();
+                    failureOpts.SetFailuresPreprocessor(new SuppressAllWarnings());
+                    tIndividual.SetFailureHandlingOptions(failureOpts);
+
 
                     //Add Split Lines
                     var flatList = splitLines.SelectMany(list => list).ToList();
-
                     var cleanLines = ShapeEditUtils.CleanLines(flatList);
                     ShapeEditUtils.AddSplitLines(cleanLines, targetElem);
 
 
-
                     //Add projected Points
-
                     foreach (var point in projectedPoints)
                     {
                         targetElem.SlabShapeEditor.DrawPoint(point);
                     }
+
+                    if (findClosestPoint)
+                    {
+                        SlabShapeVertexArray points = targetElem.SlabShapeEditor.SlabShapeVertices;
+                        var existingShapePoints = new List<XYZ>();
+                        foreach (SlabShapeVertex point in points)
+                        {
+                            existingShapePoints.Add(point.Position);
+                       
+                        }
+
+                        var outstandingPoints = projectedPointResult.FailedProjections;
+                        var matchedPoints =
+                            ShapeEditUtils.FindClosestPointsFromListOfPoints(outstandingPoints,
+                                existingShapePoints);
+                        foreach (var matchedPoint in matchedPoints)
+                        {
+                            targetElem.SlabShapeEditor.DrawPoint(matchedPoint);
+                        }
+                    }
+
 
                     tIndividual.Commit();
 
@@ -267,11 +322,6 @@ namespace Loop.Revit.ShapeEdits
 
                 transactionGroup.Assimilate();
 
-                //Un register to the event, we don't need it anymore.
-                app.DialogBoxShowing -= UiAppOnDialogBoxShowing;
-                stopwatch.Stop();
-                TaskDialog.Show("Time Elapsed", stopwatch.Elapsed.ToString());
-
             }
             catch (Exception)
             {
@@ -279,28 +329,7 @@ namespace Loop.Revit.ShapeEdits
             }
 
         }
-
-        private static void UiAppOnDialogBoxShowing(object sender, DialogBoxShowingEventArgs args)
-        {
-            switch (args)
-            {
-                // Dismiss no open view pop-up. We pick a view dependent element so it is fast to find
-                case DialogBoxShowingEventArgs args2:
-
-                    args2.OverrideResult(1);
-                    //if (args2.Message ==
-                    //    "There is no open view that shows any of the highlighted elements.  Searching through the closed views to find a good view could take a long time.  Continue?")
-                    //{
-                    //    //This is from the windows forms dialog result enum. Direct cast to save a reference
-                    //    args2.OverrideResult(1);
-                    //}
-                    break;
-                default:
-                    return;
-            }
-        }
-
-
+        
         private void Select(UIApplication app)
         {
             var UiDoc = app.ActiveUIDocument;
