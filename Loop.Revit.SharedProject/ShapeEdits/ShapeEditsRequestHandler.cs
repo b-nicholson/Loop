@@ -1,4 +1,13 @@
+<<<<<<< Updated upstream
 ﻿using System.Diagnostics;
+=======
+﻿using System;
+using System.Collections.Generic;
+<<<<<<< Updated upstream
+=======
+using System.Diagnostics;
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -66,10 +75,24 @@ namespace Loop.Revit.ShapeEdits
                 var targets = Targets;
                 var ignoreInternalPoints = IgnoreInternalPoints;
                 var boundaryPointOnly = BoundaryPointOnly;
+<<<<<<< Updated upstream
                 var findClosestPoint = FindClosestPointIfMissingTarget;
                 var verticalOffset = VerticalOffset;
                 verticalOffset = 0.0;
                 findClosestPoint = true;
+=======
+<<<<<<< Updated upstream
+=======
+                var findClosestPoint = FindClosestPointIfMissingTarget;
+                var rawOffset = VerticalOffset;
+                findClosestPoint = true;
+>>>>>>> Stashed changes
+
+
+                var verticalOffset = UnitUtils.ConvertToInternalUnits(rawOffset, UnitTypeId.Millimeters);
+
+
+>>>>>>> Stashed changes
 
                 //Need logic control between floors and roofs
                 var isRoof = false;
@@ -127,6 +150,8 @@ namespace Loop.Revit.ShapeEdits
 
                 foreach (var target in targets)
                 {
+                    try
+                    {
                     var elemType = target.GetType();
                     dynamic targetElem;
 
@@ -190,6 +215,7 @@ namespace Loop.Revit.ShapeEdits
                             var revisedElem = (FootPrintRoof)targetElem;
                             var shapeEdges = revisedElem.GetProfiles();
 
+<<<<<<< Updated upstream
                             foreach (ModelCurveArray boundary in shapeEdges)
                             {
                                 var curveList = new List<Curve>();
@@ -205,11 +231,15 @@ namespace Loop.Revit.ShapeEdits
                                         XYZ center = circle.Center;
                                         double radius = circle.Radius;
                                         XYZ normal = circle.Normal;
+=======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
 
                                         // Define the start angle and angle increment for each segment
                                         double startAngle = 0;
                                         double angleIncrement = Math.PI / 2; // 90 degrees
 
+<<<<<<< Updated upstream
                                         for (int i = 0; i < 4; i++)
                                         {
                                             // Calculate the start and end angles for the current segment
@@ -230,6 +260,52 @@ namespace Loop.Revit.ShapeEdits
                                 //curveLoop = CurveLoop.Create(sortedCurveloop);
                                 boundaryCurveLoops.Add(curveLoop);
                             }
+=======
+=======
+                            foreach (ModelCurveArray boundary in shapeEdges)
+                            {
+                                var curveList = new List<Curve>();
+                                var curveLoop = new CurveLoop();
+                                foreach (ModelCurve modelLine in boundary)
+                                {
+                                    var curve = modelLine.GeometryCurve;
+
+                                    //is it a circle?
+                                    //if (!curve.IsBound && curve.IsClosed)
+                                    //{
+                                    //    var circle = (Arc)curve;
+                                    //    // Get the center, radius, and normal of the circle
+                                    //    XYZ center = circle.Center;
+                                    //    double radius = circle.Radius;
+                                    //    XYZ normal = circle.Normal;
+
+                                    //    // Define the start angle and angle increment for each segment
+                                    //    double startAngle = 0;
+                                    //    double angleIncrement = Math.PI / 2; // 90 degrees
+
+                                    //    for (int i = 0; i < 4; i++)
+                                    //    {
+                                    //        // Calculate the start and end angles for the current segment
+                                    //        double segmentStartAngle = startAngle + i * angleIncrement;
+                                    //        double segmentEndAngle = segmentStartAngle + angleIncrement;
+
+                                    //        // Create the arc segment
+                                    //        Arc arcSegment = Arc.Create(center, radius, segmentStartAngle,
+                                    //            segmentEndAngle, circle.XDirection, circle.YDirection);
+                                    //        curveLoop.Append(arcSegment);
+                                    //    }
+                                    //}
+
+                                    curveList.Add(curve);
+                                    //curveLoop.Append(curve);
+                                }
+
+                                var sortedCurveloop = ShapeEditUtils.SortCurvesContiguously(curveList);
+                                curveLoop = CurveLoop.Create(sortedCurveloop);
+                                boundaryCurveLoops.Add(curveLoop);
+                            }
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
                         }
 
                         if (!isRoof)
@@ -316,7 +392,11 @@ namespace Loop.Revit.ShapeEdits
 
 
                     tIndividual.Commit();
-
+                    }
+                    catch (Exception e)
+                    {
+                     //Do nothing
+                    }
 
                 }
 

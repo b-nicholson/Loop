@@ -1,5 +1,20 @@
+<<<<<<< Updated upstream
 ﻿using Autodesk.Revit.DB;
 using Line = Autodesk.Revit.DB.Line;
+=======
+﻿using System;
+using System.Collections.Generic;
+<<<<<<< Updated upstream
+using System.Data;
+using System.Linq;
+using System.Windows.Media.Media3D;
+using Autodesk.Revit.DB;
+=======
+using System.Linq;
+using Autodesk.Revit.DB;
+using Line = Autodesk.Revit.DB.Line;
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
 namespace Loop.Revit.Utilities.ShapeEdits
 {
@@ -443,6 +458,11 @@ namespace Loop.Revit.Utilities.ShapeEdits
             return results;
         }
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
         public static List<XYZ> FindClosestPointsFromListOfPoints(List<XYZ> inputPoints, List<XYZ> listOfPointsToReadFrom, double verticalOffset = 0.0)
         {
             //This is somewhat gnarly, there's probably a more efficient way, but it's probably not worth the complexity / effort
@@ -463,7 +483,11 @@ namespace Loop.Revit.Utilities.ShapeEdits
 
             foreach (var missingPoint in inputPoints)
             {
+<<<<<<< Updated upstream
                 XYZ? closestPoint = null;
+=======
+                XYZ closestPoint = null;
+>>>>>>> Stashed changes
                 var minDistance = double.MaxValue;
                 var sortedPoints = cleanedListOfPoints.OrderBy(p => p.X).ToList();
 
@@ -494,6 +518,10 @@ namespace Loop.Revit.Utilities.ShapeEdits
             }
             return matchedPoints;
         }
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         public static List<Curve> UseFilledRegionToTrimLines(Document doc, List<CurveLoop> boundaryEdgeLoops,
             List<List<XYZ>> intersectingPoints, List<Curve> edges)
         {

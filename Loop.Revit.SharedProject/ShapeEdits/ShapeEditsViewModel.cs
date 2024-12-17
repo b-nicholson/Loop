@@ -1,13 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
 using System.Collections.Generic;
-using System.Windows.Documents;
 using Autodesk.Revit.DB;
 using CommunityToolkit.Mvvm.Messaging;
 using Loop.Revit.ShapeEdits.Helpers;
-using Loop.Revit.ViewTitles;
-using Loop.Revit.ViewTitles.Helpers;
 using Utilities.Wpf.Services.WindowServices;
 
 namespace Loop.Revit.ShapeEdits
@@ -33,6 +29,14 @@ namespace Loop.Revit.ShapeEdits
         {
             get => _hostElements;
             set => SetProperty(ref _hostElements, value);
+        }
+
+        private double _verticalOffset;
+
+        public double VerticalOffset
+        {
+            get => _verticalOffset;
+            set => SetProperty(ref _verticalOffset, value);
         }
 
         public ShapeEditsViewModel(ShapeEditsModel model, IWindowService windowService)
@@ -61,7 +65,7 @@ namespace Loop.Revit.ShapeEdits
 
         private void OnRun()
         {
-            _model.Project(SelectedTargets, HostElements, false, false);
+            _model.Project(SelectedTargets, HostElements, false, false, VerticalOffset);
         }
 
         private void OnSelectTarget()

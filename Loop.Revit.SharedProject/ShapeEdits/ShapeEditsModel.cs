@@ -19,12 +19,13 @@ namespace Loop.Revit.ShapeEdits
             ActiveView = Doc.ActiveView;
         }
 
-        public void Project(List<Element> targets, List<Element> hostElements, bool ignoreInternalPoints, bool boundaryPointOnly)
+        public void Project(List<Element> targets, List<Element> hostElements, bool ignoreInternalPoints, bool boundaryPointOnly, double verticalOffset)
         {
             AppCommand.ShapeEditsHandler.Targets = targets;
             AppCommand.ShapeEditsHandler.HostElements = hostElements;
             AppCommand.ShapeEditsHandler.IgnoreInternalPoints = ignoreInternalPoints;
             AppCommand.ShapeEditsHandler.BoundaryPointOnly = boundaryPointOnly;
+            AppCommand.ShapeEditsHandler.VerticalOffset = verticalOffset;
             AppCommand.ShapeEditsHandler.Request = RequestId.Project;
             AppCommand.ShapeEditsEvent.Raise();
         }
